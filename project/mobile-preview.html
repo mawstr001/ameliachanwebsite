@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mobile Preview — Amelia Chan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:#e7e1d3; color:#1b1a16;
+    font-family:"JetBrains Mono",monospace;
+    background-image:radial-gradient(rgba(27,26,22,.06) 1px, transparent 1.4px);
+    background-size:24px 24px; min-height:100vh;
+    padding:40px 24px 64px; }
+  h1{ font-family:Georgia,serif; font-weight:500; font-size:26px; letter-spacing:-.01em; margin:0 0 4px; }
+  .sub{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#7a7464; margin-bottom:36px; }
+  .rail{ display:flex; gap:48px; justify-content:center; align-items:flex-start; flex-wrap:wrap; }
+  .device{ display:flex; flex-direction:column; align-items:center; gap:16px; }
+  .label{ font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:#1b1a16; }
+  .label b{ color:#b0904a; }
+  /* phone bezel */
+  .phone{ position:relative; width:390px; height:780px; background:#0d0d0b;
+    border-radius:46px; padding:13px; box-shadow:0 40px 90px -40px rgba(27,26,22,.6), 0 0 0 1px rgba(27,26,22,.2); }
+  .phone::before{ content:""; position:absolute; top:18px; left:50%; transform:translateX(-50%);
+    width:120px; height:26px; background:#0d0d0b; border-radius:0 0 16px 16px; z-index:3; }
+  .screen{ position:relative; width:100%; height:100%; border-radius:34px; overflow:hidden; background:#f3efe4; }
+  .screen iframe{ width:390px; height:754px; border:0; transform-origin:top left; display:block; }
+  .hint{ font-size:10px; letter-spacing:.1em; color:#7a7464; max-width:360px; text-align:center; line-height:1.5; }
+  @media (max-width:900px){ .phone{ transform:scale(.82); transform-origin:top center; margin-bottom:-120px; } }
+</style>
+</head>
+<body>
+  <h1>Mobile preview</h1>
+  <div class="sub">Live · 390 px · tap &amp; scroll</div>
+
+  <div class="rail">
+    <div class="device">
+      <div class="label"><b>01</b> &nbsp;Home — stacked split</div>
+      <div class="phone"><div class="screen"><iframe src="index.html" title="Home mobile"></iframe></div></div>
+      <div class="hint">Both panels share one screen, image beside text. Tap the ☰ menu (top-right) to open the full-screen nav.</div>
+    </div>
+
+    <div class="device">
+      <div class="label"><b>02</b> &nbsp;Bio — press woven in</div>
+      <div class="phone"><div class="screen"><iframe src="bio.html" title="Bio mobile"></iframe></div></div>
+      <div class="hint">Scroll for the artist intro, the dark press band, then the teaching philosophy.</div>
+    </div>
+
+    <div class="device">
+      <div class="label"><b>03</b> &nbsp;First Principles — the equation</div>
+      <div class="phone"><div class="screen"><iframe src="first-principles.html" title="First Principles mobile"></iframe></div></div>
+      <div class="hint">The equation stacks vertically: Biomechanics + Musicianship = Unified Embodiment.</div>
+    </div>
+
+    <div class="device">
+      <div class="label"><b>04</b> &nbsp;Recordings</div>
+      <div class="phone"><div class="screen"><iframe src="recordings.html" title="Recordings mobile"></iframe></div></div>
+      <div class="hint">Single-column cards, grayscale→color on tap/hover.</div>
+    </div>
+  </div>
+</body>
+</html>
