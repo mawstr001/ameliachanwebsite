@@ -32,11 +32,15 @@
             <image-slot id="rec-<%= i+1 %>" style="width:100%;height:100%"
               placeholder="Drop cover art" src="<%= rec.image %>" data-edit-image="recordings[<%= i %>].image"></image-slot>
           </div>
+          <% if (rec.youtubeUrl) { %>
+          <a class="play" href="<%= rec.youtubeUrl %>" target="_blank" rel="noopener" aria-label="Watch on YouTube">
+          <% } else { %>
           <div class="play">
+          <% } %>
             <span class="disc">
               <svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 1 L12 7 L2 13 Z" fill="currentColor"/></svg>
             </span>
-          </div>
+          <% if (rec.youtubeUrl) { %></a><% } else { %></div><% } %>
         </div>
         <div class="rec-meta">
           <div class="rt" data-edit="recordings[<%= i %>].title"><%= rec.title %></div>

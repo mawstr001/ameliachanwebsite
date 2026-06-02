@@ -2,7 +2,7 @@
    ADMIN BAR — Inline content editor for admin users
    ============================================================ */
 (function () {
-  if (!document.body.dataset.adminMode) return;
+  if (!document.body.hasAttribute('data-admin-mode')) return;
 
   // ── Inject admin bar ──────────────────────────────────────────────────────
   var bar = document.createElement('div');

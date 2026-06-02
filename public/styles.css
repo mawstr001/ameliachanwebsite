@@ -525,3 +525,65 @@ section{ position:relative; }
   .home-role{ font-size:11px; letter-spacing:.18em; margin-top:10px; }
   .home-blurb{ display:block; }
 }
+
+/* ============================================================
+   ESSAY / ARTICLE
+   ============================================================ */
+.essay{ padding:72px 0 40px; }
+.essay-inner{ max-width:760px; margin:0 auto; }
+.essay-back{ display:inline-flex; align-items:center; gap:10px; font-family:var(--mono);
+  font-size:11px; letter-spacing:.18em; text-transform:uppercase; text-decoration:none;
+  color:var(--muted); transition:color .25s, gap .25s; }
+.essay-back:hover{ color:var(--ink); gap:14px; }
+.essay-head{ border-bottom:1px solid var(--rule); padding-bottom:40px; margin-bottom:48px; }
+.essay-cat{ font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--gold); margin:34px 0 22px; display:flex; align-items:center; gap:12px; }
+.essay-cat .dot{ width:4px; height:4px; border-radius:50%; background:var(--muted); }
+.essay-title{ font-family:var(--serif); font-weight:500; line-height:1.02; letter-spacing:-.01em;
+  font-size:clamp(38px,5.4vw,68px); text-wrap:balance; }
+.essay-meta{ display:flex; gap:26px; margin-top:26px; font-family:var(--mono); font-size:11px;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--muted); flex-wrap:wrap; }
+.essay-meta span{ display:inline-flex; align-items:center; gap:9px; }
+.essay-meta .tick{ color:var(--gold); }
+
+.essay-body{ font-family:var(--sans); font-size:19px; line-height:1.78; color:var(--ink-soft); }
+.essay-body p{ margin:0 0 1.4em; text-wrap:pretty; }
+.essay-body p.lead{ font-size:23px; line-height:1.6; color:var(--ink); }
+.essay-body p.lead .drop::first-letter,
+.essay-body p.drop::first-letter{
+  font-family:var(--serif); font-size:4.2em; line-height:.72; float:left;
+  padding:8px 14px 0 0; color:var(--ink); font-weight:500;
+}
+.essay-body em{ font-style:italic; color:var(--ink); }
+.essay-body strong{ font-weight:600; color:var(--ink); }
+.essay-body h3{ font-family:var(--serif); font-weight:500; font-size:30px; line-height:1.1;
+  color:var(--ink); margin:1.9em 0 .6em; letter-spacing:-.01em; }
+.essay-body h3 .h-n{ font-family:var(--mono); font-size:12px; letter-spacing:.2em; color:var(--gold);
+  display:block; margin-bottom:12px; font-weight:500; }
+.essay-pull{ margin:1.8em 0; padding:6px 0 6px 30px; border-left:2px solid var(--gold); }
+.essay-pull p{ font-family:var(--serif); font-style:italic; font-weight:500; font-size:27px;
+  line-height:1.28; color:var(--ink); margin:0; }
+.essay-figeq{ font-family:var(--mono); font-size:13px; letter-spacing:.04em; color:var(--ink);
+  background:rgba(27,26,22,.035); border:1px solid var(--rule); padding:18px 22px; margin:1.8em 0;
+  text-align:center; }
+.essay-sig{ margin-top:2.4em; padding-top:26px; border-top:1px solid var(--rule);
+  font-family:var(--serif); font-style:italic; font-size:20px; color:var(--ink); }
+.essay-sig span{ display:block; font-family:var(--mono); font-style:normal; font-size:10.5px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-top:8px; }
+
+.essay-nav{ max-width:760px; margin:64px auto 0; border-top:1px solid var(--ink);
+  display:grid; grid-template-columns:1fr 1fr; }
+.essay-nav a{ text-decoration:none; color:inherit; padding:30px 26px; transition:background .3s;
+  border-right:1px solid var(--rule); }
+.essay-nav a:last-child{ border-right:none; text-align:right; }
+.essay-nav a:hover{ background:var(--paper-2); }
+.essay-nav .lab{ font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); }
+.essay-nav .ti{ font-family:var(--serif); font-size:20px; line-height:1.16; margin-top:12px; display:block; }
+.essay-nav a.disabled{ opacity:.32; pointer-events:none; }
+@media (max-width:640px){
+  .essay{ padding:44px 0 32px; }
+  .essay-body{ font-size:17.5px; }
+  .essay-body p.lead{ font-size:20px; }
+  .essay-nav{ grid-template-columns:1fr; }
+  .essay-nav a, .essay-nav a:last-child{ border-right:none; text-align:left; border-bottom:1px solid var(--rule); }
+}

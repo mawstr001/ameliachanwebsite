@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Version History — Admin</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Hanken Grotesk', system-ui, sans-serif; background: #0d1a24; color: #e8e2d6; min-height: 100vh; display: flex; }
+  .sidebar { width: 220px; min-height: 100vh; background: #0a121a; border-right: 1px solid rgba(255,255,255,.07); padding: 32px 20px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  .sidebar-brand { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; color: #e8e2d6; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .sidebar-brand b { color: #2f6f8f; }
+  .sidebar a { display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #8a9baa; text-decoration: none; padding: 9px 12px; border-radius: 4px; transition: .2s; }
+  .sidebar a:hover, .sidebar a.active { background: rgba(47,111,143,.15); color: #83b4cb; }
+  .sidebar-sep { height: 1px; background: rgba(255,255,255,.07); margin: 12px 0; }
+  .main { flex: 1; padding: 48px 56px; }
+  .page-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 36px; font-weight: 500; color: #e8e2d6; margin: 0 0 8px; }
+  .page-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #5a93ad; margin-bottom: 12px; }
+  .page-note { font-size: 14px; color: #7b8794; margin-bottom: 36px; }
+  .flash { background: rgba(47,143,80,.2); border: 1px solid #2f8f50; color: #7dd4a0; padding: 12px 18px; border-radius: 4px; font-size: 13px; margin-bottom: 28px; font-family: 'JetBrains Mono', monospace; }
+  .flash.warn { background: rgba(200,150,40,.15); border-color: rgba(200,150,40,.4); color: #e8c47a; }
+
+  .history-table { width: 100%; border-collapse: collapse; }
+  .history-table th { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #5a93ad; text-align: left; padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .history-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.06); font-size: 14px; color: #b8c4cc; vertical-align: middle; }
+  .history-table tr:hover td { background: rgba(255,255,255,.03); }
+  .history-table .filename { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #83b4cb; }
+  .history-table .size { color: #5a6a78; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+  .history-table .date { font-size: 13px; }
+
+  .btn-restore { background: rgba(47,111,143,.2); border: 1px solid rgba(47,111,143,.4); color: #83b4cb; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; padding: 7px 14px; border-radius: 3px; cursor: pointer; transition: .2s; }
+  .btn-restore:hover { background: rgba(47,111,143,.4); }
+
+  .empty-state { text-align: center; padding: 80px 0; color: #5a6a78; }
+  .empty-state p { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .1em; }
+
+  .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; align-items: center; justify-content: center; }
+  .confirm-overlay.show { display: flex; }
+  .confirm-box { background: #112230; border: 1px solid rgba(47,111,143,.4); border-radius: 6px; padding: 36px; max-width: 460px; width: 90%; }
+  .confirm-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 26px; margin: 0 0 14px; color: #e8e2d6; }
+  .confirm-box p { color: #8a9baa; font-size: 14px; line-height: 1.6; margin: 0 0 28px; }
+  .confirm-box .confirm-file { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #83b4cb; background: rgba(0,0,0,.3); padding: 8px 12px; border-radius: 3px; margin-bottom: 28px; word-break: break-all; }
+  .confirm-actions { display: flex; gap: 12px; }
+  .btn-confirm { background: #c0392b; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; padding: 12px 24px; border-radius: 4px; cursor: pointer; transition: .2s; }
+  .btn-confirm:hover { background: #e74c3c; }
+  .btn-cancel { background: none; border: 1px solid rgba(255,255,255,.2); color: #8a9baa; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 11px 22px; border-radius: 4px; cursor: pointer; transition: .2s; }
+  .btn-cancel:hover { border-color: #2f6f8f; color: #83b4cb; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-brand"><b>Amelia</b> Chan</div>
+  <a href="/admin">Dashboard</a>
+  <a href="/admin/writings">Writings</a>
+  <a href="/admin/recordings">Recordings</a>
+  <a href="/admin/press">Press</a>
+  <a href="/admin/images">Images</a>
+  <div class="sidebar-sep"></div>
+  <a href="/admin/history" class="active">Version History</a>
+  <div class="sidebar-sep"></div>
+  <a href="/">← View Site</a>
+  <a href="/admin/logout">Logout</a>
+</div>
+
+<div class="main">
+  <div class="page-title">Version History</div>
+  <div class="page-sub">Content Rollback</div>
+  <p class="page-note">Every save automatically creates a backup. Click Restore to roll back to any previous version. The current version is backed up before restoring.</p>
+
+  <% if (restored) { %>
+  <div class="flash">✓ Content restored successfully. The previous version was backed up automatically.</div>
+  <% } %>
+
+  <% if (!backups || backups.length === 0) { %>
+  <div class="empty-state">
+    <p>// NO BACKUPS YET</p>
+    <p style="margin-top:8px;color:#3c4b59">Backups are created automatically on every save.</p>
+  </div>
+  <% } else { %>
+  <table class="history-table">
+    <thead>
+      <tr>
+        <th>Date &amp; Time</th>
+        <th>Filename</th>
+        <th>Size</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% backups.forEach(function(b, i) { %>
+      <tr>
+        <td class="date">
+          <%= new Date(b.date).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}) %>
+          &nbsp;<span style="color:#5a6a78"><%= new Date(b.date).toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'}) %></span>
+          <% if (i === 0) { %> &nbsp;<span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#2f8f50;letter-spacing:.1em;text-transform:uppercase">latest</span><% } %>
+        </td>
+        <td class="filename"><%= b.filename %></td>
+        <td class="size"><%= (b.size / 1024).toFixed(1) %> KB</td>
+        <td>
+          <button class="btn-restore" onclick="confirmRestore('<%= b.filename %>')">Restore</button>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } %>
+</div>
+
+<!-- Confirm restore overlay -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Restore this version?</h3>
+    <p>This will replace all current content with the selected backup. The current content will be saved as a new backup first, so you can undo this too.</p>
+    <div class="confirm-file" id="confirmFilename"></div>
+    <div class="confirm-actions">
+      <form method="POST" id="restoreForm" action="">
+        <button type="submit" class="btn-confirm">Yes, Restore</button>
+      </form>
+      <button type="button" class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function confirmRestore(filename) {
+    document.getElementById('confirmFilename').textContent = filename;
+    document.getElementById('restoreForm').action = '/admin/history/restore/' + encodeURIComponent(filename);
+    document.getElementById('confirmOverlay').classList.add('show');
+  }
+  function closeConfirm() {
+    document.getElementById('confirmOverlay').classList.remove('show');
+  }
+  document.getElementById('confirmOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeConfirm();
+  });
+</script>
+</body>
+</html>

@@ -77,8 +77,8 @@ input:focus{ border-color:#2f6f8f; }
           <input type="text" id="new-ens" name="ensemble" placeholder="Orchestra · Live…" />
         </div>
         <div>
-          <label for="new-link">Link</label>
-          <input type="text" id="new-link" name="link" placeholder="#" value="#" />
+          <label for="new-yt">YouTube URL</label>
+          <input type="text" id="new-yt" name="youtubeUrl" placeholder="https://youtube.com/watch?v=…" />
         </div>
         <div>
           <label>&nbsp;</label>
@@ -95,7 +95,7 @@ input:focus{ border-color:#2f6f8f; }
         <th>Image</th>
         <th>Title</th>
         <th>Ensemble</th>
-        <th>Link</th>
+        <th>YouTube URL</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -110,9 +110,9 @@ input:focus{ border-color:#2f6f8f; }
           <% } %>
         </td>
         <form method="POST" action="/admin/recordings/<%= rec.id %>/update" style="display:contents">
-          <td style="min-width:220px"><input type="text" name="title" value="<%= rec.title %>" style="width:100%;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:14px;padding:8px 10px;outline:none;" /></td>
-          <td><input type="text" name="ensemble" value="<%= rec.ensemble %>" style="width:200px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:13px;padding:8px 10px;outline:none;" /></td>
-          <td><input type="text" name="link" value="<%= rec.link %>" style="width:140px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:13px;padding:8px 10px;outline:none;" /></td>
+          <td style="min-width:180px"><input type="text" name="title" value="<%= rec.title %>" style="width:100%;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:14px;padding:8px 10px;outline:none;" /></td>
+          <td><input type="text" name="ensemble" value="<%= rec.ensemble %>" style="width:170px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:13px;padding:8px 10px;outline:none;" /></td>
+          <td><input type="text" name="youtubeUrl" value="<%= rec.youtubeUrl || '' %>" placeholder="https://youtube.com/…" style="width:220px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:12px;font-family:'JetBrains Mono',monospace;padding:8px 10px;outline:none;" /></td>
           <td>
             <div class="row-actions">
               <button type="submit" class="btn btn-sm">Save</button>

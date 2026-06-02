@@ -9,6 +9,8 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const CONTENT_FILE = path.join(__dirname, 'data', 'content.json');
 const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
+const BACKUPS_DIR = path.join(__dirname, 'data', 'backups');
+if (!fs.existsSync(BACKUPS_DIR)) fs.mkdirSync(BACKUPS_DIR, { recursive: true });
 
 // ── Multer setup ──────────────────────────────────────────────────────────────
 const storage = multer.diskStorage({
@@ -27,6 +29,13 @@ function readContent() {
   catch (e) { return {}; }
 }
 function writeContent(data) {
+  // Save rolling backup before every write (keep last 30)
+  try {
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    fs.writeFileSync(path.join(BACKUPS_DIR, `content-${ts}.json`), fs.readFileSync(CONTENT_FILE));
+    const backups = fs.readdirSync(BACKUPS_DIR).filter(f => f.endsWith('.json')).sort();
+    if (backups.length > 30) backups.slice(0, backups.length - 30).forEach(f => fs.unlinkSync(path.join(BACKUPS_DIR, f)));
+  } catch (_) {}
   fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), 'utf8');
 }
 function deepSet(obj, keyPath, value) {
@@ -108,6 +117,17 @@ app.get('/writings', (req, res) => {
   res.render('writings', { site: c.site, writings: c.writings, page: 'writings' });
 });
 
+// Individual essay pages
+app.get('/writings/:slug', (req, res) => {
+  const c = readContent();
+  const essay = c.writings.find(w => w.slug === req.params.slug);
+  if (!essay) return res.status(404).send('Essay not found');
+  const idx = c.writings.indexOf(essay);
+  const prev = idx > 0 ? c.writings[idx - 1] : null;
+  const next = idx < c.writings.length - 1 ? c.writings[idx + 1] : null;
+  res.render('essay', { site: c.site, essay, prev, next, page: 'writings' });
+});
+
 app.get('/recordings', (req, res) => {
   const c = readContent();
   res.render('recordings', { site: c.site, recordings: c.recordings, page: 'recordings' });
@@ -159,13 +179,26 @@ app.post('/admin/writings', requireAdmin, (req, res) => {
   res.redirect('/admin/writings?saved=1');
 });
 
+// Essay editor (full body edit)
+app.get('/admin/writings/:id/edit', requireAdmin, (req, res) => {
+  const c = readContent();
+  const essay = c.writings.find(w => w.id === req.params.id);
+  if (!essay) return res.redirect('/admin/writings');
+  res.render('admin/essay-edit', { essay, saved: req.query.saved });
+});
+
 app.post('/admin/writings/:id/update', requireAdmin, (req, res) => {
   const c = readContent();
   const idx = c.writings.findIndex(w => w.id === req.params.id);
   if (idx !== -1) {
-    c.writings[idx] = { ...c.writings[idx], ...req.body };
+    // Generate slug from number if not set
+    const slug = req.body.slug || c.writings[idx].slug || `essay-${req.body.number || c.writings[idx].number}`;
+    c.writings[idx] = { ...c.writings[idx], ...req.body, slug };
     writeContent(c);
   }
+  // If saving from essay editor, stay on editor; otherwise back to list
+  const from = req.body._from || 'list';
+  if (from === 'editor') return res.redirect(`/admin/writings/${req.params.id}/edit?saved=1`);
   res.redirect('/admin/writings?saved=1');
 });
 
@@ -258,6 +291,32 @@ app.post('/admin/press/:id/delete', requireAdmin, (req, res) => {
   c.press = c.press.filter(p => p.id !== req.params.id);
   writeContent(c);
   res.redirect('/admin/press');
+});
+
+// ── Admin: Version history / rollback ─────────────────────────────────────────
+app.get('/admin/history', requireAdmin, (req, res) => {
+  const backups = fs.readdirSync(BACKUPS_DIR)
+    .filter(f => f.endsWith('.json'))
+    .sort()
+    .reverse()
+    .map(f => {
+      const stat = fs.statSync(path.join(BACKUPS_DIR, f));
+      return { filename: f, size: stat.size, date: stat.mtime };
+    });
+  res.render('admin/history', { backups, restored: req.query.restored });
+});
+
+app.post('/admin/history/restore/:filename', requireAdmin, (req, res) => {
+  const safe = path.basename(req.params.filename);
+  const src = path.join(BACKUPS_DIR, safe);
+  if (!fs.existsSync(src)) return res.redirect('/admin/history');
+  // Backup current before restore
+  try {
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    fs.writeFileSync(path.join(BACKUPS_DIR, `content-${ts}.json`), fs.readFileSync(CONTENT_FILE));
+  } catch (_) {}
+  fs.copyFileSync(src, CONTENT_FILE);
+  res.redirect('/admin/history?restored=1');
 });
 
 // ── Admin: Images ─────────────────────────────────────────────────────────────

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Edit Essay — Admin</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Hanken Grotesk', system-ui, sans-serif; background: #0d1a24; color: #e8e2d6; min-height: 100vh; display: flex; }
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Hanken+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  /* Sidebar */
+  .sidebar { width: 220px; min-height: 100vh; background: #0a121a; border-right: 1px solid rgba(255,255,255,.07); padding: 32px 20px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  .sidebar-brand { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #e8e2d6; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .sidebar-brand b { color: #2f6f8f; }
+  .sidebar a { display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #8a9baa; text-decoration: none; padding: 9px 12px; border-radius: 4px; transition: .2s; }
+  .sidebar a:hover, .sidebar a.active { background: rgba(47,111,143,.15); color: #83b4cb; }
+  .sidebar-sep { height: 1px; background: rgba(255,255,255,.07); margin: 12px 0; }
+
+  /* Main */
+  .main { flex: 1; padding: 48px 56px; max-width: 900px; }
+  .page-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 500; color: #e8e2d6; margin: 0 0 8px; }
+  .page-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #5a93ad; margin-bottom: 40px; }
+
+  .flash { background: rgba(47,143,80,.2); border: 1px solid #2f8f50; color: #7dd4a0; padding: 12px 18px; border-radius: 4px; font-size: 13px; margin-bottom: 28px; font-family: 'JetBrains Mono', monospace; letter-spacing: .1em; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: #7b8794; }
+  input[type=text], input[type=number], textarea, select {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 4px; color: #e8e2d6; font-family: inherit; font-size: 15px;
+    padding: 11px 14px; transition: border-color .2s; width: 100%;
+  }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: #2f6f8f; }
+
+  .body-editor { display: flex; flex-direction: column; gap: 8px; }
+  .body-toolbar { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px; background: rgba(0,0,0,.2); border: 1px solid rgba(255,255,255,.12); border-bottom: none; border-radius: 4px 4px 0 0; }
+  .body-toolbar button { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: #ccc; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 5px 10px; border-radius: 3px; cursor: pointer; transition: .15s; }
+  .body-toolbar button:hover { background: rgba(47,111,143,.3); color: #fff; }
+  #bodyTextarea { border-radius: 0 0 4px 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; min-height: 480px; resize: vertical; }
+
+  .preview-toggle { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .preview-toggle button { background: none; border: 1px solid rgba(255,255,255,.2); color: #8a9baa; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .1em; padding: 6px 14px; border-radius: 3px; cursor: pointer; }
+  .preview-toggle button.active { background: rgba(47,111,143,.25); border-color: #2f6f8f; color: #83b4cb; }
+
+  .preview-area { display: none; min-height: 300px; background: #eef1f5; color: #16222e; padding: 32px; border-radius: 4px; font-family: 'Hanken Grotesk', system-ui, sans-serif; font-size: 18px; line-height: 1.72; }
+  .preview-area.visible { display: block; }
+  .preview-area em { font-style: italic; color: #16222e; }
+  .preview-area strong { font-weight: 600; }
+  .preview-area h3 { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #16222e; }
+  .preview-area .essay-pull { border-left: 2px solid #2f6f8f; padding-left: 24px; margin: 1.6em 0; }
+  .preview-area .essay-pull p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 24px; color: #16222e; margin: 0; }
+  .preview-area .essay-figeq { font-family: 'JetBrains Mono', monospace; font-size: 13px; background: rgba(0,0,0,.05); border: 1px solid rgba(0,0,0,.1); padding: 14px 18px; text-align: center; margin: 1.6em 0; }
+
+  .actions { display: flex; gap: 14px; align-items: center; margin-top: 32px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,.1); }
+  .btn-save { background: #2f6f8f; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; padding: 13px 28px; border-radius: 4px; cursor: pointer; transition: .2s; }
+  .btn-save:hover { background: #3a86aa; }
+  .btn-secondary { background: none; border: 1px solid rgba(255,255,255,.2); color: #8a9baa; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 12px 22px; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; transition: .2s; }
+  .btn-secondary:hover { border-color: #2f6f8f; color: #83b4cb; }
+  .shortcut-hint { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5a6a78; margin-left: auto; }
+
+  .help-box { background: rgba(47,111,143,.1); border: 1px solid rgba(47,111,143,.25); border-radius: 4px; padding: 16px 20px; margin-bottom: 10px; }
+  .help-box p { margin: 0 0 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #7b8a9a; line-height: 1.6; }
+  .help-box p:last-child { margin: 0; }
+  .help-box code { background: rgba(0,0,0,.3); padding: 2px 6px; border-radius: 3px; color: #83b4cb; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-brand"><b>Amelia</b> Chan</div>
+  <a href="/admin">Dashboard</a>
+  <a href="/admin/writings" class="active">Writings</a>
+  <a href="/admin/recordings">Recordings</a>
+  <a href="/admin/press">Press</a>
+  <a href="/admin/images">Images</a>
+  <div class="sidebar-sep"></div>
+  <a href="/admin/history">Version History</a>
+  <div class="sidebar-sep"></div>
+  <a href="/">← View Site</a>
+  <a href="/admin/logout">Logout</a>
+</div>
+
+<div class="main">
+  <div class="page-title"><%= essay.title.substring(0, 40) %><% if (essay.title.length > 40) { %>…<% } %></div>
+  <div class="page-sub">Essay Editor &nbsp;·&nbsp; № <%= essay.number %> &nbsp;·&nbsp; <%= essay.category %></div>
+
+  <% if (saved) { %>
+  <div class="flash">✓ Changes saved successfully.</div>
+  <% } %>
+
+  <form method="POST" action="/admin/writings/<%= essay.id %>/update">
+    <input type="hidden" name="_from" value="editor" />
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Essay Number</label>
+        <input type="text" name="number" value="<%= essay.number %>" />
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" name="category" value="<%= essay.category %>" />
+      </div>
+      <div class="form-group full">
+        <label>Title</label>
+        <input type="text" name="title" value="<%- essay.title %>" />
+      </div>
+      <div class="form-group">
+        <label>URL Slug</label>
+        <input type="text" name="slug" value="<%= essay.slug || '' %>" placeholder="essay-01" />
+      </div>
+      <div class="form-group">
+        <label>Read Time</label>
+        <input type="text" name="readTime" value="<%= essay.readTime || '' %>" placeholder="8 min read" />
+      </div>
+    </div>
+
+    <div class="body-editor">
+      <label>Essay Body (HTML)</label>
+      <div class="help-box">
+        <p>Write HTML directly. Use: <code>&lt;p&gt;</code> paragraphs · <code>&lt;p class="lead drop"&gt;</code> opening paragraph · <code>&lt;h3&gt;&lt;span class="h-n"&gt;// Label&lt;/span&gt;Heading&lt;/h3&gt;</code> section headings</p>
+        <p><code>&lt;div class="essay-pull"&gt;&lt;p&gt;Pull quote text&lt;/p&gt;&lt;/div&gt;</code> · <code>&lt;div class="essay-figeq"&gt;equation&lt;/div&gt;</code> · <code>&lt;p class="essay-sig"&gt;Sign-off&lt;span&gt;— A.C.&lt;/span&gt;&lt;/p&gt;</code></p>
+      </div>
+
+      <div class="preview-toggle">
+        <button type="button" class="active" id="btnCode">HTML</button>
+        <button type="button" id="btnPreview">Preview</button>
+      </div>
+
+      <div class="body-toolbar">
+        <button type="button" onclick="ins('&lt;p&gt;','&lt;/p&gt;')">¶ p</button>
+        <button type="button" onclick="ins('&lt;p class=&quot;lead drop&quot;&gt;','&lt;/p&gt;')">¶ lead</button>
+        <button type="button" onclick="ins('&lt;h3&gt;&lt;span class=&quot;h-n&quot;&gt;// &lt;/span&gt;','&lt;/h3&gt;')">H3</button>
+        <button type="button" onclick="ins('&lt;em&gt;','&lt;/em&gt;')"><em>em</em></button>
+        <button type="button" onclick="ins('&lt;strong&gt;','&lt;/strong&gt;')"><strong>b</strong></button>
+        <button type="button" onclick="ins('&lt;div class=&quot;essay-pull&quot;&gt;&lt;p&gt;','&lt;/p&gt;&lt;/div&gt;')">❝ pull</button>
+        <button type="button" onclick="ins('&lt;div class=&quot;essay-figeq&quot;&gt;','&lt;/div&gt;')">= eq</button>
+        <button type="button" onclick="ins('&lt;p class=&quot;essay-sig&quot;&gt;','&lt;span&gt;— A.C.&lt;/span&gt;&lt;/p&gt;')">sig</button>
+      </div>
+      <textarea id="bodyTextarea" name="body" rows="24"><%= essay.body %></textarea>
+      <div class="preview-area" id="previewArea"></div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn-save">Save Essay</button>
+      <a href="/writings/<%= essay.slug || '' %>" target="_blank" class="btn-secondary">Preview Live →</a>
+      <a href="/admin/writings" class="btn-secondary">← Back to List</a>
+      <span class="shortcut-hint">Ctrl+S / ⌘+S to save</span>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Toolbar insert around selection
+  function ins(open, close) {
+    var ta = document.getElementById('bodyTextarea');
+    var s = ta.selectionStart, e = ta.selectionEnd;
+    var val = ta.value;
+    ta.value = val.slice(0,s) + open + val.slice(s,e) + close + val.slice(e);
+    ta.selectionStart = s + open.length;
+    ta.selectionEnd = e + open.length;
+    ta.focus();
+  }
+
+  // Preview toggle
+  var btnCode = document.getElementById('btnCode');
+  var btnPreview = document.getElementById('btnPreview');
+  var ta = document.getElementById('bodyTextarea');
+  var previewArea = document.getElementById('previewArea');
+
+  btnPreview.addEventListener('click', function() {
+    previewArea.innerHTML = ta.value;
+    previewArea.classList.add('visible');
+    ta.style.display = 'none';
+    btnPreview.classList.add('active');
+    btnCode.classList.remove('active');
+  });
+  btnCode.addEventListener('click', function() {
+    previewArea.classList.remove('visible');
+    ta.style.display = '';
+    btnCode.classList.add('active');
+    btnPreview.classList.remove('active');
+  });
+
+  // Ctrl+S / Cmd+S to save
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      document.querySelector('form').submit();
+    }
+  });
+</script>
+</body>
+</html>

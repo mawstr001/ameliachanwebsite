@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title><%= essay.title %> — Amelia Chan</title>
+<link rel="stylesheet" href="/styles.css" />
+<% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
+</head>
+<body data-screen-label="Essay"<% if (isAdmin) { %> data-admin-mode<% } %>>
+
+<%- include('partials/nav', { site, page }) %>
+
+<main>
+<article class="essay">
+  <div class="wrap">
+    <div class="essay-inner">
+
+      <header class="essay-head reveal">
+        <a class="essay-back" href="/writings">← All Writings</a>
+        <div class="essay-cat">
+          <span>№ <%= essay.number %></span>
+          <span class="dot"></span>
+          <span><%= essay.category %></span>
+        </div>
+        <h1 class="essay-title"><%- essay.title %></h1>
+        <div class="essay-meta">
+          <span>Amelia Chan</span>
+          <span><span class="tick">●</span> <%= essay.readTime || '5 min read' %></span>
+          <span>First Principles Violin</span>
+        </div>
+      </header>
+
+      <div class="essay-body reveal">
+        <%- essay.body %>
+      </div>
+
+    </div>
+  </div>
+
+  <nav class="essay-nav">
+    <% if (prev) { %>
+      <a class="prev" href="/writings/<%= prev.slug %>">
+        <span class="lab">← Previous</span>
+        <span class="ti"><%- prev.title %></span>
+      </a>
+    <% } else { %>
+      <a class="prev disabled" href="#"><span class="lab">← Previous</span><span class="ti">—</span></a>
+    <% } %>
+    <% if (next) { %>
+      <a class="next" href="/writings/<%= next.slug %>">
+        <span class="lab">Next →</span>
+        <span class="ti"><%- next.title %></span>
+      </a>
+    <% } else { %>
+      <a class="next disabled" href="#"><span class="lab">Next →</span><span class="ti">—</span></a>
+    <% } %>
+  </nav>
+</article>
+</main>
+
+<%- include('partials/footer', { site, footerBig: "Let's make<br />something <a href=\"mailto:" + site.email + "\">resonate.</a>", footerBigKey: '' }) %>
+
+<script src="/image-slot.js"></script>
+<script src="/site.js"></script>
+<% if (isAdmin) { %><script src="/admin-bar.js"></script><% } %>
+</body>
+</html>

@@ -26,7 +26,7 @@
 
     <div class="writings-list reveal">
       <% writings.forEach(function(w) { %>
-      <a class="wr" href="<%= w.link %>">
+      <a class="wr" href="<%= w.slug ? '/writings/' + w.slug : w.link %>">
         <span class="wn">№ <%= w.number %></span>
         <span class="wt"><%- w.title %></span>
         <span class="wm"><%= w.category %> <span class="arrow">→</span></span>
