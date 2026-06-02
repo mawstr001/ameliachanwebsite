@@ -1,0 +1,244 @@
+/* ============================================================
+   ADMIN BAR — Fixed bottom bar for admin users
+   ============================================================ */
+
+body[data-admin-mode] {
+  padding-bottom: 54px;
+}
+
+/* ── Admin Bar ── */
+#admin-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  height: 54px;
+  background: #112230;
+  border-top: 1px solid rgba(47, 111, 143, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 24px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.admin-bar-brand {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #2f6f8f;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.admin-bar-brand::before {
+  content: "⬤";
+  font-size: 8px;
+  color: #2f6f8f;
+}
+
+.admin-bar-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#admin-edit-toggle {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: rgba(47, 111, 143, 0.15);
+  color: #7b8794;
+  border: 1px solid rgba(47, 111, 143, 0.3);
+  border-radius: 3px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#admin-edit-toggle:hover {
+  background: rgba(47, 111, 143, 0.3);
+  color: #eef1f5;
+}
+
+#admin-edit-toggle.editing {
+  background: rgba(47, 143, 80, 0.2);
+  color: #80e0a0;
+  border-color: rgba(47, 143, 80, 0.5);
+}
+
+#admin-edit-toggle.editing::before {
+  content: "⬤";
+  font-size: 7px;
+  color: #80e0a0;
+}
+
+.admin-bar-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.admin-bar-links a {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7b8794;
+  text-decoration: none;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.admin-bar-links a:hover {
+  color: #83b4cb;
+}
+
+.admin-bar-links a.logout {
+  color: #5a4040;
+}
+.admin-bar-links a.logout:hover {
+  color: #e08080;
+}
+
+.admin-bar-sep {
+  width: 1px;
+  height: 20px;
+  background: rgba(47, 111, 143, 0.3);
+  flex-shrink: 0;
+}
+
+/* ── Edit mode: editable element hints ── */
+body.admin-mode-on [data-edit] {
+  position: relative;
+  outline: 1px dashed rgba(47, 111, 143, 0.4);
+  outline-offset: 2px;
+  cursor: pointer;
+  transition: outline-color 0.2s;
+}
+
+body.admin-mode-on [data-edit]:hover {
+  outline-color: #2f6f8f;
+  background: rgba(47, 111, 143, 0.05);
+}
+
+body.admin-mode-on [data-edit]:hover::after {
+  content: "✎";
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  background: #2f6f8f;
+  color: #eef1f5;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 18px;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Prevent link navigation while editing */
+body.admin-mode-on a[href] .admin-edit-no-nav {
+  pointer-events: none;
+}
+
+/* ── Edit Popover ── */
+.admin-edit-popover {
+  position: fixed;
+  z-index: 1000;
+  background: #112230;
+  border: 1px solid #2f6f8f;
+  border-radius: 4px;
+  padding: 16px;
+  min-width: 300px;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+.admin-edit-popover-label {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #5a93ad;
+  margin-bottom: 10px;
+}
+
+.admin-edit-popover textarea,
+.admin-edit-popover input {
+  display: block;
+  width: 100%;
+  background: #0d1820;
+  border: 1px solid rgba(47, 111, 143, 0.4);
+  border-radius: 3px;
+  color: #eef1f5;
+  font-family: "Hanken Grotesk", system-ui, sans-serif;
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  resize: vertical;
+  min-height: 60px;
+  transition: border-color 0.2s;
+}
+
+.admin-edit-popover textarea:focus,
+.admin-edit-popover input:focus {
+  border-color: #2f6f8f;
+}
+
+.admin-edit-popover-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+
+.admin-edit-popover-actions button {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 7px 14px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+}
+
+.admin-popover-save {
+  background: #2f6f8f;
+  color: #eef1f5;
+}
+.admin-popover-save:hover {
+  background: #3d8aae;
+}
+
+.admin-popover-cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: #7b8794;
+}
+.admin-popover-cancel:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #eef1f5;
+}
+
+.admin-popover-saving {
+  opacity: 0.6;
+  pointer-events: none;
+}

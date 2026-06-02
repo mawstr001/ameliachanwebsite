@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>First Principles Violin — Amelia Chan</title>
+<link rel="stylesheet" href="/styles.css" />
+<% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
+</head>
+<body data-screen-label="First Principles"<% if (isAdmin) { %> data-admin-mode<% } %>>
+
+<%- include('partials/nav', { site, page }) %>
+
+<main>
+
+<!-- ============================ THE SYSTEM ============================ -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-title-wrap">
+        <div class="num" data-edit="firstPrinciples.sectionNum"><%= fp.sectionNum %></div>
+        <h2 class="h-section" style="margin-top:18px;white-space:pre-line" data-edit="firstPrinciples.heading"><%= fp.heading %></h2>
+      </div>
+      <div class="eyebrow" data-edit="firstPrinciples.subheading"><%= fp.subheading %></div>
+    </div>
+
+    <div class="sys-intro reveal">
+      <p class="sys-lead" data-edit="firstPrinciples.sysLead"><%- fp.sysLead %></p>
+      <div>
+        <p class="sys-note" data-edit="firstPrinciples.sysNote"><%= fp.sysNote %></p>
+        <p class="quote-chopin" data-edit="firstPrinciples.chopinQuote"><%= fp.chopinQuote %><span data-edit="firstPrinciples.chopinSource"><%= fp.chopinSource %></span></p>
+      </div>
+    </div>
+
+    <!-- THE EQUATION -->
+    <div class="equation reveal">
+      <div class="eq-caption">
+        <span class="num">The Equation</span>
+        <span class="eq-caption-t" data-edit="firstPrinciples.eqCaption"><%= fp.eqCaption %></span>
+      </div>
+      <div class="eq-grid">
+
+        <div class="eq-term">
+          <svg class="eq-glyph" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" stroke="#2f6f8f"/><path d="M20 6 L20 34 M6 20 L34 20" stroke="#2f6f8f" stroke-width="1"/></svg>
+          <div class="eq-k" data-edit="firstPrinciples.eq1Key"><%= fp.eq1Key %></div>
+          <div class="eq-h" style="white-space:pre-line" data-edit="firstPrinciples.eq1Heading"><%= fp.eq1Heading %></div>
+          <p class="eq-p" data-edit="firstPrinciples.eq1Text"><%= fp.eq1Text %></p>
+        </div>
+
+        <div class="eq-op">+</div>
+
+        <div class="eq-term">
+          <svg class="eq-glyph" viewBox="0 0 40 40" fill="none"><path d="M6 28 L20 8 L34 28 Z" stroke="#2f6f8f"/><path d="M13 28 L20 18 L27 28" stroke="#2f6f8f"/></svg>
+          <div class="eq-k" data-edit="firstPrinciples.eq2Key"><%= fp.eq2Key %></div>
+          <div class="eq-h" style="white-space:pre-line" data-edit="firstPrinciples.eq2Heading"><%= fp.eq2Heading %></div>
+          <p class="eq-p" data-edit="firstPrinciples.eq2Text"><%= fp.eq2Text %></p>
+        </div>
+
+        <div class="eq-op is-sum">=</div>
+
+        <div class="eq-term sum">
+          <svg class="eq-glyph" viewBox="0 0 40 40" fill="none"><circle cx="14" cy="20" r="9" stroke="#5a93ad"/><circle cx="26" cy="20" r="9" stroke="#5a93ad"/></svg>
+          <div class="eq-k" data-edit="firstPrinciples.eqRKey"><%= fp.eqRKey %></div>
+          <div class="eq-h" style="white-space:pre-line" data-edit="firstPrinciples.eqRHeading"><%= fp.eqRHeading %></div>
+          <p class="eq-p" data-edit="firstPrinciples.eqRText"><%= fp.eqRText %></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ WRITINGS TEASER ============================ -->
+<section class="band tight">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-title-wrap">
+        <div class="num">From the Writings</div>
+        <h2 class="h-section" style="margin-top:18px;white-space:pre-line" data-edit="firstPrinciples.writingsTeaserHeading"><%= fp.writingsTeaserHeading %></h2>
+      </div>
+      <a class="eyebrow" href="/writings" style="text-decoration:none;color:var(--gold)">All writings →</a>
+    </div>
+
+    <div class="writings-list reveal">
+      <% writings.slice(0, 3).forEach(function(w) { %>
+      <a class="wr" href="<%= w.link %>">
+        <span class="wn">№ <%= w.number %></span>
+        <span class="wt"><%- w.title %></span>
+        <span class="wm"><%= w.category %> <span class="arrow">→</span></span>
+      </a>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<%- include('partials/footer', { site, footerBig: fp.footerBig, footerBigKey: 'firstPrinciples.footerBig' }) %>
+
+<script src="/image-slot.js"></script>
+<script src="/site.js"></script>
+<% if (isAdmin) { %><script src="/admin-bar.js"></script><% } %>
+</body>
+</html>

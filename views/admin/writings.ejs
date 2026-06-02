@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Manage Writings — Amelia Chan Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Hanken+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,sans-serif; min-height:100vh; display:flex; }
+.sidebar{ width:220px; min-height:100vh; background:#112230; border-right:1px solid rgba(47,111,143,.2); display:flex; flex-direction:column; padding:28px 0; position:sticky; top:0; height:100vh; }
+.sidebar-brand{ font-family:"Cormorant Garamond",Georgia,serif; font-size:20px; font-weight:600; color:#eef1f5; padding:0 22px 22px; border-bottom:1px solid rgba(47,111,143,.2); margin-bottom:16px; }
+.sidebar-label{ font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.28em; text-transform:uppercase; color:#3c4b59; padding:0 22px; margin-bottom:8px; margin-top:14px; }
+.sidebar a{ display:block; padding:9px 22px; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#7b8794; text-decoration:none; transition:color .2s, background .2s; }
+.sidebar a:hover, .sidebar a.active{ color:#83b4cb; background:rgba(47,111,143,.1); }
+.sidebar-foot{ margin-top:auto; padding:22px 22px 0; border-top:1px solid rgba(47,111,143,.2); }
+.sidebar-foot a{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#3c4b59; text-decoration:none; display:block; padding:6px 0; }
+.sidebar-foot a:hover{ color:#e08080; }
+.main{ flex:1; padding:48px 52px; max-width:1000px; }
+.page-title{ font-family:"Cormorant Garamond",Georgia,serif; font-size:36px; font-weight:500; margin-bottom:6px; }
+.page-sub{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#5a93ad; margin-bottom:40px; }
+.toast{ background:rgba(47,143,80,.2); border:1px solid rgba(47,143,80,.4); border-radius:3px; color:#80e0a0; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.1em; padding:10px 16px; margin-bottom:24px; }
+.section-title{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:#5a93ad; margin-bottom:18px; }
+.add-form{ background:#112230; border:1px solid rgba(47,111,143,.25); border-radius:4px; padding:24px 26px; margin-bottom:40px; }
+.field-row{ display:grid; grid-template-columns:1fr 200px 180px auto; gap:12px; align-items:end; }
+label{ font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:#7b8794; display:block; margin-bottom:6px; }
+input[type=text], input[type=url]{
+  display:block; width:100%; background:#0d1820;
+  border:1px solid rgba(47,111,143,.3); border-radius:3px;
+  color:#eef1f5; font-family:"Hanken Grotesk",sans-serif; font-size:14px;
+  padding:10px 12px; outline:none; transition:border-color .2s;
+}
+input:focus{ border-color:#2f6f8f; }
+.btn{
+  background:#2f6f8f; color:#eef1f5; border:none; border-radius:3px;
+  font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.18em;
+  text-transform:uppercase; padding:11px 18px; cursor:pointer; transition:background .2s;
+  white-space:nowrap;
+}
+.btn:hover{ background:#3d8aae; }
+.btn-danger{ background:rgba(176,40,40,.25); color:#e08080; border:1px solid rgba(176,40,40,.3); }
+.btn-danger:hover{ background:rgba(176,40,40,.5); }
+.btn-sm{ padding:8px 14px; font-size:9px; }
+.writings-table{ width:100%; border-collapse:collapse; }
+.writings-table th{ font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:#3c4b59; padding:0 12px 12px; text-align:left; border-bottom:1px solid rgba(47,111,143,.2); }
+.writings-table td{ padding:12px; border-bottom:1px solid rgba(47,111,143,.1); vertical-align:middle; }
+.writing-row:hover td{ background:rgba(47,111,143,.04); }
+.writing-row td:first-child{ font-family:"JetBrains Mono",monospace; font-size:11px; color:#5a93ad; width:50px; }
+.num-field{ width:60px; }
+.inline-form{ display:contents; }
+.row-actions{ display:flex; gap:8px; align-items:center; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand"><b>Amelia</b> Chan</div>
+  <div class="sidebar-label">Content</div>
+  <a href="/admin">Dashboard</a>
+  <a href="/admin/writings" class="active">Writings</a>
+  <a href="/admin/recordings">Recordings</a>
+  <a href="/admin/press">Press Quotes</a>
+  <a href="/admin/images">Images</a>
+  <div class="sidebar-label">Site</div>
+  <a href="/" target="_blank">View Site →</a>
+  <div class="sidebar-foot">
+    <a href="/admin/logout">Logout</a>
+  </div>
+</aside>
+
+<main class="main">
+  <h1 class="page-title">Writings</h1>
+  <p class="page-sub">// Manage Essays &amp; Articles</p>
+
+  <% if (saved) { %>
+  <div class="toast">Changes saved successfully.</div>
+  <% } %>
+
+  <div class="add-form">
+    <p class="section-title">// Add New Writing</p>
+    <form method="POST" action="/admin/writings">
+      <div class="field-row">
+        <div>
+          <label for="new-title">Title</label>
+          <input type="text" id="new-title" name="title" placeholder="Essay title…" required />
+        </div>
+        <div>
+          <label for="new-cat">Category</label>
+          <input type="text" id="new-cat" name="category" placeholder="Biomechanics…" />
+        </div>
+        <div>
+          <label for="new-link">Link</label>
+          <input type="text" id="new-link" name="link" placeholder="#" value="#" />
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button type="submit" class="btn">Add Writing</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <p class="section-title">// All Writings (<%= writings.length %>)</p>
+  <table class="writings-table">
+    <thead>
+      <tr>
+        <th>№</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Link</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% writings.forEach(function(w) { %>
+      <tr class="writing-row">
+        <form method="POST" action="/admin/writings/<%= w.id %>/update" style="display:contents">
+          <td><input class="num-field" type="text" name="number" value="<%= w.number %>" style="width:54px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 8px;outline:none;" /></td>
+          <td style="min-width:260px"><input type="text" name="title" value="<%- w.title %>" style="width:100%;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:14px;padding:8px 10px;outline:none;" /></td>
+          <td><input type="text" name="category" value="<%= w.category %>" style="width:140px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:13px;padding:8px 10px;outline:none;" /></td>
+          <td><input type="text" name="link" value="<%= w.link %>" style="width:160px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:13px;padding:8px 10px;outline:none;" /></td>
+          <td>
+            <div class="row-actions">
+              <button type="submit" class="btn btn-sm">Save</button>
+            </div>
+          </td>
+        </form>
+        <td style="padding-left:0">
+          <form method="POST" action="/admin/writings/<%= w.id %>/delete" onsubmit="return confirm('Delete this writing?')">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</main>
+
+</body>
+</html>

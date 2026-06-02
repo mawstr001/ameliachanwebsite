@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Image Manager — Amelia Chan Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Hanken+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,sans-serif; min-height:100vh; display:flex; }
+.sidebar{ width:220px; min-height:100vh; background:#112230; border-right:1px solid rgba(47,111,143,.2); display:flex; flex-direction:column; padding:28px 0; position:sticky; top:0; height:100vh; }
+.sidebar-brand{ font-family:"Cormorant Garamond",Georgia,serif; font-size:20px; font-weight:600; color:#eef1f5; padding:0 22px 22px; border-bottom:1px solid rgba(47,111,143,.2); margin-bottom:16px; }
+.sidebar-label{ font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.28em; text-transform:uppercase; color:#3c4b59; padding:0 22px; margin-bottom:8px; margin-top:14px; }
+.sidebar a{ display:block; padding:9px 22px; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#7b8794; text-decoration:none; transition:color .2s, background .2s; }
+.sidebar a:hover, .sidebar a.active{ color:#83b4cb; background:rgba(47,111,143,.1); }
+.sidebar-foot{ margin-top:auto; padding:22px 22px 0; border-top:1px solid rgba(47,111,143,.2); }
+.sidebar-foot a{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#3c4b59; text-decoration:none; display:block; padding:6px 0; }
+.sidebar-foot a:hover{ color:#e08080; }
+.main{ flex:1; padding:48px 52px; }
+.page-title{ font-family:"Cormorant Garamond",Georgia,serif; font-size:36px; font-weight:500; margin-bottom:6px; }
+.page-sub{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#5a93ad; margin-bottom:40px; }
+.toast{ background:rgba(47,143,80,.2); border:1px solid rgba(47,143,80,.4); border-radius:3px; color:#80e0a0; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.1em; padding:10px 16px; margin-bottom:24px; }
+.section-title{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:#5a93ad; margin-bottom:20px; }
+.img-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:24px; margin-bottom:48px; }
+.img-slot{
+  background:#112230; border:1px solid rgba(47,111,143,.2);
+  border-radius:4px; overflow:hidden;
+}
+.img-preview-box{
+  width:100%; aspect-ratio:4/3; background:#0d1820;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; position:relative;
+}
+.img-preview-box img{ width:100%; height:100%; object-fit:cover; display:block; }
+.img-placeholder{
+  font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; color:#3c4b59; text-align:center; padding:20px;
+}
+.img-info{ padding:16px 18px; }
+.img-label{ font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:#5a93ad; margin-bottom:6px; }
+.img-name{ font-size:14px; color:#eef1f5; margin-bottom:14px; }
+.upload-form{ display:flex; align-items:center; gap:10px; }
+.upload-input{ display:none; }
+.upload-btn{
+  font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.18em;
+  text-transform:uppercase; background:#2f6f8f; color:#eef1f5; border:none;
+  border-radius:3px; padding:8px 14px; cursor:pointer; transition:background .2s;
+}
+.upload-btn:hover{ background:#3d8aae; }
+.upload-label{
+  font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.18em;
+  text-transform:uppercase; background:#2f6f8f; color:#eef1f5; border:none;
+  border-radius:3px; padding:8px 14px; cursor:pointer; transition:background .2s;
+  display:inline-block;
+}
+.upload-label:hover{ background:#3d8aae; }
+.upload-status{ font-size:11px; color:#80e0a0; display:none; }
+.upload-status.error{ color:#e08080; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand"><b>Amelia</b> Chan</div>
+  <div class="sidebar-label">Content</div>
+  <a href="/admin">Dashboard</a>
+  <a href="/admin/writings">Writings</a>
+  <a href="/admin/recordings">Recordings</a>
+  <a href="/admin/press">Press Quotes</a>
+  <a href="/admin/images" class="active">Images</a>
+  <div class="sidebar-label">Site</div>
+  <a href="/" target="_blank">View Site →</a>
+  <div class="sidebar-foot">
+    <a href="/admin/logout">Logout</a>
+  </div>
+</aside>
+
+<main class="main">
+  <h1 class="page-title">Images</h1>
+  <p class="page-sub">// Upload &amp; Manage Site Images</p>
+
+  <% if (saved) { %>
+  <div class="toast">Image uploaded successfully.</div>
+  <% } %>
+
+  <p class="section-title">// Hero &amp; Portrait Images</p>
+  <div class="img-grid">
+
+    <!-- Home Left Hero -->
+    <div class="img-slot">
+      <div class="img-preview-box">
+        <% if (content.home && content.home.left && content.home.left.heroImage) { %>
+        <img src="<%= content.home.left.heroImage %>" alt="Home hero left" id="preview-home-left" />
+        <% } else { %>
+        <div class="img-placeholder" id="preview-home-left">No image set</div>
+        <% } %>
+      </div>
+      <div class="img-info">
+        <div class="img-label">// Home · Left Panel</div>
+        <div class="img-name">Hero Portrait</div>
+        <label class="upload-label" for="file-home-left">Choose Image</label>
+        <input class="upload-input" type="file" id="file-home-left" accept="image/*" data-key="home.left.heroImage" data-preview="preview-home-left" />
+        <span class="upload-status" id="status-home-left"></span>
+      </div>
+    </div>
+
+    <!-- Home Right System -->
+    <div class="img-slot">
+      <div class="img-preview-box">
+        <% if (content.home && content.home.right && content.home.right.systemImage) { %>
+        <img src="<%= content.home.right.systemImage %>" alt="Home system right" id="preview-home-right" />
+        <% } else { %>
+        <div class="img-placeholder" id="preview-home-right">No image set</div>
+        <% } %>
+      </div>
+      <div class="img-info">
+        <div class="img-label">// Home · Right Panel</div>
+        <div class="img-name">System Image</div>
+        <label class="upload-label" for="file-home-right">Choose Image</label>
+        <input class="upload-input" type="file" id="file-home-right" accept="image/*" data-key="home.right.systemImage" data-preview="preview-home-right" />
+        <span class="upload-status" id="status-home-right"></span>
+      </div>
+    </div>
+
+    <!-- Bio Portrait -->
+    <div class="img-slot">
+      <div class="img-preview-box" style="aspect-ratio:4/5">
+        <% if (content.bio && content.bio.portraitImage) { %>
+        <img src="<%= content.bio.portraitImage %>" alt="Bio portrait" id="preview-bio-portrait" />
+        <% } else { %>
+        <div class="img-placeholder" id="preview-bio-portrait">No image set</div>
+        <% } %>
+      </div>
+      <div class="img-info">
+        <div class="img-label">// Bio Page</div>
+        <div class="img-name">Portrait</div>
+        <label class="upload-label" for="file-bio-portrait">Choose Image</label>
+        <input class="upload-input" type="file" id="file-bio-portrait" accept="image/*" data-key="bio.portraitImage" data-preview="preview-bio-portrait" />
+        <span class="upload-status" id="status-bio-portrait"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="section-title">// Recording Cover Images</p>
+  <div class="img-grid">
+    <% (content.recordings || []).forEach(function(rec, i) { %>
+    <div class="img-slot">
+      <div class="img-preview-box">
+        <% if (rec.image) { %>
+        <img src="<%= rec.image %>" alt="<%= rec.title %>" id="preview-rec-<%= i %>" />
+        <% } else { %>
+        <div class="img-placeholder" id="preview-rec-<%= i %>">No image set</div>
+        <% } %>
+      </div>
+      <div class="img-info">
+        <div class="img-label">// Recording <%= i + 1 %></div>
+        <div class="img-name"><%= rec.title %></div>
+        <label class="upload-label" for="file-rec-<%= i %>">Choose Image</label>
+        <input class="upload-input" type="file" id="file-rec-<%= i %>" accept="image/*" data-key="recordings[<%= i %>].image" data-preview="preview-rec-<%= i %>" />
+        <span class="upload-status" id="status-rec-<%= i %>"></span>
+      </div>
+    </div>
+    <% }); %>
+  </div>
+
+</main>
+
+<script>
+document.querySelectorAll('.upload-input').forEach(function(input) {
+  input.addEventListener('change', function() {
+    var file = this.files[0];
+    if (!file) return;
+    var key = this.dataset.key;
+    var previewId = this.dataset.preview;
+    var statusEl = document.getElementById('status-' + this.id.replace('file-', ''));
+
+    var fd = new FormData();
+    fd.append('image', file);
+    fd.append('key', key);
+
+    if (statusEl) { statusEl.textContent = 'Uploading…'; statusEl.style.display = 'inline'; statusEl.className = 'upload-status'; }
+
+    fetch('/admin/api/upload', { method: 'POST', body: fd })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.ok) {
+          var prev = document.getElementById(previewId);
+          if (prev) {
+            var img = prev.tagName === 'IMG' ? prev : null;
+            if (!img) {
+              img = document.createElement('img');
+              img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover';
+              prev.parentNode.replaceChild(img, prev);
+              img.id = previewId;
+            }
+            img.src = data.url;
+          }
+          if (statusEl) { statusEl.textContent = 'Uploaded!'; statusEl.className = 'upload-status'; }
+          setTimeout(function() { if (statusEl) statusEl.style.display = 'none'; }, 2000);
+        } else {
+          if (statusEl) { statusEl.textContent = 'Error: ' + (data.error || 'Upload failed'); statusEl.className = 'upload-status error'; }
+        }
+      })
+      .catch(function(e) {
+        if (statusEl) { statusEl.textContent = 'Upload failed'; statusEl.className = 'upload-status error'; }
+      });
+  });
+});
+</script>
+</body>
+</html>

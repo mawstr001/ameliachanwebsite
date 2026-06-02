@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bio — Amelia Chan</title>
+<link rel="stylesheet" href="/styles.css" />
+<% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
+</head>
+<body data-screen-label="Bio"<% if (isAdmin) { %> data-admin-mode<% } %>>
+
+<%- include('partials/nav', { site, page }) %>
+
+<main>
+
+<!-- ============================ BIO HEADER + INTRO ============================ -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-title-wrap">
+        <div class="num" data-edit="bio.sectionNum"><%= bio.sectionNum %></div>
+        <h2 class="h-section" style="margin-top:18px;white-space:pre-line" data-edit="bio.heading"><%= bio.heading %></h2>
+      </div>
+      <div class="eyebrow" data-edit="bio.subheading"><%= bio.subheading %></div>
+    </div>
+
+    <div class="bio-lead-grid reveal">
+      <div class="bio-body">
+        <p class="drop" data-edit="bio.introPara1"><%= bio.introPara1 %></p>
+        <p data-edit="bio.introPara2"><%= bio.introPara2 %></p>
+      </div>
+
+      <div class="bio-portrait">
+        <div class="plate">
+          <span class="bracket tl"></span><span class="bracket tr"></span>
+          <span class="bracket bl"></span><span class="bracket br"></span>
+          <div class="plate-inner">
+            <div class="filtered">
+              <image-slot id="bio-portrait" style="width:100%;height:100%"
+                placeholder="Drop portrait — violinist" src="<%= bio.portraitImage %>" data-edit-image="bio.portraitImage"></image-slot>
+            </div>
+            <div class="fig-cap" data-edit="bio.figCaption"><%= bio.figCaption %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PRESS ============================ -->
+<section class="band press">
+  <div class="wrap">
+    <div class="press-head">
+      <div class="kicker">In the Press</div>
+      <div class="eyebrow" style="color:#a39c8a">What the critics hear</div>
+    </div>
+
+    <%
+      var featuredPress = press.find(function(p){ return p.featured; });
+      var secondaryPress = press.filter(function(p){ return !p.featured; }).slice(0, 2);
+      function highlightQuote(q) {
+        if (!q.highlight) return q.quote;
+        return q.quote.replace(q.highlight, '<mark>' + q.highlight + '</mark>');
+      }
+    %>
+
+    <% if (featuredPress) { %>
+    <figure class="press-feature reveal">
+      <span class="qmark" aria-hidden="true">&ldquo;</span>
+      <blockquote><%- highlightQuote(featuredPress) %></blockquote>
+      <figcaption><%= featuredPress.source %></figcaption>
+    </figure>
+    <% } %>
+
+    <% if (secondaryPress.length > 0) { %>
+    <div class="press-row">
+      <% secondaryPress.forEach(function(q) { %>
+      <figure class="press-quote reveal">
+        <blockquote><%- highlightQuote(q) %></blockquote>
+        <figcaption><%= q.source %></figcaption>
+      </figure>
+      <% }); %>
+    </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- ============================ THE TEACHER ============================ -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-title-wrap">
+        <div class="num" data-edit="bio.teacherNum"><%= bio.teacherNum %></div>
+        <h2 class="h-section" style="margin-top:18px;white-space:pre-line" data-edit="bio.teacherHeading"><%= bio.teacherHeading %></h2>
+      </div>
+      <div class="eyebrow" data-edit="bio.teacherSubheading"><%= bio.teacherSubheading %></div>
+    </div>
+
+    <div class="bio-teach-grid reveal">
+      <div class="bio-body">
+        <p data-edit="bio.teacherPara1"><%= bio.teacherPara1 %></p>
+        <p data-edit="bio.teacherPara2"><%= bio.teacherPara2 %></p>
+        <p data-edit="bio.teacherPara3"><%= bio.teacherPara3 %></p>
+      </div>
+      <aside class="bio-pull">
+        <p class="pull-q" data-edit="bio.pullQuote"><%= bio.pullQuote %></p>
+        <p class="pull-src" data-edit="bio.pullQuoteSource"><%= bio.pullQuoteSource %></p>
+        <a class="pull-link" href="/first-principles">Explore the First Principles method <span class="ar">→</span></a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<%- include('partials/footer', { site, footerBig: bio.footerBig, footerBigKey: 'bio.footerBig' }) %>
+
+<script src="/image-slot.js"></script>
+<script src="/site.js"></script>
+<% if (isAdmin) { %><script src="/admin-bar.js"></script><% } %>
+</body>
+</html>

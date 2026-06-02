@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Writings — Amelia Chan</title>
+<link rel="stylesheet" href="/styles.css" />
+<% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
+</head>
+<body data-screen-label="Writings"<% if (isAdmin) { %> data-admin-mode<% } %>>
+
+<%- include('partials/nav', { site, page }) %>
+
+<main>
+
+<!-- ============================ WRITINGS ============================ -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-title-wrap">
+        <div class="num">Writings</div>
+        <h2 class="h-section" style="margin-top:18px">Notes on the<br />first principles.</h2>
+      </div>
+      <div class="eyebrow">Essays on technique, structure &amp; practice</div>
+    </div>
+
+    <div class="writings-list reveal">
+      <% writings.forEach(function(w) { %>
+      <a class="wr" href="<%= w.link %>">
+        <span class="wn">№ <%= w.number %></span>
+        <span class="wt"><%- w.title %></span>
+        <span class="wm"><%= w.category %> <span class="arrow">→</span></span>
+      </a>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<%- include('partials/footer', { site, footerBig: "Let's make<br />something <a href=\"mailto:" + site.email + "\">resonate.</a>", footerBigKey: '' }) %>
+
+<script src="/image-slot.js"></script>
+<script src="/site.js"></script>
+<% if (isAdmin) { %><script src="/admin-bar.js"></script><% } %>
+</body>
+</html>

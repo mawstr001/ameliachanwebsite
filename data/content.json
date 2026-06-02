@@ -1,0 +1,155 @@
+{
+  "site": {
+    "name": "Amelia Chan",
+    "email": "Ameliachan320@gmail.com",
+    "instagram": "https://www.instagram.com/ameliachanviolin/",
+    "facebook": "http://www.facebook.com/542956176"
+  },
+  "home": {
+    "left": {
+      "kicker": "// The Artist & Educator",
+      "name": "Amelia Chan",
+      "role": "Concertmaster | Creator, First Principles Violin",
+      "blurb": "Concertmaster of the City Chamber Orchestra of Hong Kong, formerly Concertmaster of the West Virginia Symphony Orchestra. Amelia has performed globally under legendary batons and chamber partners, weaving absolute technical control with vibrant, soulful expression.",
+      "quoteText": "Concertmaster Amelia Chan in particular played with passion, acting as the vibrant soul of the ensemble.",
+      "quoteSource": "South China Morning Post",
+      "cta": "Read Full Biography",
+      "figCaption": "Fig. 01 // Biomechanics of Expression",
+      "heroImage": "",
+      "bp1Key": "Left Elbow",
+      "bp1Sub": "Support · 110°–130°",
+      "bp2Key": "Bow Speed",
+      "bp2Sub": "ƒ = ma"
+    },
+    "right": {
+      "kicker": "// The Discipline",
+      "name": "The System",
+      "role": "Biomechanics & Structural Musicianship",
+      "blurb": "An integrated approach that deconstructs violin technique and music-making down to their absolute roots. By stripping away inherited assumptions, we align the natural physics of the body with the structural logic of the score.",
+      "principleLabel": "// Core Principle",
+      "principleText": "First-principles thinking deconstructs a system to its absolute root — stripping away inherited assumptions to find the fundamental truths of how things actually function.",
+      "cta": "Explore the Method",
+      "figCaption": "Fig. 02 // Harmonic Gravitational Tension",
+      "systemImage": "",
+      "bp1Key": "Resonance Body",
+      "bp1Sub": "String length × tension",
+      "bp2Key": "Hand Frame",
+      "bp2Sub": "Anatomical geometry"
+    }
+  },
+  "bio": {
+    "sectionNum": "The Artist & The Teacher",
+    "heading": "A leader's instinct,\na teacher's clarity.",
+    "subheading": "Hong Kong · New York",
+    "introPara1": "Amelia Chan is a violinist whose playing has been described as the vibrant soul of the ensemble — an artist who leads from the concertmaster's chair and teaches from first principles. As a chamber musician she served as first violinist of the Montclaire String Quartet and has collaborated with guitarist Sharon Isbin, accordionist Richard Galliano, violinist Lara St. John, the Ying Quartet, members of the Vienna Philharmonic, and the Jupiter Symphony Chamber Players.",
+    "introPara2": "She has appeared as soloist with orchestras across the Americas and Asia, and shared the stage as co-soloist with flutist Sir James Galway. Her playing has been heard on air across WQXR New York, WQED Pittsburgh, West Virginia Public Broadcasting, BBC Radio Scotland, and RTHK Radio 4 Hong Kong.",
+    "figCaption": "Amelia Chan // Violinist",
+    "portraitImage": "",
+    "teacherNum": "On Teaching",
+    "teacherHeading": "Technique through\nthe whole body.",
+    "teacherSubheading": "Biomechanics · Discernment · Simplicity",
+    "teacherPara1": "As an educator, Amelia approaches technique through the lens of whole-body biomechanics — on the principle that playing an instrument must be relational to the body and how it moves, rather than a static, one-size-fits-all method.",
+    "teacherPara2": "She believes in a focused, deep education that goes beyond rote training, where the student learns discernment and critical thinking while sifting through the layers of intellect needed to decipher the musical art — to reach the natural, joyful simplicity of music-making.",
+    "teacherPara3": "Amelia holds undergraduate, graduate, and post-graduate degrees from the Mannes College of Music and Manhattan School of Music, and began her violin studies in the junior school at the Hong Kong Academy for Performing Arts. Her major teachers included Albert Markov, Shirley Givens, Glenn Dicterow, Sheryl Staples, and double-bassist Julius Levine.",
+    "pullQuote": "\"Simplicity is the final achievement.\"",
+    "pullQuoteSource": "— Frédéric Chopin",
+    "footerBig": "Let's make something resonate."
+  },
+  "press": [
+    {
+      "id": "press-1",
+      "quote": "Concertmaster Amelia Chan in particular played with passion, acting as the vibrant soul of the ensemble.",
+      "source": "South China Morning Post",
+      "featured": true,
+      "highlight": "the vibrant soul of the ensemble"
+    },
+    {
+      "id": "press-2",
+      "quote": "...gutsy solo violin throughout, by concertmaster Amelia Chan...",
+      "source": "The Prickle",
+      "featured": false,
+      "highlight": "gutsy solo violin"
+    },
+    {
+      "id": "press-3",
+      "quote": "A focus on the natural, joyful simplicity of music-making — technique made structurally sound, natural, and efficient.",
+      "source": "First Principles Violin · Studio Notes",
+      "featured": false,
+      "highlight": "natural, joyful simplicity"
+    }
+  ],
+  "firstPrinciples": {
+    "sectionNum": "The Method",
+    "heading": "The First Principles\nViolin System",
+    "subheading": "Biomechanics · Structure · Embodiment",
+    "sysLead": "An integrated approach to performance that unites <em>biomechanics</em>, musical <em>structure</em>, and expressive <em>intention</em> — a clear, natural pathway toward technical freedom and artistic clarity.",
+    "sysNote": "First-principles thinking is the practice of deconstructing a system to its absolute root — stripping away inherited assumptions to find the fundamental truths of how things actually function. By deconstructing the art form into its most basic elements, we gain clarity across the entire experience: from the way the body meets the instrument, to the way the nervous system acquires a skill, to the decoding of a score.",
+    "chopinQuote": "\"Simplicity is the final achievement.\"",
+    "chopinSource": "Frédéric Chopin",
+    "eqCaption": "Two disciplines, resolved into one state of playing.",
+    "eq1Key": "i. The Body",
+    "eq1Heading": "The Biomechanics\nof Technique",
+    "eq1Text": "The mechanical demands of the instrument clarified through movement — where motion originates, how anatomy meets the geometry of the violin. A technique that is structurally sound, natural, and efficient.",
+    "eq2Key": "ii. The Score",
+    "eq2Heading": "The Dimensions\nof Musicianship",
+    "eq2Text": "Music as a three-dimensional narrative, not a flat reiteration of the page — rhythm governed by mass and velocity, intonation defined by the gravitational tensions of harmony.",
+    "eqRKey": "The Result",
+    "eqRHeading": "Unified\nEmbodiment",
+    "eqRText": "Functional biomechanics and abstract artistry merge into a single state of natural expression — the scaffolding for a lifelong pursuit of control, freedom, and unfettered musicality.",
+    "writingsTeaserHeading": "The principles,\nin essays.",
+    "footerBig": "Study from first principles."
+  },
+  "writings": [
+    {
+      "id": "writing-1",
+      "number": "01",
+      "title": "Where Movement Begins: Rethinking the Bow Arm",
+      "category": "Biomechanics",
+      "link": "#"
+    },
+    {
+      "id": "writing-2",
+      "number": "02",
+      "title": "Gravitational Tension & the Architecture of Intonation",
+      "category": "Musicianship",
+      "link": "#"
+    },
+    {
+      "id": "writing-3",
+      "number": "03",
+      "title": "The Score as Map: Building a Three-Dimensional Narrative",
+      "category": "Structure",
+      "link": "#"
+    },
+    {
+      "id": "writing-4",
+      "number": "04",
+      "title": "Simplicity as the Final Achievement",
+      "category": "Philosophy",
+      "link": "#"
+    }
+  ],
+  "recordings": [
+    {
+      "id": "rec-1",
+      "title": "Bruch · Concerto No. 1",
+      "ensemble": "City Chamber Orchestra · Live",
+      "link": "#",
+      "image": ""
+    },
+    {
+      "id": "rec-2",
+      "title": "Ysaÿe · Solo Sonatas",
+      "ensemble": "Studio · First Principles Series",
+      "link": "#",
+      "image": ""
+    },
+    {
+      "id": "rec-3",
+      "title": "Montclaire Quartet · Ravel",
+      "ensemble": "Chamber · Archive",
+      "link": "#",
+      "image": ""
+    }
+  ]
+}

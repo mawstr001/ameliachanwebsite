@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Dashboard — Amelia Chan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Hanken+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,sans-serif; min-height:100vh; display:flex; }
+.sidebar{
+  width:220px; min-height:100vh; background:#112230;
+  border-right:1px solid rgba(47,111,143,.2);
+  display:flex; flex-direction:column;
+  padding:28px 0; position:sticky; top:0; height:100vh;
+}
+.sidebar-brand{
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:20px; font-weight:600; color:#eef1f5;
+  padding:0 22px 22px; border-bottom:1px solid rgba(47,111,143,.2);
+  margin-bottom:16px;
+}
+.sidebar-brand b{ font-weight:600; }
+.sidebar-label{
+  font-family:"JetBrains Mono",monospace;
+  font-size:9px; letter-spacing:.28em; text-transform:uppercase;
+  color:#3c4b59; padding:0 22px; margin-bottom:8px; margin-top:14px;
+}
+.sidebar a{
+  display:block; padding:9px 22px;
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:#7b8794; text-decoration:none; transition:color .2s, background .2s;
+}
+.sidebar a:hover, .sidebar a.active{ color:#83b4cb; background:rgba(47,111,143,.1); }
+.sidebar-foot{
+  margin-top:auto; padding:22px 22px 0;
+  border-top:1px solid rgba(47,111,143,.2);
+}
+.sidebar-foot a{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+  color:#3c4b59; text-decoration:none; display:block; padding:6px 0;
+}
+.sidebar-foot a:hover{ color:#e08080; }
+.main{ flex:1; padding:48px 52px; }
+.page-title{
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:36px; font-weight:500; margin-bottom:6px;
+}
+.page-sub{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  color:#5a93ad; margin-bottom:48px;
+}
+.tip{
+  background:#112230; border:1px solid rgba(47,111,143,.3);
+  border-radius:3px; padding:16px 20px; margin-bottom:40px;
+  font-size:13.5px; color:#7b8794; line-height:1.6;
+}
+.tip strong{ color:#83b4cb; }
+.cards{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; }
+.card{
+  background:#112230; border:1px solid rgba(47,111,143,.2);
+  border-radius:4px; padding:28px 26px; text-decoration:none; color:inherit;
+  transition:border-color .2s, background .2s; display:block;
+}
+.card:hover{ border-color:#2f6f8f; background:#16222e; }
+.card-label{
+  font-family:"JetBrains Mono",monospace;
+  font-size:9px; letter-spacing:.28em; text-transform:uppercase;
+  color:#2f6f8f; margin-bottom:12px;
+}
+.card-title{
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:22px; font-weight:500; margin-bottom:8px;
+}
+.card-desc{ font-size:13px; color:#7b8794; line-height:1.5; }
+.view-link{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:"JetBrains Mono",monospace;
+  font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+  color:#5a93ad; text-decoration:none; margin-top:12px;
+}
+.view-link:hover{ color:#83b4cb; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand"><b>Amelia</b> Chan</div>
+  <div class="sidebar-label">Content</div>
+  <a href="/admin" class="active">Dashboard</a>
+  <a href="/admin/writings">Writings</a>
+  <a href="/admin/recordings">Recordings</a>
+  <a href="/admin/press">Press Quotes</a>
+  <a href="/admin/images">Images</a>
+  <div class="sidebar-label">Site</div>
+  <a href="/" target="_blank">View Site →</a>
+  <div class="sidebar-foot">
+    <a href="/admin/logout">Logout</a>
+  </div>
+</aside>
+
+<main class="main">
+  <h1 class="page-title">Dashboard</h1>
+  <p class="page-sub">// Content Management System</p>
+
+  <div class="tip">
+    <strong>Inline editing:</strong> To edit text on any page, visit the page as an admin — all editable content will have an edit overlay. Click any highlighted text to edit it in place.
+  </div>
+
+  <div class="cards">
+    <a class="card" href="/" target="_blank">
+      <div class="card-label">// Page</div>
+      <div class="card-title">Home</div>
+      <div class="card-desc">Edit hero text, taglines, blurbs, and panel content for both sides.</div>
+      <span class="view-link">Visit page →</span>
+    </a>
+    <a class="card" href="/bio" target="_blank">
+      <div class="card-label">// Page</div>
+      <div class="card-title">Bio</div>
+      <div class="card-desc">Edit biography paragraphs, teacher section text, and pull quote.</div>
+      <span class="view-link">Visit page →</span>
+    </a>
+    <a class="card" href="/first-principles" target="_blank">
+      <div class="card-label">// Page</div>
+      <div class="card-title">First Principles</div>
+      <div class="card-desc">Edit method text, equation terms, and writings teaser heading.</div>
+      <span class="view-link">Visit page →</span>
+    </a>
+    <a class="card" href="/admin/writings">
+      <div class="card-label">// Manage</div>
+      <div class="card-title">Writings</div>
+      <div class="card-desc">Add, edit, or remove essay entries from the writings list.</div>
+      <span class="view-link">Manage →</span>
+    </a>
+    <a class="card" href="/admin/recordings">
+      <div class="card-label">// Manage</div>
+      <div class="card-title">Recordings</div>
+      <div class="card-desc">Add, edit, or remove recording entries with cover art links.</div>
+      <span class="view-link">Manage →</span>
+    </a>
+    <a class="card" href="/admin/press">
+      <div class="card-label">// Manage</div>
+      <div class="card-title">Press Quotes</div>
+      <div class="card-desc">Manage press quotes displayed on the Bio page. Set featured quote and highlight text.</div>
+      <span class="view-link">Manage →</span>
+    </a>
+    <a class="card" href="/admin/images">
+      <div class="card-label">// Upload</div>
+      <div class="card-title">Images</div>
+      <div class="card-desc">Upload and manage images for hero panels, portrait, and recording covers.</div>
+      <span class="view-link">Manage →</span>
+    </a>
+  </div>
+</main>
+
+</body>
+</html>

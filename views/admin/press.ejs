@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Manage Press — Amelia Chan Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Hanken+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,sans-serif; min-height:100vh; display:flex; }
+.sidebar{ width:220px; min-height:100vh; background:#112230; border-right:1px solid rgba(47,111,143,.2); display:flex; flex-direction:column; padding:28px 0; position:sticky; top:0; height:100vh; }
+.sidebar-brand{ font-family:"Cormorant Garamond",Georgia,serif; font-size:20px; font-weight:600; color:#eef1f5; padding:0 22px 22px; border-bottom:1px solid rgba(47,111,143,.2); margin-bottom:16px; }
+.sidebar-label{ font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.28em; text-transform:uppercase; color:#3c4b59; padding:0 22px; margin-bottom:8px; margin-top:14px; }
+.sidebar a{ display:block; padding:9px 22px; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#7b8794; text-decoration:none; transition:color .2s, background .2s; }
+.sidebar a:hover, .sidebar a.active{ color:#83b4cb; background:rgba(47,111,143,.1); }
+.sidebar-foot{ margin-top:auto; padding:22px 22px 0; border-top:1px solid rgba(47,111,143,.2); }
+.sidebar-foot a{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#3c4b59; text-decoration:none; display:block; padding:6px 0; }
+.sidebar-foot a:hover{ color:#e08080; }
+.main{ flex:1; padding:48px 52px; max-width:860px; }
+.page-title{ font-family:"Cormorant Garamond",Georgia,serif; font-size:36px; font-weight:500; margin-bottom:6px; }
+.page-sub{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#5a93ad; margin-bottom:40px; }
+.toast{ background:rgba(47,143,80,.2); border:1px solid rgba(47,143,80,.4); border-radius:3px; color:#80e0a0; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.1em; padding:10px 16px; margin-bottom:24px; }
+.section-title{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.24em; text-transform:uppercase; color:#5a93ad; margin-bottom:18px; }
+.add-form{ background:#112230; border:1px solid rgba(47,111,143,.25); border-radius:4px; padding:24px 26px; margin-bottom:40px; }
+.field-group{ margin-bottom:16px; }
+label{ font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:#7b8794; display:block; margin-bottom:6px; }
+input[type=text], textarea{
+  display:block; width:100%; background:#0d1820;
+  border:1px solid rgba(47,111,143,.3); border-radius:3px;
+  color:#eef1f5; font-family:"Hanken Grotesk",sans-serif; font-size:14px;
+  padding:10px 12px; outline:none; transition:border-color .2s;
+}
+textarea{ resize:vertical; min-height:72px; }
+input:focus, textarea:focus{ border-color:#2f6f8f; }
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.check-row{ display:flex; align-items:center; gap:10px; margin-top:4px; }
+.check-row input{ width:auto; accent-color:#2f6f8f; }
+.check-row label{ margin:0; font-size:12px; letter-spacing:.06em; text-transform:none; font-family:"Hanken Grotesk",sans-serif; color:#83b4cb; }
+.btn{ background:#2f6f8f; color:#eef1f5; border:none; border-radius:3px; font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; padding:11px 18px; cursor:pointer; transition:background .2s; }
+.btn:hover{ background:#3d8aae; }
+.btn-danger{ background:rgba(176,40,40,.25); color:#e08080; border:1px solid rgba(176,40,40,.3); }
+.btn-danger:hover{ background:rgba(176,40,40,.5); }
+.btn-sm{ padding:8px 14px; font-size:9px; }
+.press-card{
+  background:#112230; border:1px solid rgba(47,111,143,.2);
+  border-radius:4px; padding:24px 26px; margin-bottom:20px;
+}
+.press-card.is-featured{ border-color:#2f6f8f; }
+.featured-badge{
+  font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.22em;
+  text-transform:uppercase; color:#2f6f8f; margin-bottom:14px; display:block;
+}
+.card-actions{ display:flex; gap:10px; margin-top:16px; align-items:center; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand"><b>Amelia</b> Chan</div>
+  <div class="sidebar-label">Content</div>
+  <a href="/admin">Dashboard</a>
+  <a href="/admin/writings">Writings</a>
+  <a href="/admin/recordings">Recordings</a>
+  <a href="/admin/press" class="active">Press Quotes</a>
+  <a href="/admin/images">Images</a>
+  <div class="sidebar-label">Site</div>
+  <a href="/" target="_blank">View Site →</a>
+  <div class="sidebar-foot">
+    <a href="/admin/logout">Logout</a>
+  </div>
+</aside>
+
+<main class="main">
+  <h1 class="page-title">Press Quotes</h1>
+  <p class="page-sub">// Manage Press Coverage</p>
+
+  <% if (saved) { %>
+  <div class="toast">Changes saved successfully.</div>
+  <% } %>
+
+  <div class="add-form">
+    <p class="section-title">// Add New Press Quote</p>
+    <form method="POST" action="/admin/press">
+      <div class="field-group">
+        <label for="new-quote">Quote</label>
+        <textarea id="new-quote" name="quote" placeholder="Press quote text…" required></textarea>
+      </div>
+      <div class="two-col">
+        <div class="field-group">
+          <label for="new-source">Source</label>
+          <input type="text" id="new-source" name="source" placeholder="Publication name…" />
+        </div>
+        <div class="field-group">
+          <label for="new-highlight">Highlight phrase (optional)</label>
+          <input type="text" id="new-highlight" name="highlight" placeholder="text to highlight…" />
+        </div>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="new-featured" name="featured" value="on" />
+        <label for="new-featured">Set as featured quote (large display on Bio page)</label>
+      </div>
+      <div style="margin-top:20px">
+        <button type="submit" class="btn">Add Quote</button>
+      </div>
+    </form>
+  </div>
+
+  <p class="section-title">// All Press Quotes (<%= press.length %>)</p>
+
+  <% press.forEach(function(q) { %>
+  <div class="press-card<%= q.featured ? ' is-featured' : '' %>">
+    <% if (q.featured) { %><span class="featured-badge">⬤ Featured Quote</span><% } %>
+    <form method="POST" action="/admin/press/<%= q.id %>/update">
+      <div class="field-group">
+        <label>Quote</label>
+        <textarea name="quote"><%= q.quote %></textarea>
+      </div>
+      <div class="two-col">
+        <div class="field-group">
+          <label>Source</label>
+          <input type="text" name="source" value="<%= q.source %>" />
+        </div>
+        <div class="field-group">
+          <label>Highlight phrase</label>
+          <input type="text" name="highlight" value="<%= q.highlight || '' %>" />
+        </div>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="feat-<%= q.id %>" name="featured" value="on" <%= q.featured ? 'checked' : '' %> />
+        <label for="feat-<%= q.id %>">Featured quote</label>
+      </div>
+      <div class="card-actions">
+        <button type="submit" class="btn btn-sm">Save Changes</button>
+      </div>
+    </form>
+    <form method="POST" action="/admin/press/<%= q.id %>/delete" onsubmit="return confirm('Delete this quote?')" style="display:inline">
+      <button type="submit" class="btn btn-sm btn-danger" style="margin-top:10px">Delete</button>
+    </form>
+  </div>
+  <% }); %>
+</main>
+
+</body>
+</html>

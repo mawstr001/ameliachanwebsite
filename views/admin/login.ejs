@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Login — Amelia Chan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Hanken+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{
+  background:#112230;
+  font-family:"Hanken Grotesk",system-ui,sans-serif;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background-image: radial-gradient(rgba(47,111,143,.08) 1px, transparent 1.4px);
+  background-size:26px 26px;
+}
+.login-card{
+  background:#16222e;
+  border:1px solid rgba(47,111,143,.3);
+  border-radius:4px;
+  padding:48px 44px;
+  width:100%;
+  max-width:400px;
+}
+.brand{
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:26px;
+  font-weight:600;
+  color:#eef1f5;
+  margin-bottom:8px;
+  display:block;
+}
+.brand b{ font-weight:600; }
+.subtitle{
+  font-family:"JetBrains Mono",monospace;
+  font-size:10px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:#5a93ad;
+  margin-bottom:36px;
+  display:block;
+}
+label{
+  display:block;
+  font-family:"JetBrains Mono",monospace;
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#7b8794;
+  margin-bottom:10px;
+}
+input[type=password]{
+  display:block;
+  width:100%;
+  background:#0d1820;
+  border:1px solid rgba(47,111,143,.4);
+  border-radius:3px;
+  color:#eef1f5;
+  font-family:"Hanken Grotesk",system-ui,sans-serif;
+  font-size:16px;
+  padding:13px 16px;
+  outline:none;
+  transition:border-color .2s;
+}
+input[type=password]:focus{
+  border-color:#2f6f8f;
+}
+.btn{
+  display:block;
+  width:100%;
+  margin-top:20px;
+  background:#2f6f8f;
+  color:#eef1f5;
+  border:none;
+  border-radius:3px;
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  padding:14px;
+  cursor:pointer;
+  transition:background .2s;
+}
+.btn:hover{ background:#3d8aae; }
+.error{
+  background:rgba(176,40,40,.18);
+  border:1px solid rgba(176,40,40,.4);
+  border-radius:3px;
+  color:#e08080;
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px;
+  letter-spacing:.1em;
+  padding:10px 14px;
+  margin-bottom:20px;
+}
+</style>
+</head>
+<body>
+<div class="login-card">
+  <span class="brand"><b>Amelia</b> Chan</span>
+  <span class="subtitle">// Admin Access</span>
+  <% if (error) { %>
+  <div class="error"><%= error %></div>
+  <% } %>
+  <form method="POST" action="/admin/login">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" autocomplete="current-password" autofocus />
+    <button type="submit" class="btn">Enter Admin</button>
+  </form>
+</div>
+</body>
+</html>
