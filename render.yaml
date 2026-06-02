@@ -9,3 +9,5 @@ services:
         generateValue: false
       - key: NODE_ENV
         value: production
+      - key: CLOUDINARY_URL
+        sync: false

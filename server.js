@@ -12,16 +12,27 @@ const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
 const BACKUPS_DIR = path.join(__dirname, 'data', 'backups');
 if (!fs.existsSync(BACKUPS_DIR)) fs.mkdirSync(BACKUPS_DIR, { recursive: true });
 
-// ── Multer setup ──────────────────────────────────────────────────────────────
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOADS_DIR),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const name = Date.now() + '-' + Math.round(Math.random() * 1e6) + ext;
-    cb(null, name);
-  }
-});
-const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+// ── Multer / Cloudinary setup ─────────────────────────────────────────────────
+let upload;
+if (process.env.CLOUDINARY_URL) {
+  const cloudinary = require('cloudinary').v2;
+  const { CloudinaryStorage } = require('multer-storage-cloudinary');
+  const cloudStorage = new CloudinaryStorage({
+    cloudinary,
+    params: { folder: 'amelia-chan', allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'] }
+  });
+  upload = multer({ storage: cloudStorage, limits: { fileSize: 10 * 1024 * 1024 } });
+} else {
+  if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  const diskStorage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      cb(null, Date.now() + '-' + Math.round(Math.random() * 1e6) + ext);
+    }
+  });
+  upload = multer({ storage: diskStorage, limits: { fileSize: 10 * 1024 * 1024 } });
+}
 
 // ── Content helpers ───────────────────────────────────────────────────────────
 function readContent() {
@@ -342,7 +353,7 @@ app.post('/admin/api/update', requireAdmin, (req, res) => {
 // ── Admin API: upload image ───────────────────────────────────────────────────
 app.post('/admin/api/upload', requireAdmin, upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  const url = '/uploads/' + req.file.filename;
+  const url = req.file.path || ('/uploads/' + req.file.filename);
   if (req.body.key) {
     try {
       const c = readContent();
