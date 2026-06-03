@@ -4,12 +4,14 @@ services:
     runtime: node
     buildCommand: npm install
     startCommand: npm start
+    disk:
+      name: amelia-data
+      mountPath: /opt/data
+      sizeGB: 1
     envVars:
       - key: ADMIN_PASSWORD
         generateValue: false
       - key: NODE_ENV
         value: production
-      - key: CLOUDINARY_URL
-        sync: false
-      - key: MONGODB_URI
-        sync: false
+      - key: DATA_DIR
+        value: /opt/data

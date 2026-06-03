@@ -7,35 +7,32 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
-const CONTENT_FILE = path.join(__dirname, 'data', 'content.json');
-const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
-const BACKUPS_DIR = path.join(__dirname, 'data', 'backups');
-if (!fs.existsSync(BACKUPS_DIR)) fs.mkdirSync(BACKUPS_DIR, { recursive: true });
 
-// ── Multer — always memory storage; Cloudinary handled in route ───────────────
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+// When DATA_DIR is set (Render persistent disk), all mutable files live there.
+// Locally, fall back to the in-repo data/ folder and public/uploads/.
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
+const CONTENT_FILE = path.join(DATA_DIR, 'content.json');
+const BACKUPS_DIR = path.join(DATA_DIR, 'backups');
+const UPLOADS_DIR = process.env.DATA_DIR
+  ? path.join(DATA_DIR, 'uploads')
+  : path.join(__dirname, 'public', 'uploads');
 
-// ── MongoDB persistence (optional — falls back to file when not set) ──────────
-let _mongoCol = null;
-async function initMongo() {
-  if (!process.env.MONGODB_URI) return;
-  try {
-    const { MongoClient } = require('mongodb');
-    const client = new MongoClient(process.env.MONGODB_URI);
-    await client.connect();
-    _mongoCol = client.db('amelia').collection('content');
-    // On startup pull latest content from MongoDB → overwrite local file
-    const doc = await _mongoCol.findOne({ _id: 'main' });
-    if (doc) {
-      const { _id, ...content } = doc;
-      fs.writeFileSync(CONTENT_FILE, JSON.stringify(content, null, 2), 'utf8');
-      console.log('Content synced from MongoDB');
-    }
-    console.log('MongoDB connected');
-  } catch (e) {
-    console.error('MongoDB init failed:', e.message);
-  }
+[BACKUPS_DIR, UPLOADS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
+
+// Seed content.json onto a fresh disk from the bundled default
+if (!fs.existsSync(CONTENT_FILE)) {
+  fs.copyFileSync(path.join(__dirname, 'data', 'content.json'), CONTENT_FILE);
 }
+
+// ── Multer ────────────────────────────────────────────────────────────────────
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + '-' + Math.round(Math.random() * 1e6) + ext);
+  }
+});
+const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 // ── Content helpers ───────────────────────────────────────────────────────────
 function readContent() {
@@ -43,7 +40,6 @@ function readContent() {
   catch (e) { return {}; }
 }
 function writeContent(data) {
-  // Save rolling backup before every write (keep last 30)
   try {
     const ts = new Date().toISOString().replace(/[:.]/g, '-');
     fs.writeFileSync(path.join(BACKUPS_DIR, `content-${ts}.json`), fs.readFileSync(CONTENT_FILE));
@@ -51,11 +47,6 @@ function writeContent(data) {
     if (backups.length > 30) backups.slice(0, backups.length - 30).forEach(f => fs.unlinkSync(path.join(BACKUPS_DIR, f)));
   } catch (_) {}
   fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), 'utf8');
-  // Mirror to MongoDB so content survives redeployment
-  if (_mongoCol) {
-    _mongoCol.replaceOne({ _id: 'main' }, { _id: 'main', ...data }, { upsert: true })
-      .catch(e => console.error('MongoDB write failed:', e.message));
-  }
 }
 function deepSet(obj, keyPath, value) {
   const keys = keyPath.split('.');
@@ -89,6 +80,7 @@ function deepSet(obj, keyPath, value) {
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(UPLOADS_DIR));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({
@@ -359,31 +351,9 @@ app.post('/admin/api/update', requireAdmin, (req, res) => {
 });
 
 // ── Admin API: upload image ───────────────────────────────────────────────────
-app.post('/admin/api/upload', requireAdmin, upload.single('image'), async (req, res) => {
+app.post('/admin/api/upload', requireAdmin, upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  let url;
-  if (process.env.CLOUDINARY_URL) {
-    try {
-      const cloudinary = require('cloudinary').v2;
-      const result = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: 'amelia-chan', resource_type: 'image' },
-          (err, r) => err ? reject(err) : resolve(r)
-        );
-        stream.end(req.file.buffer);
-      });
-      url = result.secure_url;
-    } catch (e) {
-      console.error('Cloudinary upload error:', e.message);
-      return res.status(500).json({ error: 'Image upload failed: ' + e.message });
-    }
-  } else {
-    if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-    const ext = path.extname(req.file.originalname);
-    const filename = Date.now() + '-' + Math.round(Math.random() * 1e6) + ext;
-    fs.writeFileSync(path.join(UPLOADS_DIR, filename), req.file.buffer);
-    url = '/uploads/' + filename;
-  }
+  const url = '/uploads/' + req.file.filename;
   if (req.body.key) {
     try {
       const c = readContent();
@@ -395,9 +365,7 @@ app.post('/admin/api/upload', requireAdmin, upload.single('image'), async (req, 
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────
-initMongo().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Amelia Chan — server running at http://localhost:${PORT}`);
-    console.log(`Admin: http://localhost:${PORT}/admin`);
-  });
+app.listen(PORT, () => {
+  console.log(`Amelia Chan — server running at http://localhost:${PORT}`);
+  console.log(`Admin: http://localhost:${PORT}/admin`);
 });
