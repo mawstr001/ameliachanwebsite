@@ -89,8 +89,8 @@ input:focus{ border-color:#2f6f8f; }
           <input type="text" id="new-cat" name="category" placeholder="Biomechanics…" />
         </div>
         <div>
-          <label for="new-link">Link</label>
-          <input type="text" id="new-link" name="link" placeholder="#" value="#" />
+          <label for="new-date">Date</label>
+          <input type="date" id="new-date" name="date" />
         </div>
         <div>
           <label>&nbsp;</label>
@@ -107,7 +107,7 @@ input:focus{ border-color:#2f6f8f; }
         <th>№</th>
         <th>Title</th>
         <th>Category</th>
-        <th>Link</th>
+        <th>Date</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -118,7 +118,7 @@ input:focus{ border-color:#2f6f8f; }
           <td><input class="num-field" type="text" name="number" value="<%= w.number %>" style="width:54px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 8px;outline:none;" /></td>
           <td style="min-width:260px"><input type="text" name="title" value="<%- w.title %>" style="width:100%;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:14px;padding:8px 10px;outline:none;" /></td>
           <td><input type="text" name="category" value="<%= w.category %>" style="width:140px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:13px;padding:8px 10px;outline:none;" /></td>
-          <td><input type="text" name="link" value="<%= w.link %>" style="width:160px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:13px;padding:8px 10px;outline:none;" /></td>
+          <td><input type="date" name="date" value="<%= w.date || '' %>" style="width:150px;background:#0d1820;border:1px solid rgba(47,111,143,.2);border-radius:3px;color:#eef1f5;font-size:13px;padding:8px 10px;outline:none;" /></td>
           <td>
             <div class="row-actions">
               <button type="submit" class="btn btn-sm">Save</button>

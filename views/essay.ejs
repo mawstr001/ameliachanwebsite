@@ -26,8 +26,8 @@
         <h1 class="essay-title"><%- essay.title %></h1>
         <div class="essay-meta">
           <span>Amelia Chan</span>
+          <% if (essay.date) { %><span><%= new Date(essay.date).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}) %></span><% } %>
           <span><span class="tick">●</span> <%= essay.readTime || '5 min read' %></span>
-          <span>First Principles Violin</span>
         </div>
       </header>
 

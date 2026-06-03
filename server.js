@@ -177,14 +177,15 @@ app.get('/admin/writings', requireAdmin, (req, res) => {
 
 app.post('/admin/writings', requireAdmin, (req, res) => {
   const c = readContent();
-  const { title, category, link } = req.body;
+  const { title, category, link, date } = req.body;
   const num = String(c.writings.length + 1).padStart(2, '0');
   c.writings.push({
     id: 'writing-' + Date.now(),
     number: num,
     title: title || 'Untitled',
     category: category || '',
-    link: link || '#'
+    link: link || '#',
+    date: date || ''
   });
   writeContent(c);
   res.redirect('/admin/writings?saved=1');

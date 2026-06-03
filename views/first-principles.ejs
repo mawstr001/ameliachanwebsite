@@ -86,7 +86,9 @@
       <a class="wr" href="<%= w.slug ? '/writings/' + w.slug : w.link %>">
         <span class="wn">№ <%= w.number %></span>
         <span class="wt"><%- w.title %></span>
-        <span class="wm"><%= w.category %> <span class="arrow">→</span></span>
+        <span class="wm">
+          <% if (w.date) { %><span class="wd"><%= new Date(w.date).toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'}) %></span> · <% } %><%= w.category %> <span class="arrow">→</span>
+        </span>
       </a>
       <% }); %>
     </div>
