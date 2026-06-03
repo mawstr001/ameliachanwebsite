@@ -35,16 +35,23 @@
   }
   input:focus, textarea:focus, select:focus { outline: none; border-color: #2f6f8f; }
 
+  /* Body editor tabs */
   .body-editor { display: flex; flex-direction: column; gap: 8px; }
-  .body-toolbar { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px; background: rgba(0,0,0,.2); border: 1px solid rgba(255,255,255,.12); border-bottom: none; border-radius: 4px 4px 0 0; }
+  .tab-bar { display: flex; gap: 4px; margin-bottom: 0; }
+  .tab-btn { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-bottom: none; color: #8a9baa; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 7px 18px; border-radius: 4px 4px 0 0; cursor: pointer; transition: .15s; }
+  .tab-btn:hover { background: rgba(47,111,143,.2); color: #c0cdd6; }
+  .tab-btn.active { background: rgba(47,111,143,.3); border-color: #2f6f8f; color: #83b4cb; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* HTML tab toolbar */
+  .body-toolbar { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px; background: rgba(0,0,0,.2); border: 1px solid rgba(255,255,255,.12); border-bottom: none; border-radius: 0; }
   .body-toolbar button { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: #ccc; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 5px 10px; border-radius: 3px; cursor: pointer; transition: .15s; }
   .body-toolbar button:hover { background: rgba(47,111,143,.3); color: #fff; }
   #bodyTextarea { border-radius: 0 0 4px 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; min-height: 480px; resize: vertical; }
 
-  .preview-toggle { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
-  .preview-toggle button { background: none; border: 1px solid rgba(255,255,255,.2); color: #8a9baa; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .1em; padding: 6px 14px; border-radius: 3px; cursor: pointer; }
-  .preview-toggle button.active { background: rgba(47,111,143,.25); border-color: #2f6f8f; color: #83b4cb; }
-
+  /* Preview area */
   .preview-area { display: none; min-height: 300px; background: #eef1f5; color: #16222e; padding: 32px; border-radius: 4px; font-family: 'Hanken Grotesk', system-ui, sans-serif; font-size: 18px; line-height: 1.72; }
   .preview-area.visible { display: block; }
   .preview-area em { font-style: italic; color: #16222e; }
@@ -65,7 +72,22 @@
   .help-box p { margin: 0 0 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #7b8a9a; line-height: 1.6; }
   .help-box p:last-child { margin: 0; }
   .help-box code { background: rgba(0,0,0,.3); padding: 2px 6px; border-radius: 3px; color: #83b4cb; }
+
+  /* Quill dark theme overrides */
+  .ql-toolbar.ql-snow { background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.12); border-bottom:none; border-radius:4px 4px 0 0; }
+  .ql-toolbar.ql-snow .ql-stroke { stroke:#8a9baa; }
+  .ql-toolbar.ql-snow .ql-fill { fill:#8a9baa; }
+  .ql-toolbar.ql-snow .ql-picker { color:#8a9baa; }
+  .ql-toolbar.ql-snow button:hover .ql-stroke, .ql-toolbar.ql-snow .ql-active .ql-stroke { stroke:#83b4cb; }
+  .ql-toolbar.ql-snow button:hover .ql-fill, .ql-toolbar.ql-snow .ql-active .ql-fill { fill:#83b4cb; }
+  .ql-toolbar.ql-snow .ql-picker-options { background:#112230; border-color:#2f6f8f; }
+  .ql-container.ql-snow { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:0 0 4px 4px; color:#e8e2d6; font-family:'Hanken Grotesk',system-ui,sans-serif; font-size:16px; min-height:420px; }
+  .ql-editor { min-height:420px; line-height:1.7; }
+  .ql-editor.ql-blank::before { color:#5a6a78; font-style:normal; }
+  .ql-editor img { max-width:100%; border-radius:4px; margin:8px 0; }
+  .ql-editor .ql-video { width:100%; min-height:380px; border-radius:4px; margin:8px 0; }
 </style>
+<link href="https://cdn.quilljs.com/2.0.2/quill.snow.css" rel="stylesheet">
 </head>
 <body>
 
@@ -91,7 +113,7 @@
   <div class="flash">✓ Changes saved successfully.</div>
   <% } %>
 
-  <form method="POST" action="/admin/writings/<%= essay.id %>/update">
+  <form id="essayForm" method="POST" action="/admin/writings/<%= essay.id %>/update">
     <input type="hidden" name="_from" value="editor" />
 
     <div class="form-grid">
@@ -118,29 +140,43 @@
     </div>
 
     <div class="body-editor">
-      <label>Essay Body (HTML)</label>
-      <div class="help-box">
-        <p>Write HTML directly. Use: <code>&lt;p&gt;</code> paragraphs · <code>&lt;p class="lead drop"&gt;</code> opening paragraph · <code>&lt;h3&gt;&lt;span class="h-n"&gt;// Label&lt;/span&gt;Heading&lt;/h3&gt;</code> section headings</p>
-        <p><code>&lt;div class="essay-pull"&gt;&lt;p&gt;Pull quote text&lt;/p&gt;&lt;/div&gt;</code> · <code>&lt;div class="essay-figeq"&gt;equation&lt;/div&gt;</code> · <code>&lt;p class="essay-sig"&gt;Sign-off&lt;span&gt;— A.C.&lt;/span&gt;&lt;/p&gt;</code></p>
+      <label>Essay Body</label>
+
+      <!-- Tab bar -->
+      <div class="tab-bar">
+        <button type="button" class="tab-btn" id="tabHtml">HTML</button>
+        <button type="button" class="tab-btn active" id="tabWysiwyg">WYSIWYG</button>
+        <button type="button" class="tab-btn" id="tabPreview">Preview</button>
       </div>
 
-      <div class="preview-toggle">
-        <button type="button" class="active" id="btnCode">HTML</button>
-        <button type="button" id="btnPreview">Preview</button>
+      <!-- HTML tab -->
+      <div class="tab-panel" id="panelHtml">
+        <div class="help-box">
+          <p>Write HTML directly. Use: <code>&lt;p&gt;</code> paragraphs · <code>&lt;p class="lead drop"&gt;</code> opening paragraph · <code>&lt;h3&gt;&lt;span class="h-n"&gt;// Label&lt;/span&gt;Heading&lt;/h3&gt;</code> section headings</p>
+          <p><code>&lt;div class="essay-pull"&gt;&lt;p&gt;Pull quote text&lt;/p&gt;&lt;/div&gt;</code> · <code>&lt;div class="essay-figeq"&gt;equation&lt;/div&gt;</code> · <code>&lt;p class="essay-sig"&gt;Sign-off&lt;span&gt;— A.C.&lt;/span&gt;&lt;/p&gt;</code></p>
+        </div>
+        <div class="body-toolbar">
+          <button type="button" onclick="ins('&lt;p&gt;','&lt;/p&gt;')">¶ p</button>
+          <button type="button" onclick="ins('&lt;p class=&quot;lead drop&quot;&gt;','&lt;/p&gt;')">¶ lead</button>
+          <button type="button" onclick="ins('&lt;h3&gt;&lt;span class=&quot;h-n&quot;&gt;// &lt;/span&gt;','&lt;/h3&gt;')">H3</button>
+          <button type="button" onclick="ins('&lt;em&gt;','&lt;/em&gt;')"><em>em</em></button>
+          <button type="button" onclick="ins('&lt;strong&gt;','&lt;/strong&gt;')"><strong>b</strong></button>
+          <button type="button" onclick="ins('&lt;div class=&quot;essay-pull&quot;&gt;&lt;p&gt;','&lt;/p&gt;&lt;/div&gt;')">❝ pull</button>
+          <button type="button" onclick="ins('&lt;div class=&quot;essay-figeq&quot;&gt;','&lt;/div&gt;')">= eq</button>
+          <button type="button" onclick="ins('&lt;p class=&quot;essay-sig&quot;&gt;','&lt;span&gt;— A.C.&lt;/span&gt;&lt;/p&gt;')">sig</button>
+        </div>
+        <textarea id="bodyTextarea" name="body" rows="24"><%= essay.body %></textarea>
       </div>
 
-      <div class="body-toolbar">
-        <button type="button" onclick="ins('&lt;p&gt;','&lt;/p&gt;')">¶ p</button>
-        <button type="button" onclick="ins('&lt;p class=&quot;lead drop&quot;&gt;','&lt;/p&gt;')">¶ lead</button>
-        <button type="button" onclick="ins('&lt;h3&gt;&lt;span class=&quot;h-n&quot;&gt;// &lt;/span&gt;','&lt;/h3&gt;')">H3</button>
-        <button type="button" onclick="ins('&lt;em&gt;','&lt;/em&gt;')"><em>em</em></button>
-        <button type="button" onclick="ins('&lt;strong&gt;','&lt;/strong&gt;')"><strong>b</strong></button>
-        <button type="button" onclick="ins('&lt;div class=&quot;essay-pull&quot;&gt;&lt;p&gt;','&lt;/p&gt;&lt;/div&gt;')">❝ pull</button>
-        <button type="button" onclick="ins('&lt;div class=&quot;essay-figeq&quot;&gt;','&lt;/div&gt;')">= eq</button>
-        <button type="button" onclick="ins('&lt;p class=&quot;essay-sig&quot;&gt;','&lt;span&gt;— A.C.&lt;/span&gt;&lt;/p&gt;')">sig</button>
+      <!-- WYSIWYG tab (default active) -->
+      <div class="tab-panel active" id="panelWysiwyg">
+        <div id="quillEditor"></div>
       </div>
-      <textarea id="bodyTextarea" name="body" rows="24"><%= essay.body %></textarea>
-      <div class="preview-area" id="previewArea"></div>
+
+      <!-- Preview tab -->
+      <div class="tab-panel" id="panelPreview">
+        <div class="preview-area visible" id="previewArea"></div>
+      </div>
     </div>
 
     <div class="actions">
@@ -152,45 +188,175 @@
   </form>
 </div>
 
+<script src="https://cdn.quilljs.com/2.0.2/quill.js"></script>
 <script>
-  // Toolbar insert around selection
+  // ── Initial body content from server ──────────────────────────────────────
+  var initialBody = <%- JSON.stringify(essay.body || '') %>;
+
+  // ── Quill initialisation ──────────────────────────────────────────────────
+  var toolbarOptions = [
+    ['bold', 'italic', 'underline'],
+    [{ 'header': [2, 3, false] }],
+    ['blockquote'],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    ['link', 'image', 'video'],
+    ['clean']
+  ];
+
+  var quill = new Quill('#quillEditor', {
+    theme: 'snow',
+    modules: {
+      toolbar: {
+        container: toolbarOptions,
+        handlers: {
+          image: imageHandler,
+          video: videoHandler
+        }
+      }
+    },
+    placeholder: 'Write the essay body here…'
+  });
+
+  // Load initial content into Quill
+  quill.clipboard.dangerouslyPasteHTML(initialBody);
+
+  // ── Image handler: upload to /admin/api/upload ────────────────────────────
+  function imageHandler() {
+    var fileInput = document.createElement('input');
+    fileInput.setAttribute('type', 'file');
+    fileInput.setAttribute('accept', 'image/*');
+    fileInput.style.display = 'none';
+    document.body.appendChild(fileInput);
+
+    fileInput.addEventListener('change', function () {
+      var file = fileInput.files[0];
+      if (!file) { fileInput.remove(); return; }
+
+      var fd = new FormData();
+      fd.append('image', file);
+
+      fetch('/admin/api/upload', { method: 'POST', body: fd })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.ok && d.url) {
+            var range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', d.url, Quill.sources.USER);
+            quill.setSelection(range.index + 1, Quill.sources.SILENT);
+          }
+          fileInput.remove();
+        })
+        .catch(function () { fileInput.remove(); });
+    });
+
+    fileInput.click();
+  }
+
+  // ── Video handler: YouTube URL → embed ───────────────────────────────────
+  function videoHandler() {
+    var url = prompt('Enter YouTube video URL:');
+    if (!url) return;
+
+    // Extract video ID from various YouTube URL formats
+    var videoId = null;
+    var patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{11})/,
+      /youtube\.com\/shorts\/([A-Za-z0-9_-]{11})/
+    ];
+    for (var i = 0; i < patterns.length; i++) {
+      var m = url.match(patterns[i]);
+      if (m) { videoId = m[1]; break; }
+    }
+
+    if (!videoId) {
+      alert('Could not extract YouTube video ID from that URL.');
+      return;
+    }
+
+    var embedUrl = 'https://www.youtube.com/embed/' + videoId;
+    var range = quill.getSelection(true);
+    quill.insertEmbed(range.index, 'video', embedUrl, Quill.sources.USER);
+    quill.setSelection(range.index + 1, Quill.sources.SILENT);
+  }
+
+  // ── Tab references ────────────────────────────────────────────────────────
+  var tabHtml     = document.getElementById('tabHtml');
+  var tabWysiwyg  = document.getElementById('tabWysiwyg');
+  var tabPreview  = document.getElementById('tabPreview');
+  var panelHtml    = document.getElementById('panelHtml');
+  var panelWysiwyg = document.getElementById('panelWysiwyg');
+  var panelPreview = document.getElementById('panelPreview');
+  var bodyTextarea = document.getElementById('bodyTextarea');
+  var previewArea  = document.getElementById('previewArea');
+
+  var currentTab = 'wysiwyg'; // default
+
+  function setActiveTab(name) {
+    // Sync content between tabs on departure
+    if (currentTab === 'wysiwyg' && name !== 'wysiwyg') {
+      bodyTextarea.value = quill.root.innerHTML;
+    } else if (currentTab === 'html' && name === 'wysiwyg') {
+      quill.clipboard.dangerouslyPasteHTML(bodyTextarea.value);
+    }
+
+    // Update button states
+    [tabHtml, tabWysiwyg, tabPreview].forEach(function (b) { b.classList.remove('active'); });
+    [panelHtml, panelWysiwyg, panelPreview].forEach(function (p) { p.classList.remove('active'); });
+
+    if (name === 'html') {
+      tabHtml.classList.add('active');
+      panelHtml.classList.add('active');
+    } else if (name === 'wysiwyg') {
+      tabWysiwyg.classList.add('active');
+      panelWysiwyg.classList.add('active');
+    } else if (name === 'preview') {
+      tabPreview.classList.add('active');
+      panelPreview.classList.add('active');
+      // Render preview from current WYSIWYG or HTML source
+      if (currentTab === 'wysiwyg') {
+        previewArea.innerHTML = quill.root.innerHTML;
+      } else {
+        previewArea.innerHTML = bodyTextarea.value;
+      }
+    }
+
+    currentTab = name;
+  }
+
+  tabHtml.addEventListener('click',    function () { setActiveTab('html'); });
+  tabWysiwyg.addEventListener('click', function () { setActiveTab('wysiwyg'); });
+  tabPreview.addEventListener('click', function () { setActiveTab('preview'); });
+
+  // ── syncBody: ensure textarea is up-to-date before submit ────────────────
+  function syncBody() {
+    if (currentTab === 'wysiwyg') {
+      bodyTextarea.value = quill.root.innerHTML;
+    }
+  }
+
+  // ── Form submit: sync first ───────────────────────────────────────────────
+  document.getElementById('essayForm').addEventListener('submit', function () {
+    syncBody();
+  });
+
+  // ── Ctrl+S / Cmd+S to save ────────────────────────────────────────────────
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      syncBody();
+      document.getElementById('essayForm').submit();
+    }
+  });
+
+  // ── HTML tab: toolbar insert helper ──────────────────────────────────────
   function ins(open, close) {
     var ta = document.getElementById('bodyTextarea');
     var s = ta.selectionStart, e = ta.selectionEnd;
     var val = ta.value;
-    ta.value = val.slice(0,s) + open + val.slice(s,e) + close + val.slice(e);
+    ta.value = val.slice(0, s) + open + val.slice(s, e) + close + val.slice(e);
     ta.selectionStart = s + open.length;
     ta.selectionEnd = e + open.length;
     ta.focus();
   }
-
-  // Preview toggle
-  var btnCode = document.getElementById('btnCode');
-  var btnPreview = document.getElementById('btnPreview');
-  var ta = document.getElementById('bodyTextarea');
-  var previewArea = document.getElementById('previewArea');
-
-  btnPreview.addEventListener('click', function() {
-    previewArea.innerHTML = ta.value;
-    previewArea.classList.add('visible');
-    ta.style.display = 'none';
-    btnPreview.classList.add('active');
-    btnCode.classList.remove('active');
-  });
-  btnCode.addEventListener('click', function() {
-    previewArea.classList.remove('visible');
-    ta.style.display = '';
-    btnCode.classList.add('active');
-    btnPreview.classList.remove('active');
-  });
-
-  // Ctrl+S / Cmd+S to save
-  document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-      e.preventDefault();
-      document.querySelector('form').submit();
-    }
-  });
 </script>
 </body>
 </html>

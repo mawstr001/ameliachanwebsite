@@ -51,7 +51,8 @@
     // Close popover if click outside
     if (activePopover && !activePopover.contains(e.target)) {
       closePopover();
-      return;
+      // Fall through: if the click was on a different [data-edit] element,
+      // open its popover immediately rather than requiring a second click.
     }
     if (activePopover) return;
 
@@ -105,6 +106,7 @@
         if (ok) {
           el.innerText = val;
           closePopover();
+          showSavedToast();
         }
       });
     });
@@ -208,6 +210,33 @@
       .then(function (r) { return r.json(); })
       .then(function (d) { cb(d.ok ? d.url : null); })
       .catch(function () { cb(null); });
+  }
+
+  // ── Toast notification ────────────────────────────────────────────────────
+  function showSavedToast() {
+    var toast = document.createElement('div');
+    toast.textContent = '✓ SAVED';
+    toast.style.cssText = [
+      'position:fixed',
+      'top:64px',
+      'right:20px',
+      'background:#2f8f50',
+      'color:#fff',
+      'font-family:"JetBrains Mono",monospace',
+      'font-size:12px',
+      'letter-spacing:.16em',
+      'padding:10px 18px',
+      'border-radius:4px',
+      'z-index:99999',
+      'pointer-events:none',
+      'transition:opacity .4s ease'
+    ].join(';');
+    document.body.appendChild(toast);
+    // Fade out after 1.5 s and remove
+    setTimeout(function () {
+      toast.style.opacity = '0';
+      setTimeout(function () { toast.remove(); }, 400);
+    }, 1500);
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
