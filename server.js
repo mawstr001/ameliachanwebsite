@@ -12,26 +12,29 @@ const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads');
 const BACKUPS_DIR = path.join(__dirname, 'data', 'backups');
 if (!fs.existsSync(BACKUPS_DIR)) fs.mkdirSync(BACKUPS_DIR, { recursive: true });
 
-// ── Multer / Cloudinary setup ─────────────────────────────────────────────────
-let upload;
-if (process.env.CLOUDINARY_URL) {
-  const cloudinary = require('cloudinary').v2;
-  const { CloudinaryStorage } = require('multer-storage-cloudinary');
-  const cloudStorage = new CloudinaryStorage({
-    cloudinary,
-    params: { folder: 'amelia-chan', allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'] }
-  });
-  upload = multer({ storage: cloudStorage, limits: { fileSize: 10 * 1024 * 1024 } });
-} else {
-  if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-  const diskStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, UPLOADS_DIR),
-    filename: (req, file, cb) => {
-      const ext = path.extname(file.originalname);
-      cb(null, Date.now() + '-' + Math.round(Math.random() * 1e6) + ext);
+// ── Multer — always memory storage; Cloudinary handled in route ───────────────
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+
+// ── MongoDB persistence (optional — falls back to file when not set) ──────────
+let _mongoCol = null;
+async function initMongo() {
+  if (!process.env.MONGODB_URI) return;
+  try {
+    const { MongoClient } = require('mongodb');
+    const client = new MongoClient(process.env.MONGODB_URI);
+    await client.connect();
+    _mongoCol = client.db('amelia').collection('content');
+    // On startup pull latest content from MongoDB → overwrite local file
+    const doc = await _mongoCol.findOne({ _id: 'main' });
+    if (doc) {
+      const { _id, ...content } = doc;
+      fs.writeFileSync(CONTENT_FILE, JSON.stringify(content, null, 2), 'utf8');
+      console.log('Content synced from MongoDB');
     }
-  });
-  upload = multer({ storage: diskStorage, limits: { fileSize: 10 * 1024 * 1024 } });
+    console.log('MongoDB connected');
+  } catch (e) {
+    console.error('MongoDB init failed:', e.message);
+  }
 }
 
 // ── Content helpers ───────────────────────────────────────────────────────────
@@ -48,6 +51,11 @@ function writeContent(data) {
     if (backups.length > 30) backups.slice(0, backups.length - 30).forEach(f => fs.unlinkSync(path.join(BACKUPS_DIR, f)));
   } catch (_) {}
   fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), 'utf8');
+  // Mirror to MongoDB so content survives redeployment
+  if (_mongoCol) {
+    _mongoCol.replaceOne({ _id: 'main' }, { _id: 'main', ...data }, { upsert: true })
+      .catch(e => console.error('MongoDB write failed:', e.message));
+  }
 }
 function deepSet(obj, keyPath, value) {
   const keys = keyPath.split('.');
@@ -351,23 +359,45 @@ app.post('/admin/api/update', requireAdmin, (req, res) => {
 });
 
 // ── Admin API: upload image ───────────────────────────────────────────────────
-app.post('/admin/api/upload', requireAdmin, upload.single('image'), (req, res) => {
+app.post('/admin/api/upload', requireAdmin, upload.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  const url = req.file.path || ('/uploads/' + req.file.filename);
+  let url;
+  if (process.env.CLOUDINARY_URL) {
+    try {
+      const cloudinary = require('cloudinary').v2;
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: 'amelia-chan', resource_type: 'image' },
+          (err, r) => err ? reject(err) : resolve(r)
+        );
+        stream.end(req.file.buffer);
+      });
+      url = result.secure_url;
+    } catch (e) {
+      console.error('Cloudinary upload error:', e.message);
+      return res.status(500).json({ error: 'Image upload failed: ' + e.message });
+    }
+  } else {
+    if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    const ext = path.extname(req.file.originalname);
+    const filename = Date.now() + '-' + Math.round(Math.random() * 1e6) + ext;
+    fs.writeFileSync(path.join(UPLOADS_DIR, filename), req.file.buffer);
+    url = '/uploads/' + filename;
+  }
   if (req.body.key) {
     try {
       const c = readContent();
       deepSet(c, req.body.key, url);
       writeContent(c);
-    } catch (e) {
-      // non-fatal — file was saved, key update failed
-    }
+    } catch (e) {}
   }
   res.json({ ok: true, url });
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`Amelia Chan — server running at http://localhost:${PORT}`);
-  console.log(`Admin: http://localhost:${PORT}/admin`);
+initMongo().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Amelia Chan — server running at http://localhost:${PORT}`);
+    console.log(`Admin: http://localhost:${PORT}/admin`);
+  });
 });
