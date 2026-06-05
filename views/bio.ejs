@@ -28,20 +28,30 @@
       <div class="bio-body">
         <p class="drop" data-edit="bio.introPara1"><%= bio.introPara1 %></p>
         <p data-edit="bio.introPara2"><%= bio.introPara2 %></p>
+        <p data-edit="bio.teacherPara1"><%= bio.teacherPara1 %></p>
+        <p data-edit="bio.teacherPara2"><%= bio.teacherPara2 %></p>
+        <p data-edit="bio.teacherPara3"><%= bio.teacherPara3 %></p>
       </div>
 
-      <div class="bio-portrait">
-        <div class="plate">
-          <span class="bracket tl"></span><span class="bracket tr"></span>
-          <span class="bracket bl"></span><span class="bracket br"></span>
-          <div class="plate-inner">
-            <div class="filtered">
-              <image-slot id="bio-portrait" style="width:100%;height:100%"
-                placeholder="Drop portrait — violinist" src="<%= bio.portraitImage %>" data-edit-image="bio.portraitImage"></image-slot>
+      <div style="display:flex;flex-direction:column;gap:40px">
+        <div class="bio-portrait">
+          <div class="plate">
+            <span class="bracket tl"></span><span class="bracket tr"></span>
+            <span class="bracket bl"></span><span class="bracket br"></span>
+            <div class="plate-inner">
+              <div class="filtered">
+                <image-slot id="bio-portrait" style="width:100%;height:100%"
+                  placeholder="Drop portrait — violinist" src="<%= bio.portraitImage %>" data-edit-image="bio.portraitImage"></image-slot>
+              </div>
+              <div class="fig-cap" data-edit="bio.figCaption"><%= bio.figCaption %></div>
             </div>
-            <div class="fig-cap" data-edit="bio.figCaption"><%= bio.figCaption %></div>
           </div>
         </div>
+        <aside class="bio-pull">
+          <p class="pull-q" data-edit="bio.pullQuote"><%= bio.pullQuote %></p>
+          <p class="pull-src" data-edit="bio.pullQuoteSource"><%= bio.pullQuoteSource %></p>
+          <a class="pull-link" href="/first-principles">Explore the First Principles method <span class="ar">→</span></a>
+        </aside>
       </div>
     </div>
   </div>
@@ -85,31 +95,6 @@
   </div>
 </section>
 
-<!-- ============================ THE TEACHER ============================ -->
-<section class="band">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="sec-title-wrap">
-        <div class="num" data-edit="bio.teacherNum"><%= bio.teacherNum %></div>
-        <h2 class="h-section" style="margin-top:18px;white-space:pre-line" data-edit="bio.teacherHeading"><%= bio.teacherHeading %></h2>
-      </div>
-      <div class="eyebrow" data-edit="bio.teacherSubheading"><%= bio.teacherSubheading %></div>
-    </div>
-
-    <div class="bio-teach-grid reveal">
-      <div class="bio-body">
-        <p data-edit="bio.teacherPara1"><%= bio.teacherPara1 %></p>
-        <p data-edit="bio.teacherPara2"><%= bio.teacherPara2 %></p>
-        <p data-edit="bio.teacherPara3"><%= bio.teacherPara3 %></p>
-      </div>
-      <aside class="bio-pull">
-        <p class="pull-q" data-edit="bio.pullQuote"><%= bio.pullQuote %></p>
-        <p class="pull-src" data-edit="bio.pullQuoteSource"><%= bio.pullQuoteSource %></p>
-        <a class="pull-link" href="/first-principles">Explore the First Principles method <span class="ar">→</span></a>
-      </aside>
-    </div>
-  </div>
-</section>
 
 </main>
 
