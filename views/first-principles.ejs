@@ -13,58 +13,73 @@
 
 <main>
 
-<!-- ============================ THE SYSTEM ============================ -->
+<!-- ============================ THE METHOD ============================ -->
 <section class="band">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="sec-title-wrap">
-        <div class="num" data-edit="firstPrinciples.sectionNum"><%= fp.sectionNum %></div>
-        <h2 class="h-section" style="margin-top:18px;white-space:pre-line" data-edit="firstPrinciples.heading"><%= fp.heading %></h2>
-      </div>
-      <div class="eyebrow" data-edit="firstPrinciples.subheading"><%= fp.subheading %></div>
+    <div class="reveal" style="margin-bottom:52px">
+      <div class="kicker" data-edit="firstPrinciples.sectionNum"><%= fp.sectionNum %></div>
+      <h2 class="h-section" style="margin-top:16px" data-edit="firstPrinciples.heading"><%= fp.heading %></h2>
     </div>
 
-    <div class="sys-intro reveal">
-      <p class="sys-lead" data-edit="firstPrinciples.sysLead"><%- fp.sysLead %></p>
+    <div class="method reveal">
       <div>
-        <p class="sys-note" data-edit="firstPrinciples.sysNote"><%= fp.sysNote %></p>
-        <p class="quote-chopin" data-edit="firstPrinciples.chopinQuote"><%= fp.chopinQuote %><span data-edit="firstPrinciples.chopinSource"><%= fp.chopinSource %></span></p>
+        <ol class="method-list">
+          <li>
+            <span class="n">1</span>
+            <div>
+              <h3 data-edit="firstPrinciples.method1Label"><%= fp.method1Label || 'Biomechanics in Action' %></h3>
+              <p data-edit="firstPrinciples.method1Desc"><%= fp.method1Desc || 'Optimise every physical movement and posture for efficiency and power — reducing tension and preventing injury.' %></p>
+            </div>
+          </li>
+          <li>
+            <span class="n">2</span>
+            <div>
+              <h3 data-edit="firstPrinciples.method2Label"><%= fp.method2Label || 'Fundamental Acoustics' %></h3>
+              <p data-edit="firstPrinciples.method2Desc"><%= fp.method2Desc || 'Understand the science of sound production: how string, wood, and bow pressure create true intonation and tone.' %></p>
+            </div>
+          </li>
+          <li>
+            <span class="n">3</span>
+            <div>
+              <h3 data-edit="firstPrinciples.method3Label"><%= fp.method3Label || 'Mental Cognition' %></h3>
+              <p data-edit="firstPrinciples.method3Desc"><%= fp.method3Desc || 'Integrate score analysis, mental mapping, and precise focus to ensure consistent, flawless musical execution.' %></p>
+            </div>
+          </li>
+        </ol>
+        <a class="btn method-cta" href="/writings">Read the Methodology <span class="ar">&rarr;</span></a>
+      </div>
+
+      <div class="colorblocks framed" aria-hidden="true">
+        <div class="cb cb-ox"></div>
+        <div class="cb cb-gd"></div>
+        <div class="cb cb-nv"></div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- THE EQUATION -->
-    <div class="equation reveal">
-      <div class="eq-caption">
-        <span class="num">The Equation</span>
-        <span class="eq-caption-t" data-edit="firstPrinciples.eqCaption"><%= fp.eqCaption %></span>
+<!-- ============================ QUOTE BAND ============================ -->
+<section class="quoteband">
+  <div class="wrap">
+    <p class="quoteband-q" data-edit="firstPrinciples.fpQuote">&ldquo;<%= fp.fpQuote || 'The deepest music resides not in the notes, but in the silence between them.' %>&rdquo;</p>
+  </div>
+</section>
+
+<!-- ============================ THREE CALLOUTS ============================ -->
+<section class="band tight">
+  <div class="wrap">
+    <div class="callout-row reveal">
+      <div class="callout ox">
+        <div class="ck" data-edit="firstPrinciples.callout1Key"><%= fp.callout1Key || 'The Body' %></div>
+        <p data-edit="firstPrinciples.callout1Text"><%= fp.callout1Text || 'Technique that is structurally sound, natural, and efficient.' %></p>
       </div>
-      <div class="eq-grid">
-
-        <div class="eq-term">
-          <svg class="eq-glyph" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="14" stroke="#2f6f8f"/><path d="M20 6 L20 34 M6 20 L34 20" stroke="#2f6f8f" stroke-width="1"/></svg>
-          <div class="eq-k" data-edit="firstPrinciples.eq1Key"><%= fp.eq1Key %></div>
-          <div class="eq-h" style="white-space:pre-line" data-edit="firstPrinciples.eq1Heading"><%= fp.eq1Heading %></div>
-          <p class="eq-p" data-edit="firstPrinciples.eq1Text"><%= fp.eq1Text %></p>
-        </div>
-
-        <div class="eq-op">+</div>
-
-        <div class="eq-term">
-          <svg class="eq-glyph" viewBox="0 0 40 40" fill="none"><path d="M6 28 L20 8 L34 28 Z" stroke="#2f6f8f"/><path d="M13 28 L20 18 L27 28" stroke="#2f6f8f"/></svg>
-          <div class="eq-k" data-edit="firstPrinciples.eq2Key"><%= fp.eq2Key %></div>
-          <div class="eq-h" style="white-space:pre-line" data-edit="firstPrinciples.eq2Heading"><%= fp.eq2Heading %></div>
-          <p class="eq-p" data-edit="firstPrinciples.eq2Text"><%= fp.eq2Text %></p>
-        </div>
-
-        <div class="eq-op is-sum">=</div>
-
-        <div class="eq-term sum">
-          <svg class="eq-glyph" viewBox="0 0 40 40" fill="none"><circle cx="14" cy="20" r="9" stroke="#5a93ad"/><circle cx="26" cy="20" r="9" stroke="#5a93ad"/></svg>
-          <div class="eq-k" data-edit="firstPrinciples.eqRKey"><%= fp.eqRKey %></div>
-          <div class="eq-h" style="white-space:pre-line" data-edit="firstPrinciples.eqRHeading"><%= fp.eqRHeading %></div>
-          <p class="eq-p" data-edit="firstPrinciples.eqRText"><%= fp.eqRText %></p>
-        </div>
-
+      <div class="callout gd">
+        <div class="ck" data-edit="firstPrinciples.callout2Key"><%= fp.callout2Key || 'The Score' %></div>
+        <p data-edit="firstPrinciples.callout2Text"><%= fp.callout2Text || 'Music read as a living, three-dimensional narrative.' %></p>
+      </div>
+      <div class="callout nv">
+        <div class="ck" data-edit="firstPrinciples.callout3Key"><%= fp.callout3Key || 'The Result' %></div>
+        <p data-edit="firstPrinciples.callout3Text"><%= fp.callout3Text || 'One unforced state of natural, embodied expression.' %></p>
       </div>
     </div>
   </div>
@@ -76,9 +91,9 @@
     <div class="sec-head reveal">
       <div class="sec-title-wrap">
         <div class="num">From the Writings</div>
-        <h2 class="h-section" style="margin-top:18px;white-space:pre-line" data-edit="firstPrinciples.writingsTeaserHeading"><%= fp.writingsTeaserHeading %></h2>
+        <h2 class="h-section" style="margin-top:16px" data-edit="firstPrinciples.writingsTeaserHeading"><%= fp.writingsTeaserHeading %></h2>
       </div>
-      <a class="eyebrow" href="/writings" style="text-decoration:none;color:var(--gold)">All writings →</a>
+      <a class="eyebrow" href="/writings" style="text-decoration:none;color:var(--gold)">All writings &rarr;</a>
     </div>
 
     <div class="writings-list reveal">
@@ -87,7 +102,7 @@
         <span class="wn">№ <%= w.number %></span>
         <span class="wt"><%- w.title %></span>
         <span class="wm">
-          <% if (w.date) { %><span class="wd"><%= new Date(w.date).toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'}) %></span> · <% } %><%= w.category %> <span class="arrow">→</span>
+          <% if (w.date) { %><span class="wd"><%= new Date(w.date).toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'}) %></span> · <% } %><%= w.category %> <span class="arrow">&rarr;</span>
         </span>
       </a>
       <% }); %>

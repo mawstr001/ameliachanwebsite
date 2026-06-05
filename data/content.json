@@ -7,7 +7,7 @@
   },
   "home": {
     "left": {
-      "kicker": "// The Artist & Educator",
+      "kicker": "The Artist & Educator",
       "name": "Amelia Chan",
       "role": "Concertmaster | Creator, First Principles Violin",
       "blurb": "Concertmaster of the City Chamber Orchestra of Hong Kong, formerly Concertmaster of the West Virginia Symphony Orchestra. Amelia has performed globally under legendary batons and chamber partners, weaving absolute technical control with vibrant, soulful expression.",
@@ -22,11 +22,11 @@
       "bp2Sub": "ƒ = ma"
     },
     "right": {
-      "kicker": "// The Discipline",
+      "kicker": "The Discipline",
       "name": "The System",
       "role": "Biomechanics & Structural Musicianship",
       "blurb": "An integrated approach that deconstructs violin technique and music-making down to their absolute roots. By stripping away inherited assumptions, we align the natural physics of the body with the structural logic of the score.",
-      "principleLabel": "// Core Principle",
+      "principleLabel": "Core Principle",
       "principleText": "First-principles thinking deconstructs a system to its absolute root — stripping away inherited assumptions to find the fundamental truths of how things actually function.",
       "cta": "Explore the Method",
       "figCaption": "Fig. 02 // Harmonic Gravitational Tension",
@@ -97,6 +97,19 @@
     "eqRHeading": "Unified\nEmbodiment",
     "eqRText": "Functional biomechanics and abstract artistry merge into a single state of natural expression — the scaffolding for a lifelong pursuit of control, freedom, and unfettered musicality.",
     "writingsTeaserHeading": "The principles,\nin essays.",
+    "method1Label": "Biomechanics in Action",
+    "method1Desc": "Optimise every physical movement and posture for efficiency and power — reducing tension and preventing injury.",
+    "method2Label": "Fundamental Acoustics",
+    "method2Desc": "Understand the science of sound production: how string, wood, and bow pressure create true intonation and tone.",
+    "method3Label": "Mental Cognition",
+    "method3Desc": "Integrate score analysis, mental mapping, and precise focus to ensure consistent, flawless musical execution.",
+    "fpQuote": "The deepest music resides not in the notes, but in the silence between them.",
+    "callout1Key": "The Body",
+    "callout1Text": "Technique that is structurally sound, natural, and efficient.",
+    "callout2Key": "The Score",
+    "callout2Text": "Music read as a living, three-dimensional narrative.",
+    "callout3Key": "The Result",
+    "callout3Text": "One unforced state of natural, embodied expression.",
     "footerBig": "Study from first principles."
   },
   "writings": [

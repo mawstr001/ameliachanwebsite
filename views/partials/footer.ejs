@@ -1,16 +1,22 @@
-<footer class="footer" id="contact">
-  <div class="wrap">
-    <div class="foot-top">
-      <div class="foot-big" data-edit="<%= footerBigKey || '' %>"><%- footerBig %></div>
-      <div class="foot-links">
-        <a href="mailto:<%= site.email %>"><span>✉</span> <%= site.email %></a>
-        <a href="<%= site.instagram %>" target="_blank" rel="noopener"><span>◎</span> @ameliachanviolin</a>
-        <a href="<%= site.facebook %>" target="_blank" rel="noopener"><span>f</span> Facebook</a>
-      </div>
+<footer class="footer v2" id="contact">
+  <div class="barstrip"><i class="ox"></i><i class="gd"></i><i class="nv"></i></div>
+  <div class="foot-inner">
+    <div class="foot-mark">Amelia Chan<span>The First Principles System</span></div>
+    <h2 class="foot-cta-h">Refine Your Technique</h2>
+    <p class="foot-cta-p">Join the private email list for biomechanical insights and educational resources.</p>
+    <form class="subscribe" onsubmit="return false">
+      <input type="email" placeholder="Enter your email address" aria-label="Email address" />
+      <button type="submit">Subscribe &rarr;</button>
+    </form>
+    <div class="foot-social">
+      <a href="<%= site.instagram %>" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a>
+      <a href="<%= site.facebook %>" target="_blank" rel="noopener">Facebook</a>
+      <a href="mailto:<%= site.email %>">Email</a>
     </div>
-    <div class="foot-bottom">
-      <span>© 2026 Amelia Chan · Violinist</span>
-      <span>First Principles Violin — Biomechanics &amp; Structural Musicianship</span>
+    <div class="foot-fine">
+      <span>&copy; 2026 Amelia Chan &middot; Violinist</span>
+      <span>Privacy Policy &middot; Terms of Service</span>
     </div>
   </div>
 </footer>
