@@ -60,20 +60,7 @@ body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,
 </head>
 <body>
 
-<aside class="sidebar">
-  <div class="sidebar-brand"><b>Amelia</b> Chan</div>
-  <div class="sidebar-label">Content</div>
-  <a href="/admin">Dashboard</a>
-  <a href="/admin/writings">Writings</a>
-  <a href="/admin/recordings">Recordings</a>
-  <a href="/admin/press">Press Quotes</a>
-  <a href="/admin/images" class="active">Images</a>
-  <div class="sidebar-label">Site</div>
-  <a href="/" target="_blank">View Site →</a>
-  <div class="sidebar-foot">
-    <a href="/admin/logout">Logout</a>
-  </div>
-</aside>
+<%- include('../partials/admin-sidebar') %>
 
 <main class="main">
   <h1 class="page-title">Images</h1>

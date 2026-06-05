@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Edit First Principles — Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500&family=JetBrains+Mono:wght@400;500&display=swap');
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif; min-height:100vh; display:flex; font-size:16px; }
+.sidebar{ width:220px; min-height:100vh; background:#221e1a; border-right:1px solid rgba(154,123,51,.18); display:flex; flex-direction:column; padding:28px 0; position:sticky; top:0; height:100vh; overflow-y:auto; }
+.sidebar-brand{ font-family:"Cormorant Garamond",Georgia,serif; font-size:20px; font-weight:600; color:#e8e0d0; padding:0 22px 22px; border-bottom:1px solid rgba(154,123,51,.18); margin-bottom:16px; }
+.sidebar-label{ font-family:"JetBrains Mono",monospace; font-size:9px; letter-spacing:.28em; text-transform:uppercase; color:#5a241c; padding:0 22px; margin-bottom:8px; margin-top:14px; }
+.sidebar a{ display:block; padding:9px 22px; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#8d8473; text-decoration:none; transition:color .2s, background .2s; }
+.sidebar a:hover, .sidebar a.active{ color:#c2a258; background:rgba(154,123,51,.08); }
+.sidebar-foot{ margin-top:auto; padding:22px 22px 0; border-top:1px solid rgba(154,123,51,.18); }
+.sidebar-foot a{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#5a4a3a; text-decoration:none; display:block; padding:6px 0; }
+.sidebar-foot a:hover{ color:#c07070; }
+.main{ flex:1; padding:48px 52px; max-width:900px; }
+.page-title{ font-family:"Cormorant Garamond",Georgia,serif; font-size:36px; font-weight:500; margin-bottom:6px; color:#e8e0d0; }
+.page-sub{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#9a7b33; margin-bottom:40px; }
+.saved-banner{ background:#2a4a2a; border:1px solid #4a8a4a; color:#9ada9a; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.14em; padding:12px 18px; margin-bottom:32px; }
+.section-title{ font-family:"Cormorant Garamond",Georgia,serif; font-size:22px; font-weight:500; color:#c2a258; border-bottom:1px solid rgba(154,123,51,.3); padding-bottom:10px; margin:40px 0 24px; }
+.section-title:first-of-type{ margin-top:0; }
+.field{ margin-bottom:22px; }
+.field label{ display:block; font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:#8d8473; margin-bottom:7px; }
+.field input[type=text], .field textarea{ width:100%; background:#2a251e; border:1px solid rgba(154,123,51,.25); color:#e8e0d0; padding:11px 14px; font-family:"EB Garamond",Georgia,serif; font-size:16px; transition:border-color .2s; resize:vertical; }
+.field input[type=text]:focus, .field textarea:focus{ outline:none; border-color:#9a7b33; }
+.field textarea{ min-height:90px; line-height:1.5; }
+.field textarea.tall{ min-height:140px; }
+.field .hint{ font-family:"JetBrains Mono",monospace; font-size:9.5px; letter-spacing:.1em; color:#5a4a3a; margin-top:5px; }
+.row-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.form-actions{ margin-top:40px; display:flex; align-items:center; gap:20px; }
+.btn-save{ background:#5a241c; color:#f3e7df; border:none; cursor:pointer; font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; padding:14px 30px; transition:background .2s; }
+.btn-save:hover{ background:#7a3428; }
+.btn-preview{ font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:#9a7b33; text-decoration:none; }
+.btn-preview:hover{ color:#c2a258; }
+</style>
+</head>
+<body>
+<%- include('../partials/admin-sidebar') %>
+<main class="main">
+  <h1 class="page-title">First Principles</h1>
+  <p class="page-sub">// Method, Quote &amp; Callouts</p>
+  <% if (saved) { %><div class="saved-banner">&#10003; Changes saved successfully.</div><% } %>
+
+  <form method="POST" action="/admin/content/first-principles">
+
+    <div class="section-title">Page Header</div>
+    <div class="row-2">
+      <div class="field"><label>Section Label</label><input type="text" name="firstPrinciples.sectionNum" value="<%= fp.sectionNum %>"></div>
+      <div class="field"><label>Subheading</label><input type="text" name="firstPrinciples.subheading" value="<%= fp.subheading || '' %>"></div>
+    </div>
+    <div class="field"><label>Heading</label><input type="text" name="firstPrinciples.heading" value="<%= fp.heading %>"><div class="hint">Use \n for line breaks</div></div>
+
+    <div class="section-title">Method List</div>
+    <div class="row-2">
+      <div class="field"><label>Item 1 — Title</label><input type="text" name="firstPrinciples.method1Label" value="<%= fp.method1Label || '' %>"></div>
+      <div class="field"><label>Item 1 — Description</label><textarea name="firstPrinciples.method1Desc"><%= fp.method1Desc || '' %></textarea></div>
+    </div>
+    <div class="row-2">
+      <div class="field"><label>Item 2 — Title</label><input type="text" name="firstPrinciples.method2Label" value="<%= fp.method2Label || '' %>"></div>
+      <div class="field"><label>Item 2 — Description</label><textarea name="firstPrinciples.method2Desc"><%= fp.method2Desc || '' %></textarea></div>
+    </div>
+    <div class="row-2">
+      <div class="field"><label>Item 3 — Title</label><input type="text" name="firstPrinciples.method3Label" value="<%= fp.method3Label || '' %>"></div>
+      <div class="field"><label>Item 3 — Description</label><textarea name="firstPrinciples.method3Desc"><%= fp.method3Desc || '' %></textarea></div>
+    </div>
+
+    <div class="section-title">Quote Band</div>
+    <div class="field"><label>Quote Text (no quotation marks needed)</label><textarea name="firstPrinciples.fpQuote"><%= fp.fpQuote || '' %></textarea></div>
+
+    <div class="section-title">Three Callout Boxes</div>
+    <div class="row-2">
+      <div class="field"><label>Box 1 — Label (oxblood)</label><input type="text" name="firstPrinciples.callout1Key" value="<%= fp.callout1Key || '' %>"></div>
+      <div class="field"><label>Box 1 — Text</label><textarea name="firstPrinciples.callout1Text"><%= fp.callout1Text || '' %></textarea></div>
+    </div>
+    <div class="row-2">
+      <div class="field"><label>Box 2 — Label (gold)</label><input type="text" name="firstPrinciples.callout2Key" value="<%= fp.callout2Key || '' %>"></div>
+      <div class="field"><label>Box 2 — Text</label><textarea name="firstPrinciples.callout2Text"><%= fp.callout2Text || '' %></textarea></div>
+    </div>
+    <div class="row-2">
+      <div class="field"><label>Box 3 — Label (navy)</label><input type="text" name="firstPrinciples.callout3Key" value="<%= fp.callout3Key || '' %>"></div>
+      <div class="field"><label>Box 3 — Text</label><textarea name="firstPrinciples.callout3Text"><%= fp.callout3Text || '' %></textarea></div>
+    </div>
+
+    <div class="section-title">Writings Teaser</div>
+    <div class="field"><label>Section Heading</label><input type="text" name="firstPrinciples.writingsTeaserHeading" value="<%= fp.writingsTeaserHeading %>"><div class="hint">Use \n for line breaks</div></div>
+
+    <div class="form-actions">
+      <button class="btn-save" type="submit">Save Changes</button>
+      <a class="btn-preview" href="/first-principles" target="_blank">Preview page →</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>

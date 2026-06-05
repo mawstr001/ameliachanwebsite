@@ -369,6 +369,28 @@ app.post('/admin/api/upload', requireAdmin, upload.single('image'), (req, res) =
   res.json({ ok: true, url });
 });
 
+// ── Admin: Content Page Editors ──────────────────────────────────────────────
+const CONTENT_PAGES = ['home', 'bio', 'first-principles', 'site'];
+
+app.get('/admin/content/:page', requireAdmin, (req, res) => {
+  if (!CONTENT_PAGES.includes(req.params.page)) return res.redirect('/admin');
+  const c = readContent();
+  res.render('admin/content-' + req.params.page, {
+    home: c.home, bio: c.bio, fp: c.firstPrinciples, site: c.site,
+    saved: req.query.saved === '1'
+  });
+});
+
+app.post('/admin/content/:page', requireAdmin, (req, res) => {
+  if (!CONTENT_PAGES.includes(req.params.page)) return res.redirect('/admin');
+  const c = readContent();
+  Object.entries(req.body).forEach(([key, val]) => {
+    if (key) deepSet(c, key, String(val));
+  });
+  writeContent(c);
+  res.redirect('/admin/content/' + req.params.page + '?saved=1');
+});
+
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`Amelia Chan — server running at http://localhost:${PORT}`);

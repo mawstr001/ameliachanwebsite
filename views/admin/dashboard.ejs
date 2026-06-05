@@ -87,47 +87,36 @@ body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,
 </head>
 <body>
 
-<aside class="sidebar">
-  <div class="sidebar-brand"><b>Amelia</b> Chan</div>
-  <div class="sidebar-label">Content</div>
-  <a href="/admin" class="active">Dashboard</a>
-  <a href="/admin/writings">Writings</a>
-  <a href="/admin/recordings">Recordings</a>
-  <a href="/admin/press">Press Quotes</a>
-  <a href="/admin/images">Images</a>
-  <div class="sidebar-label">Site</div>
-  <a href="/" target="_blank">View Site →</a>
-  <div class="sidebar-foot">
-    <a href="/admin/logout">Logout</a>
-  </div>
-</aside>
+<%- include('../partials/admin-sidebar') %>
 
 <main class="main">
   <h1 class="page-title">Dashboard</h1>
   <p class="page-sub">// Content Management System</p>
 
-  <div class="tip">
-    <strong>Inline editing:</strong> To edit text on any page, visit the page as an admin — all editable content will have an edit overlay. Click any highlighted text to edit it in place.
-  </div>
-
   <div class="cards">
-    <a class="card" href="/" target="_blank">
-      <div class="card-label">// Page</div>
+    <a class="card" href="/admin/content/home">
+      <div class="card-label">// Edit Page</div>
       <div class="card-title">Home</div>
       <div class="card-desc">Edit hero text, taglines, blurbs, and panel content for both sides.</div>
-      <span class="view-link">Visit page →</span>
+      <span class="view-link">Edit →</span>
     </a>
-    <a class="card" href="/bio" target="_blank">
-      <div class="card-label">// Page</div>
+    <a class="card" href="/admin/content/bio">
+      <div class="card-label">// Edit Page</div>
       <div class="card-title">Bio</div>
       <div class="card-desc">Edit biography paragraphs, teacher section text, and pull quote.</div>
-      <span class="view-link">Visit page →</span>
+      <span class="view-link">Edit →</span>
     </a>
-    <a class="card" href="/first-principles" target="_blank">
-      <div class="card-label">// Page</div>
+    <a class="card" href="/admin/content/first-principles">
+      <div class="card-label">// Edit Page</div>
       <div class="card-title">First Principles</div>
       <div class="card-desc">Edit method text, equation terms, and writings teaser heading.</div>
-      <span class="view-link">Visit page →</span>
+      <span class="view-link">Edit →</span>
+    </a>
+    <a class="card" href="/admin/content/site">
+      <div class="card-label">// Edit Page</div>
+      <div class="card-title">Site Settings</div>
+      <div class="card-desc">Edit site name, email address, and social media links.</div>
+      <span class="view-link">Edit →</span>
     </a>
     <a class="card" href="/admin/writings">
       <div class="card-label">// Manage</div>
