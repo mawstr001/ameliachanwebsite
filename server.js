@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -16,8 +17,9 @@ const BACKUPS_DIR = path.join(DATA_DIR, 'backups');
 const UPLOADS_DIR = process.env.DATA_DIR
   ? path.join(DATA_DIR, 'uploads')
   : path.join(__dirname, 'public', 'uploads');
+const SESSIONS_DIR = path.join(DATA_DIR, 'sessions');
 
-[BACKUPS_DIR, UPLOADS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
+[BACKUPS_DIR, UPLOADS_DIR, SESSIONS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
 
 // Seed content.json onto a fresh disk from the bundled default
 if (!fs.existsSync(CONTENT_FILE)) {
@@ -79,15 +81,17 @@ function deepSet(obj, keyPath, value) {
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.set('trust proxy', 1); // needed for secure cookies behind Render/Nginx proxy
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(UPLOADS_DIR));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({
+  store: new FileStore({ path: SESSIONS_DIR, ttl: 7 * 24 * 3600, reapInterval: 3600 }),
   secret: process.env.SESSION_SECRET || 'amelia-chan-secret-2024',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 24 * 60 * 60 * 1000 }
+  cookie: { maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'lax' }
 }));
 
 // Pass isAdmin to all templates
