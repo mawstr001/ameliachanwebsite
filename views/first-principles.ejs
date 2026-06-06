@@ -16,94 +16,60 @@
 <!-- ============================ THE METHOD ============================ -->
 <section class="band">
   <div class="wrap">
-    <div class="reveal" style="margin-bottom:52px">
-      <div class="kicker" data-edit="firstPrinciples.sectionNum"><%= fp.sectionNum %></div>
-      <h2 class="h-section" style="margin-top:16px" data-edit="firstPrinciples.heading"><%= fp.heading %></h2>
-    </div>
-
     <div class="method reveal">
       <div>
-        <ol class="method-list">
+        <div class="label" data-edit="firstPrinciples.sectionNum"><%= fp.sectionNum %></div>
+        <h2 class="h-section" style="margin-top:14px" data-edit="firstPrinciples.heading"><%= fp.heading %></h2>
+        <ol class="principles" style="margin-top:44px">
           <li>
             <span class="n">1</span>
             <div>
               <h3 data-edit="firstPrinciples.method1Label"><%= fp.method1Label || 'Biomechanics in Action' %></h3>
-              <p data-edit="firstPrinciples.method1Desc"><%= fp.method1Desc || 'Optimise every physical movement and posture for efficiency and power — reducing tension and preventing injury.' %></p>
+              <p data-edit="firstPrinciples.method1Desc"><%= fp.method1Desc || 'Optimise every movement and posture for efficiency and power — reducing tension and preventing injury.' %></p>
             </div>
           </li>
           <li>
             <span class="n">2</span>
             <div>
               <h3 data-edit="firstPrinciples.method2Label"><%= fp.method2Label || 'Fundamental Acoustics' %></h3>
-              <p data-edit="firstPrinciples.method2Desc"><%= fp.method2Desc || 'Understand the science of sound production: how string, wood, and bow pressure create true intonation and tone.' %></p>
+              <p data-edit="firstPrinciples.method2Desc"><%= fp.method2Desc || 'The science of sound production: how string, wood, and bow pressure create true intonation and tone.' %></p>
             </div>
           </li>
           <li>
             <span class="n">3</span>
             <div>
               <h3 data-edit="firstPrinciples.method3Label"><%= fp.method3Label || 'Mental Cognition' %></h3>
-              <p data-edit="firstPrinciples.method3Desc"><%= fp.method3Desc || 'Integrate score analysis, mental mapping, and precise focus to ensure consistent, flawless musical execution.' %></p>
+              <p data-edit="firstPrinciples.method3Desc"><%= fp.method3Desc || 'Score analysis, mental mapping, and focus that ensure consistent, expressive performance.' %></p>
             </div>
           </li>
         </ol>
-        <a class="btn method-cta" href="/writings">Read the Methodology <span class="ar">&rarr;</span></a>
+        <a class="btn method-cta" href="/writings">Read the Methodology</a>
       </div>
-
-      <div class="colorblocks framed" aria-hidden="true">
-        <div class="cb cb-ox"></div>
-        <div class="cb cb-gd"></div>
-        <div class="cb cb-nv"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ QUOTE BAND ============================ -->
-<section class="quoteband">
-  <div class="wrap">
-    <p class="quoteband-q" data-edit="firstPrinciples.fpQuote">&ldquo;<%= fp.fpQuote || 'The deepest music resides not in the notes, but in the silence between them.' %>&rdquo;</p>
-  </div>
-</section>
-
-<!-- ============================ THREE CALLOUTS ============================ -->
-<section class="band tight">
-  <div class="wrap">
-    <div class="callout-row reveal">
-      <div class="callout ox">
-        <div class="ck" data-edit="firstPrinciples.callout1Key"><%= fp.callout1Key || 'The Body' %></div>
-        <p data-edit="firstPrinciples.callout1Text"><%= fp.callout1Text || 'Technique that is structurally sound, natural, and efficient.' %></p>
-      </div>
-      <div class="callout gd">
-        <div class="ck" data-edit="firstPrinciples.callout2Key"><%= fp.callout2Key || 'The Score' %></div>
-        <p data-edit="firstPrinciples.callout2Text"><%= fp.callout2Text || 'Music read as a living, three-dimensional narrative.' %></p>
-      </div>
-      <div class="callout nv">
-        <div class="ck" data-edit="firstPrinciples.callout3Key"><%= fp.callout3Key || 'The Result' %></div>
-        <p data-edit="firstPrinciples.callout3Text"><%= fp.callout3Text || 'One unforced state of natural, embodied expression.' %></p>
+      <div class="colorblocks" aria-hidden="true">
+        <div class="cb-ox"></div>
+        <div class="cb-gd"></div>
+        <div class="cb-nv"></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============================ WRITINGS TEASER ============================ -->
-<section class="band tight">
+<section class="band alt tight">
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="sec-title-wrap">
-        <div class="num">From the Writings</div>
-        <h2 class="h-section" style="margin-top:16px" data-edit="firstPrinciples.writingsTeaserHeading"><%= fp.writingsTeaserHeading %></h2>
+        <div class="label">From the Writings</div>
+        <h2 class="h-section" data-edit="firstPrinciples.writingsTeaserHeading"><%= fp.writingsTeaserHeading || 'The principles, in essays.' %></h2>
       </div>
-      <a class="eyebrow" href="/writings" style="text-decoration:none;color:var(--gold)">All writings &rarr;</a>
+      <a class="linkcta" href="/writings">All writings &rarr;</a>
     </div>
-
     <div class="writings-list reveal">
       <% writings.slice(0, 3).forEach(function(w) { %>
       <a class="wr" href="<%= w.slug ? '/writings/' + w.slug : w.link %>">
         <span class="wn">№ <%= w.number %></span>
         <span class="wt"><%- w.title %></span>
-        <span class="wm">
-          <% if (w.date) { %><span class="wd"><%= new Date(w.date).toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'}) %></span> · <% } %><%= w.category %> <span class="arrow">&rarr;</span>
-        </span>
+        <span class="wm"><%= w.category %> <span class="arrow">&rarr;</span></span>
       </a>
       <% }); %>
     </div>
@@ -112,7 +78,7 @@
 
 </main>
 
-<%- include('partials/footer', { site, footerBig: fp.footerBig, footerBigKey: 'firstPrinciples.footerBig' }) %>
+<%- include('partials/footer', { site }) %>
 
 <script src="/image-slot.js"></script>
 <script src="/site.js"></script>

@@ -6,8 +6,8 @@
     var overlay = document.getElementById('navOverlay');
     if(!toggle || !overlay) return;
     var closeBtn = overlay.querySelector('.nav-ov-close');
-    function open(){ overlay.classList.add('open'); document.body.classList.add('menu-open'); toggle.setAttribute('aria-expanded','true'); }
-    function close(){ overlay.classList.remove('open'); document.body.classList.remove('menu-open'); toggle.setAttribute('aria-expanded','false'); }
+    function open(){ document.body.classList.add('menu-open'); toggle.setAttribute('aria-expanded','true'); }
+    function close(){ document.body.classList.remove('menu-open'); toggle.setAttribute('aria-expanded','false'); }
     toggle.addEventListener('click', open);
     if(closeBtn) closeBtn.addEventListener('click', close);
     overlay.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', close); });

@@ -13,92 +13,56 @@
 
 <main>
 
-<!-- ============================ BIO HEADER + INTRO ============================ -->
+<!-- ============================ BIO INTRO ============================ -->
 <section class="band">
   <div class="wrap">
-    <div class="sec-head reveal">
+    <div class="sec-head reveal" style="margin-bottom:0">
       <div class="sec-title-wrap">
-        <div class="num" data-edit="bio.sectionNum"><%= bio.sectionNum %></div>
-        <h2 class="h-section" style="margin-top:18px;white-space:pre-line" data-edit="bio.heading"><%= bio.heading %></h2>
+        <div class="label" data-edit="bio.sectionNum"><%= bio.sectionNum %></div>
+        <h2 class="h-section" style="margin-top:14px" data-edit="bio.heading"><%= bio.heading %></h2>
       </div>
       <div class="eyebrow" data-edit="bio.subheading"><%= bio.subheading %></div>
     </div>
-
-    <div class="bio-lead-grid reveal">
+  </div>
+  <div class="wrap" style="margin-top:52px">
+    <div class="bio-grid reveal">
       <div class="bio-body">
-        <p class="drop" data-edit="bio.introPara1"><%= bio.introPara1 %></p>
+        <p data-edit="bio.introPara1"><%= bio.introPara1 %></p>
         <p data-edit="bio.introPara2"><%= bio.introPara2 %></p>
         <p data-edit="bio.teacherPara1"><%= bio.teacherPara1 %></p>
-        <p data-edit="bio.teacherPara2"><%= bio.teacherPara2 %></p>
-        <p data-edit="bio.teacherPara3"><%= bio.teacherPara3 %></p>
       </div>
-
-      <div style="display:flex;flex-direction:column;gap:40px">
-        <div class="bio-portrait">
-          <div class="plate">
-            <span class="bracket tl"></span><span class="bracket tr"></span>
-            <span class="bracket bl"></span><span class="bracket br"></span>
-            <div class="plate-inner">
-              <div class="filtered">
-                <image-slot id="bio-portrait" style="width:100%;height:100%"
-                  placeholder="Drop portrait — violinist" src="<%= bio.portraitImage %>" data-edit-image="bio.portraitImage"></image-slot>
-              </div>
-              <div class="fig-cap" data-edit="bio.figCaption"><%= bio.figCaption %></div>
-            </div>
-          </div>
-        </div>
-        <aside class="bio-pull">
-          <p class="pull-q" data-edit="bio.pullQuote"><%= bio.pullQuote %></p>
-          <p class="pull-src" data-edit="bio.pullQuoteSource"><%= bio.pullQuoteSource %></p>
-          <a class="pull-link" href="/first-principles">Explore the First Principles method <span class="ar">→</span></a>
-        </aside>
+      <div class="figure portrait">
+        <image-slot id="bio-portrait" placeholder="Drop portrait — violinist"
+          src="<%= bio.portraitImage %>" data-edit-image="bio.portraitImage"></image-slot>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============================ PRESS ============================ -->
-<section class="band press">
+<section class="band alt">
   <div class="wrap">
-    <div class="press-head">
-      <div class="kicker">In the Press</div>
-      <div class="eyebrow" style="color:#a39c8a">What the critics hear</div>
-    </div>
-
     <%
-      var featuredPress = press.find(function(p){ return p.featured; });
-      var secondaryPress = press.filter(function(p){ return !p.featured; }).slice(0, 2);
+      var allPress = press.slice(0, 3);
       function highlightQuote(q) {
         if (!q.highlight) return q.quote;
         return q.quote.replace(q.highlight, '<mark>' + q.highlight + '</mark>');
       }
     %>
-
-    <% if (featuredPress) { %>
-    <figure class="press-feature reveal">
-      <span class="qmark" aria-hidden="true">&ldquo;</span>
-      <blockquote><%- highlightQuote(featuredPress) %></blockquote>
-      <figcaption><%= featuredPress.source %></figcaption>
-    </figure>
-    <% } %>
-
-    <% if (secondaryPress.length > 0) { %>
     <div class="press-row">
-      <% secondaryPress.forEach(function(q) { %>
+      <% allPress.forEach(function(q) { %>
       <figure class="press-quote reveal">
         <blockquote><%- highlightQuote(q) %></blockquote>
         <figcaption><%= q.source %></figcaption>
       </figure>
       <% }); %>
     </div>
-    <% } %>
   </div>
 </section>
 
-
 </main>
 
-<%- include('partials/footer', { site, footerBig: bio.footerBig, footerBigKey: 'bio.footerBig' }) %>
+<%- include('partials/footer', { site }) %>
 
 <script src="/image-slot.js"></script>
 <script src="/site.js"></script>

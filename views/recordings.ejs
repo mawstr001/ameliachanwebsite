@@ -18,29 +18,27 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="sec-title-wrap">
-        <div class="num">Recordings</div>
-        <h2 class="h-section" style="margin-top:18px">Selected<br />performances.</h2>
+        <div class="label">Recordings</div>
+        <h2 class="h-section">Selected performances.</h2>
       </div>
-      <div class="eyebrow">Hover to bring each to life</div>
+      <div class="eyebrow">Hover to play</div>
     </div>
 
     <div class="rec-grid reveal">
       <% recordings.forEach(function(rec, i) { %>
       <div class="rec">
         <div class="rec-plate">
-          <div class="filtered">
-            <image-slot id="rec-<%= i+1 %>" style="width:100%;height:100%"
-              placeholder="Drop cover art" src="<%= rec.image %>" data-edit-image="recordings[<%= i %>].image"></image-slot>
-          </div>
-          <% if (rec.youtubeUrl) { %>
-          <a class="play" href="<%= rec.youtubeUrl %>" target="_blank" rel="noopener" aria-label="Watch on YouTube">
+          <image-slot id="rec-<%= i+1 %>" placeholder="Drop cover art"
+            src="<%= rec.image %>" data-edit-image="recordings[<%= i %>].image"></image-slot>
+          <% if (rec.link && rec.link !== '#') { %>
+          <a class="play" href="<%= rec.link %>" target="_blank" rel="noopener" aria-label="Watch on YouTube">
+            <span class="disc"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 1 L12 7 L2 13 Z"/></svg></span>
+          </a>
           <% } else { %>
           <div class="play">
+            <span class="disc"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 1 L12 7 L2 13 Z"/></svg></span>
+          </div>
           <% } %>
-            <span class="disc">
-              <svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 1 L12 7 L2 13 Z" fill="currentColor"/></svg>
-            </span>
-          <% if (rec.youtubeUrl) { %></a><% } else { %></div><% } %>
         </div>
         <div class="rec-meta">
           <div class="rt" data-edit="recordings[<%= i %>].title"><%= rec.title %></div>
@@ -54,7 +52,7 @@
 
 </main>
 
-<%- include('partials/footer', { site, footerBig: "Let's make<br />something <a href=\"mailto:" + site.email + "\">resonate.</a>", footerBigKey: '' }) %>
+<%- include('partials/footer', { site }) %>
 
 <script src="/image-slot.js"></script>
 <script src="/site.js"></script>

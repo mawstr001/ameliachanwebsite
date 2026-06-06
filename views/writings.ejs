@@ -18,10 +18,10 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="sec-title-wrap">
-        <div class="num">Writings</div>
-        <h2 class="h-section" style="margin-top:18px">Notes on the<br />first principles.</h2>
+        <div class="label">Writings</div>
+        <h2 class="h-section">Notes on the first principles.</h2>
       </div>
-      <div class="eyebrow">Essays on technique, structure &amp; practice</div>
+      <div class="eyebrow">Technique &middot; Structure &middot; Practice</div>
     </div>
 
     <div class="writings-list reveal">
@@ -29,9 +29,7 @@
       <a class="wr" href="<%= w.slug ? '/writings/' + w.slug : w.link %>">
         <span class="wn">№ <%= w.number %></span>
         <span class="wt"><%- w.title %></span>
-        <span class="wm">
-          <% if (w.date) { %><span class="wd"><%= new Date(w.date).toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric'}) %></span> · <% } %><%= w.category %> <span class="arrow">→</span>
-        </span>
+        <span class="wm"><%= w.category %> <span class="arrow">&rarr;</span></span>
       </a>
       <% }); %>
     </div>
@@ -40,7 +38,7 @@
 
 </main>
 
-<%- include('partials/footer', { site, footerBig: "Let's make<br />something <a href=\"mailto:" + site.email + "\">resonate.</a>", footerBigKey: '' }) %>
+<%- include('partials/footer', { site }) %>
 
 <script src="/image-slot.js"></script>
 <script src="/site.js"></script>
