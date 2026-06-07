@@ -485,27 +485,19 @@
   "recordings": [
     {
       "id": "rec-1",
-      "title": "Bruch · Concerto No. 1",
-      "ensemble": "City Chamber Orchestra · Live",
-      "link": "#",
-      "image": "",
-      "youtubeUrl": ""
+      "title": "SAYGUN: Suite Op.33 for Violin and Piano (1955)",
+      "ensemble": "Amelia Chan, violin · Shelley Ng, piano",
+      "link": "https://www.youtube.com/watch?v=SLmY7MET5NI",
+      "image": "https://img.youtube.com/vi/SLmY7MET5NI/maxresdefault.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=SLmY7MET5NI"
     },
     {
       "id": "rec-2",
-      "title": "Ysaÿe · Solo Sonatas",
-      "ensemble": "Studio · First Principles Series",
-      "link": "#",
-      "image": "",
-      "youtubeUrl": ""
-    },
-    {
-      "id": "rec-3",
-      "title": "Montclaire Quartet · Ravel",
-      "ensemble": "Chamber · Archive",
-      "link": "#",
-      "image": "",
-      "youtubeUrl": ""
+      "title": "Kai-young Chan: Echoes of the Autumn Night (2018)",
+      "ensemble": "",
+      "link": "https://www.youtube.com/watch?v=Lhx0tRkoSgM",
+      "image": "https://img.youtube.com/vi/Lhx0tRkoSgM/maxresdefault.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Lhx0tRkoSgM"
     }
   ]
 }
