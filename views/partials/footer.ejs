@@ -9,12 +9,11 @@
     </form>
     <div class="foot-social">
       <a href="<%= site.instagram %>" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a>
       <a href="<%= site.facebook %>" target="_blank" rel="noopener">Facebook</a>
       <a href="mailto:<%= site.email %>">Email</a>
     </div>
     <div class="foot-fine">
-      <span>&copy; 2026 Amelia Chan &middot; Violinist</span>
+      <span><%= site.copyright || '&copy; 2026 Amelia Chan &middot; Violinist' %></span>
       <span>Privacy Policy &middot; Terms of Service</span>
     </div>
   </div>

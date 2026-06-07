@@ -54,6 +54,9 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
     <div class="field"><label>Instagram URL</label><input type="text" name="site.instagram" value="<%= site.instagram %>"></div>
     <div class="field"><label>Facebook URL</label><input type="text" name="site.facebook" value="<%= site.facebook %>"></div>
 
+    <div class="section-title">Footer</div>
+    <div class="field"><label>Copyright Text</label><input type="text" name="site.copyright" value="<%= site.copyright || '© 2026 Amelia Chan · Violinist' %>"><div class="hint">Appears at the bottom of every page. Use © for the copyright symbol.</div></div>
+
     <div class="form-actions">
       <button class="btn-save" type="submit">Save Changes</button>
     </div>
