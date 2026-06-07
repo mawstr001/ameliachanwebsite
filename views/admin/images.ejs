@@ -91,24 +91,6 @@ body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,
       </div>
     </div>
 
-    <!-- Home Right System -->
-    <div class="img-slot">
-      <div class="img-preview-box">
-        <% if (content.home && content.home.right && content.home.right.systemImage) { %>
-        <img src="<%= content.home.right.systemImage %>" alt="Home system right" id="preview-home-right" />
-        <% } else { %>
-        <div class="img-placeholder" id="preview-home-right">No image set</div>
-        <% } %>
-      </div>
-      <div class="img-info">
-        <div class="img-label">// Home · Right Panel</div>
-        <div class="img-name">System Image</div>
-        <label class="upload-label" for="file-home-right">Choose Image</label>
-        <input class="upload-input" type="file" id="file-home-right" accept="image/*" data-key="home.right.systemImage" data-preview="preview-home-right" />
-        <span class="upload-status" id="status-home-right"></span>
-      </div>
-    </div>
-
     <!-- Bio Portrait -->
     <div class="img-slot">
       <div class="img-preview-box" style="aspect-ratio:4/5">
