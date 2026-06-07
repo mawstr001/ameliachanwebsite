@@ -29,6 +29,7 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
 .field textarea{ min-height:90px; line-height:1.5; }
 .field textarea.tall{ min-height:140px; }
 .field .hint{ font-family:"JetBrains Mono",monospace; font-size:9.5px; letter-spacing:.1em; color:#5a4a3a; margin-top:5px; }
+.note{ background:#221e1a; border-left:2px solid rgba(154,123,51,.4); padding:12px 16px; font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.1em; color:#5a4a3a; margin-bottom:28px; }
 .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 .form-actions{ margin-top:40px; display:flex; align-items:center; gap:20px; }
 .btn-save{ background:#5a241c; color:#f3e7df; border:none; cursor:pointer; font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; padding:14px 30px; transition:background .2s; }
@@ -41,40 +42,21 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
 <%- include('../partials/admin-sidebar') %>
 <main class="main">
   <h1 class="page-title">Home Page</h1>
-  <p class="page-sub">// Left &amp; Right Panels</p>
+  <p class="page-sub">// Hero Text</p>
   <% if (saved) { %><div class="saved-banner">&#10003; Changes saved successfully.</div><% } %>
 
   <form method="POST" action="/admin/content/home">
 
-    <div class="section-title">Left Panel — The Artist</div>
+    <div class="section-title">Hero</div>
+    <div class="note">The artist name "Amelia Chan" and the "Read Biography" button are fixed. Portrait image is managed under Images.</div>
     <div class="row-2">
-      <div class="field"><label>Kicker Label</label><input type="text" name="home.left.kicker" value="<%= home.left.kicker %>"></div>
-      <div class="field"><label>Role</label><input type="text" name="home.left.role" value="<%= home.left.role %>"></div>
+      <div class="field"><label>Label (above name)</label><input type="text" name="home.left.kicker" value="<%= home.left.kicker %>"></div>
+      <div class="field"><label>Role Line</label><input type="text" name="home.left.role" value="<%= home.left.role %>"></div>
     </div>
-    <div class="field"><label>Name</label><input type="text" name="home.left.name" value="<%= home.left.name %>"></div>
-    <div class="field"><label>Blurb</label><textarea name="home.left.blurb"><%= home.left.blurb %></textarea></div>
-    <div class="field"><label>Press Quote Text</label><textarea name="home.left.quoteText"><%= home.left.quoteText %></textarea></div>
-    <div class="row-2">
-      <div class="field"><label>Quote Source</label><input type="text" name="home.left.quoteSource" value="<%= home.left.quoteSource %>"></div>
-      <div class="field"><label>CTA Button Label</label><input type="text" name="home.left.cta" value="<%= home.left.cta %>"></div>
-    </div>
-    <div class="row-2">
-      <div class="field"><label>Figure Caption</label><input type="text" name="home.left.figCaption" value="<%= home.left.figCaption %>"></div>
-    </div>
+    <div class="field"><label>Lead Paragraph</label><textarea class="tall" name="home.left.blurb"><%= home.left.blurb %></textarea></div>
 
-    <div class="section-title">Right Panel — The System</div>
-    <div class="row-2">
-      <div class="field"><label>Kicker Label</label><input type="text" name="home.right.kicker" value="<%= home.right.kicker %>"></div>
-      <div class="field"><label>Role</label><input type="text" name="home.right.role" value="<%= home.right.role %>"></div>
-    </div>
-    <div class="field"><label>Name</label><input type="text" name="home.right.name" value="<%= home.right.name %>"></div>
-    <div class="field"><label>Blurb</label><textarea name="home.right.blurb"><%= home.right.blurb %></textarea></div>
-    <div class="field"><label>Core Principle Label</label><input type="text" name="home.right.principleLabel" value="<%= home.right.principleLabel %>"></div>
-    <div class="field"><label>Core Principle Text</label><textarea name="home.right.principleText"><%= home.right.principleText %></textarea></div>
-    <div class="row-2">
-      <div class="field"><label>CTA Button Label</label><input type="text" name="home.right.cta" value="<%= home.right.cta %>"></div>
-      <div class="field"><label>Figure Caption</label><input type="text" name="home.right.figCaption" value="<%= home.right.figCaption %>"></div>
-    </div>
+    <div class="section-title">The First Principles System Teaser</div>
+    <div class="note">The three method items (Biomechanics, Acoustics, Cognition) and the logo are fixed. To edit the full method section, go to the First Principles page editor.</div>
 
     <div class="form-actions">
       <button class="btn-save" type="submit">Save Changes</button>

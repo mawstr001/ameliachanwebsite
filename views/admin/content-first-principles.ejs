@@ -27,9 +27,10 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
 .field input[type=text], .field textarea{ width:100%; background:#2a251e; border:1px solid rgba(154,123,51,.25); color:#e8e0d0; padding:11px 14px; font-family:"EB Garamond",Georgia,serif; font-size:16px; transition:border-color .2s; resize:vertical; }
 .field input[type=text]:focus, .field textarea:focus{ outline:none; border-color:#9a7b33; }
 .field textarea{ min-height:90px; line-height:1.5; }
-.field textarea.tall{ min-height:140px; }
 .field .hint{ font-family:"JetBrains Mono",monospace; font-size:9.5px; letter-spacing:.1em; color:#5a4a3a; margin-top:5px; }
-.row-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.note{ background:#221e1a; border-left:2px solid rgba(154,123,51,.4); padding:12px 16px; font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.1em; color:#5a4a3a; margin-bottom:28px; }
+.method-item{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:28px; padding-bottom:28px; border-bottom:1px solid rgba(154,123,51,.14); }
+.method-item:last-of-type{ border-bottom:none; }
 .form-actions{ margin-top:40px; display:flex; align-items:center; gap:20px; }
 .btn-save{ background:#5a241c; color:#f3e7df; border:none; cursor:pointer; font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; padding:14px 30px; transition:background .2s; }
 .btn-save:hover{ background:#7a3428; }
@@ -41,51 +42,30 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
 <%- include('../partials/admin-sidebar') %>
 <main class="main">
   <h1 class="page-title">First Principles</h1>
-  <p class="page-sub">// Method, Quote &amp; Callouts</p>
+  <p class="page-sub">// Page Header &amp; Three Method Items</p>
   <% if (saved) { %><div class="saved-banner">&#10003; Changes saved successfully.</div><% } %>
 
   <form method="POST" action="/admin/content/first-principles">
 
     <div class="section-title">Page Header</div>
-    <div class="row-2">
-      <div class="field"><label>Section Label</label><input type="text" name="firstPrinciples.sectionNum" value="<%= fp.sectionNum %>"></div>
-      <div class="field"><label>Subheading</label><input type="text" name="firstPrinciples.subheading" value="<%= fp.subheading || '' %>"></div>
-    </div>
+    <div class="field"><label>Label (above heading)</label><input type="text" name="firstPrinciples.sectionNum" value="<%= fp.sectionNum %>"></div>
     <div class="field"><label>Heading</label><input type="text" name="firstPrinciples.heading" value="<%= fp.heading %>"><div class="hint">Use \n for line breaks</div></div>
 
-    <div class="section-title">Method List</div>
-    <div class="row-2">
-      <div class="field"><label>Item 1 — Title</label><input type="text" name="firstPrinciples.method1Label" value="<%= fp.method1Label || '' %>"></div>
-      <div class="field"><label>Item 1 — Description</label><textarea name="firstPrinciples.method1Desc"><%= fp.method1Desc || '' %></textarea></div>
-    </div>
-    <div class="row-2">
-      <div class="field"><label>Item 2 — Title</label><input type="text" name="firstPrinciples.method2Label" value="<%= fp.method2Label || '' %>"></div>
-      <div class="field"><label>Item 2 — Description</label><textarea name="firstPrinciples.method2Desc"><%= fp.method2Desc || '' %></textarea></div>
-    </div>
-    <div class="row-2">
-      <div class="field"><label>Item 3 — Title</label><input type="text" name="firstPrinciples.method3Label" value="<%= fp.method3Label || '' %>"></div>
-      <div class="field"><label>Item 3 — Description</label><textarea name="firstPrinciples.method3Desc"><%= fp.method3Desc || '' %></textarea></div>
-    </div>
+    <div class="section-title">Three Interconnected Components</div>
+    <div class="note">These appear as a numbered list beside the colour-block graphic. The "Fundamentals" explanatory text above them is fixed.</div>
 
-    <div class="section-title">Quote Band</div>
-    <div class="field"><label>Quote Text (no quotation marks needed)</label><textarea name="firstPrinciples.fpQuote"><%= fp.fpQuote || '' %></textarea></div>
-
-    <div class="section-title">Three Callout Boxes</div>
-    <div class="row-2">
-      <div class="field"><label>Box 1 — Label (oxblood)</label><input type="text" name="firstPrinciples.callout1Key" value="<%= fp.callout1Key || '' %>"></div>
-      <div class="field"><label>Box 1 — Text</label><textarea name="firstPrinciples.callout1Text"><%= fp.callout1Text || '' %></textarea></div>
+    <div class="method-item">
+      <div class="field"><label>1 — Title</label><input type="text" name="firstPrinciples.method1Label" value="<%= fp.method1Label || 'Biomechanics in Action' %>"></div>
+      <div class="field"><label>1 — Description</label><textarea name="firstPrinciples.method1Desc"><%= fp.method1Desc || '' %></textarea></div>
     </div>
-    <div class="row-2">
-      <div class="field"><label>Box 2 — Label (gold)</label><input type="text" name="firstPrinciples.callout2Key" value="<%= fp.callout2Key || '' %>"></div>
-      <div class="field"><label>Box 2 — Text</label><textarea name="firstPrinciples.callout2Text"><%= fp.callout2Text || '' %></textarea></div>
+    <div class="method-item">
+      <div class="field"><label>2 — Title</label><input type="text" name="firstPrinciples.method2Label" value="<%= fp.method2Label || 'Fundamental Acoustics' %>"></div>
+      <div class="field"><label>2 — Description</label><textarea name="firstPrinciples.method2Desc"><%= fp.method2Desc || '' %></textarea></div>
     </div>
-    <div class="row-2">
-      <div class="field"><label>Box 3 — Label (navy)</label><input type="text" name="firstPrinciples.callout3Key" value="<%= fp.callout3Key || '' %>"></div>
-      <div class="field"><label>Box 3 — Text</label><textarea name="firstPrinciples.callout3Text"><%= fp.callout3Text || '' %></textarea></div>
+    <div class="method-item">
+      <div class="field"><label>3 — Title</label><input type="text" name="firstPrinciples.method3Label" value="<%= fp.method3Label || 'Mental Cognition' %>"></div>
+      <div class="field"><label>3 — Description</label><textarea name="firstPrinciples.method3Desc"><%= fp.method3Desc || '' %></textarea></div>
     </div>
-
-    <div class="section-title">Writings Teaser</div>
-    <div class="field"><label>Section Heading</label><input type="text" name="firstPrinciples.writingsTeaserHeading" value="<%= fp.writingsTeaserHeading %>"><div class="hint">Use \n for line breaks</div></div>
 
     <div class="form-actions">
       <button class="btn-save" type="submit">Save Changes</button>
