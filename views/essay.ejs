@@ -3,7 +3,29 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title><%= essay.title %> — Amelia Chan</title>
+<%
+  var _essayDesc = essay.body
+    ? essay.body.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().substring(0, 155) + '…'
+    : 'An essay on violin technique and first principles by Amelia Chan.';
+%>
+<%- include('partials/seo', {
+  seoTitle: essay.title + ' — Amelia Chan',
+  seoDesc:  _essayDesc,
+  seoPath:  '/writings/' + (essay.slug || ''),
+  seoType:  'article',
+  seoJsonLd: {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: essay.title,
+    description: _essayDesc,
+    url: (siteUrl || 'https://ameliachanviolin.com') + '/writings/' + (essay.slug || ''),
+    datePublished: essay.date || '',
+    author: { '@type': 'Person', name: 'Amelia Chan', url: siteUrl || 'https://ameliachanviolin.com' },
+    publisher: { '@type': 'Person', name: 'Amelia Chan' },
+    articleSection: essay.category || 'First Principles Violin',
+    mainEntityOfPage: { '@type': 'WebPage', '@id': (siteUrl || 'https://ameliachanviolin.com') + '/writings/' + (essay.slug || '') }
+  }
+}) %>
 <link rel="stylesheet" href="/styles.css" />
 <% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
 </head>

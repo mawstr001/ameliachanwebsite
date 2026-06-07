@@ -3,7 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bio — Amelia Chan</title>
+<%- include('partials/seo', {
+  seoTitle: 'Bio — Amelia Chan | Violinist & Educator',
+  seoDesc:  'Amelia Chan is a violinist whose playing has been called the vibrant soul of the ensemble — an artist who leads from the concertmaster\'s chair and teaches from first principles.',
+  seoPath:  '/bio',
+  seoJsonLd: {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Amelia Chan',
+    url: (siteUrl || 'https://ameliachanviolin.com') + '/bio',
+    jobTitle: 'Violinist, Concertmaster & Educator',
+    description: 'Amelia Chan is a violinist, concertmaster, and creator of the First Principles Violin teaching system.',
+    sameAs: [site.instagram, site.facebook],
+    knowsAbout: ['Violin', 'Biomechanics', 'Music Education', 'Chamber Music'],
+    alumniOf: { '@type': 'CollegeOrUniversity', name: 'Manhattan School of Music' }
+  }
+}) %>
 <link rel="stylesheet" href="/styles.css" />
 <% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
 </head>

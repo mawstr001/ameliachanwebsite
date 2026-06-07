@@ -3,7 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>First Principles Violin — Amelia Chan</title>
+<%- include('partials/seo', {
+  seoTitle: 'The First Principles Violin System — Amelia Chan',
+  seoDesc:  'A biomechanics-based approach to violin technique: optimise movement, master acoustics, and develop the mental cognition for expressive, injury-free playing.',
+  seoPath:  '/first-principles',
+  seoJsonLd: {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: 'The First Principles Violin System',
+    description: 'A biomechanics-based approach to violin technique combining Biomechanics in Action, Fundamental Acoustics, and Mental Cognition.',
+    provider: { '@type': 'Person', name: 'Amelia Chan', url: siteUrl || 'https://ameliachanviolin.com' },
+    url: (siteUrl || 'https://ameliachanviolin.com') + '/first-principles'
+  }
+}) %>
 <link rel="stylesheet" href="/styles.css" />
 <% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
 </head>

@@ -3,7 +3,32 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Amelia Chan — Violinist · First Principles Violin</title>
+<%- include('partials/seo', {
+  seoTitle: 'Amelia Chan — Violinist · First Principles Violin',
+  seoDesc:  'Amelia Chan is a violinist, concertmaster, and educator — creator of the First Principles Violin system, combining biomechanics, acoustics, and cognition.',
+  seoPath:  '/',
+  seoJsonLd: {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': (siteUrl || 'https://ameliachanviolin.com') + '/#website',
+        url: siteUrl || 'https://ameliachanviolin.com',
+        name: 'Amelia Chan — First Principles Violin',
+        description: 'Violinist, concertmaster, and educator Amelia Chan shares her biomechanics-based approach to violin technique.'
+      },
+      {
+        '@type': 'Person',
+        '@id': (siteUrl || 'https://ameliachanviolin.com') + '/#person',
+        name: 'Amelia Chan',
+        url: siteUrl || 'https://ameliachanviolin.com',
+        jobTitle: 'Violinist & Educator',
+        description: 'Concertmaster and creator of the First Principles Violin system.',
+        sameAs: [site.instagram, site.facebook]
+      }
+    ]
+  }
+}) %>
 <link rel="stylesheet" href="/styles.css" />
 <% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
 </head>

@@ -1,0 +1,36 @@
+<%
+  var _base = siteUrl || 'https://ameliachanviolin.com';
+  var _title = locals.seoTitle || 'Amelia Chan — Violinist · First Principles Violin';
+  var _desc  = locals.seoDesc  || 'Amelia Chan is a violinist, concertmaster, and educator — creator of the First Principles Violin system, combining biomechanics, acoustics, and cognition.';
+  var _path  = locals.seoPath  || '/';
+  var _canon = _base + _path;
+  var _img   = locals.seoImage ? (_base + locals.seoImage) : (_base + '/og-default.jpg');
+  var _type  = locals.seoType  || 'website';
+%>
+<title><%= _title %></title>
+<meta name="description" content="<%= _desc %>" />
+<link rel="canonical" href="<%= _canon %>" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="<%= _type %>" />
+<meta property="og:site_name" content="Amelia Chan — First Principles Violin" />
+<meta property="og:title" content="<%= _title %>" />
+<meta property="og:description" content="<%= _desc %>" />
+<meta property="og:url" content="<%= _canon %>" />
+<meta property="og:image" content="<%= _img %>" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="<%= _title %>" />
+<meta name="twitter:description" content="<%= _desc %>" />
+<meta name="twitter:image" content="<%= _img %>" />
+<meta name="twitter:site" content="@ameliachanviolin" />
+
+<!-- Authorship / indexing -->
+<meta name="author" content="Amelia Chan" />
+<meta name="robots" content="index, follow" />
+
+<% if (locals.seoJsonLd) { %>
+<script type="application/ld+json"><%- JSON.stringify(locals.seoJsonLd) %></script>
+<% } %>

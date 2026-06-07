@@ -94,9 +94,12 @@ app.use(session({
   cookie: { maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'lax' }
 }));
 
-// Pass isAdmin to all templates
+const SITE_URL = (process.env.SITE_URL || 'https://ameliachanviolin.com').replace(/\/$/, '');
+
+// Pass isAdmin and siteUrl to all templates
 app.use((req, res, next) => {
   res.locals.isAdmin = !!req.session.isAdmin;
+  res.locals.siteUrl = SITE_URL;
   next();
 });
 
@@ -389,6 +392,46 @@ app.post('/admin/content/:page', requireAdmin, (req, res) => {
   });
   writeContent(c);
   res.redirect('/admin/content/' + req.params.page + '?saved=1');
+});
+
+// ── Sitemap ───────────────────────────────────────────────────────────────────
+app.get('/sitemap.xml', (req, res) => {
+  const c = readContent();
+  const base = SITE_URL;
+  const now = new Date().toISOString().split('T')[0];
+
+  const staticPages = [
+    { path: '/',                 priority: '1.0', freq: 'weekly' },
+    { path: '/bio',              priority: '0.9', freq: 'monthly' },
+    { path: '/first-principles', priority: '0.9', freq: 'monthly' },
+    { path: '/writings',         priority: '0.8', freq: 'weekly' },
+    { path: '/recordings',       priority: '0.7', freq: 'monthly' },
+  ];
+
+  const essayPages = (c.writings || [])
+    .filter(w => w.slug)
+    .map(w => ({ path: '/writings/' + w.slug, priority: '0.7', freq: 'monthly', lastmod: w.date || now }));
+
+  const allPages = [...staticPages, ...essayPages];
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${allPages.map(p => `  <url>
+    <loc>${base}${p.path}</loc>
+    <lastmod>${p.lastmod || now}</lastmod>
+    <changefreq>${p.freq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+  res.set('Content-Type', 'application/xml');
+  res.send(xml);
+});
+
+// ── Robots ────────────────────────────────────────────────────────────────────
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────

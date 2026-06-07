@@ -3,7 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Recordings — Amelia Chan</title>
+<%- include('partials/seo', {
+  seoTitle: 'Recordings — Amelia Chan | Selected Performances',
+  seoDesc:  'Selected recordings by violinist Amelia Chan — including Bruch, Ysaÿe, and Ravel chamber performances.',
+  seoPath:  '/recordings',
+  seoJsonLd: {
+    '@context': 'https://schema.org',
+    '@type': 'MusicPlaylist',
+    name: 'Selected Recordings — Amelia Chan',
+    description: 'Selected violin performances by Amelia Chan.',
+    url: (siteUrl || 'https://ameliachanviolin.com') + '/recordings',
+    byArtist: { '@type': 'Person', name: 'Amelia Chan' }
+  }
+}) %>
 <link rel="stylesheet" href="/styles.css" />
 <% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
 </head>

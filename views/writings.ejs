@@ -3,7 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Writings — Amelia Chan</title>
+<%- include('partials/seo', {
+  seoTitle: 'Writings — Amelia Chan | First Principles Violin Essays',
+  seoDesc:  'Essays on violin technique, biomechanics, musical structure, and practice — written by violinist and educator Amelia Chan.',
+  seoPath:  '/writings',
+  seoJsonLd: {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Writings — Amelia Chan',
+    description: 'Essays on violin technique, biomechanics, musical structure, and practice.',
+    url: (siteUrl || 'https://ameliachanviolin.com') + '/writings',
+    author: { '@type': 'Person', name: 'Amelia Chan' }
+  }
+}) %>
 <link rel="stylesheet" href="/styles.css" />
 <% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
 </head>
