@@ -46,16 +46,14 @@
         <p data-edit="bio.introPara2"><%= bio.introPara2 %></p>
         <p data-edit="bio.teacherPara1"><%= bio.teacherPara1 %></p>
       </div>
-      <div>
-        <div class="figure portrait">
-          <image-slot id="bio-portrait" placeholder="Drop portrait — violinist"
-            src="<%= bio.portraitImage %>" data-edit-image="bio.portraitImage"></image-slot>
-        </div>
-        <div class="scroll-cue" aria-hidden="true">
-          <span>Scroll</span>
-          <span class="scroll-cue-arrow">&darr;</span>
-        </div>
+      <div class="figure portrait">
+        <image-slot id="bio-portrait" placeholder="Drop portrait — violinist"
+          src="<%= bio.portraitImage %>" data-edit-image="bio.portraitImage"></image-slot>
       </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">
+      <span>Scroll</span>
+      <span class="scroll-cue-arrow">&darr;</span>
     </div>
   </div>
 </section>
