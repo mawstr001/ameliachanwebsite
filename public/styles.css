@@ -184,8 +184,7 @@ body.menu-open .nav-overlay{ visibility:visible; opacity:1; transform:translateY
    BIO
    ============================================================ */
 .bio-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(40px,6vw,80px); align-items:start; }
-.bio-body p{ margin:0 0 1.2em; color:var(--ink-soft); font-size:19px; line-height:1.65; }
-.bio-body p:first-child{ font-size:23px; line-height:1.5; color:var(--ink); }
+.bio-body p{ margin:0 0 1.2em; color:var(--ink-soft); font-size:16px; line-height:1.65; white-space:pre-line; }
 .bio-body em{ font-style:italic; color:var(--ink); }
 @media (max-width:820px){
   .bio-grid{ grid-template-columns:1fr; gap:36px; }
