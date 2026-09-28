@@ -81,6 +81,7 @@ const CONTENT_DEFAULTS = {
   firstPrinciples: {
     logoImage: '',
     logoAlt: 'First Principles Violin System logo',
+    ctaLabel: 'Check out Archive',
     fundamentalsLabel: 'The Fundamentals',
     method1Label: 'Biomechanics in Action',
     method1Desc: 'Optimise every movement and posture for efficiency and power — reducing tension and preventing injury.',
@@ -637,16 +638,18 @@ app.get('/robots.txt', (req, res) => {
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────
-(async function start() {
-  // Load the latest saved content from GitHub before serving anything —
-  // unless the persistent disk already holds saved content, which wins.
-  await githubSync.pullContent(CONTENT_FILE, { keepLocal: DISK_HAS_CONTENT });
-  prepareContentFile();
-  app.listen(PORT, () => {
-    console.log(`Amelia Chan — server running at http://localhost:${PORT}`);
-    console.log(`Admin: http://localhost:${PORT}/admin`);
-    if (!githubSync.status.configured) {
-      console.warn('GitHub sync is OFF (GITHUB_TOKEN not set): admin edits are only stored on this server.');
-    }
-  });
-})();
+// Start serving straight away so the site is never unreachable ("Bad
+// Gateway") while GitHub is slow or rejects the token. The GitHub copy is
+// only fetched when the persistent disk has no saved content yet; saved disk
+// content always wins.
+prepareContentFile();
+app.listen(PORT, () => {
+  console.log(`Amelia Chan — server running at http://localhost:${PORT}`);
+  console.log(`Admin: http://localhost:${PORT}/admin`);
+  if (!githubSync.status.configured) {
+    console.warn('GitHub sync is OFF (GITHUB_TOKEN not set): admin edits are only stored on this server.');
+  }
+});
+githubSync.pullContent(CONTENT_FILE, { keepLocal: DISK_HAS_CONTENT })
+  .then(() => { if (githubSync.status.ready && !DISK_HAS_CONTENT) prepareContentFile(); })
+  .catch(e => console.error('GitHub sync:', e.message));
