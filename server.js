@@ -131,6 +131,17 @@ const MIGRATIONS = [
     if (c.site && c.site.copyright === '© 2026 Amelia Chan · Violinist') {
       c.site.copyright = '© 2026 Amelia Chan. All Rights Reserved.';
     }
+  }],
+  // The First Principles page's three numbered sections became one text
+  // block: start it from the saved section titles and descriptions.
+  ['2026-09-fp-single-text', c => {
+    const fp = c.firstPrinciples;
+    if (!fp || fp.body) return;
+    const esc = t => String(t || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    fp.body = [1, 2, 3]
+      .filter(n => fp['method' + n + 'Label'] || fp['method' + n + 'Desc'])
+      .map(n => `<b>${esc(fp['method' + n + 'Label'])}</b><br>${esc(fp['method' + n + 'Desc'])}`)
+      .join('<br><br>');
   }]
 ];
 

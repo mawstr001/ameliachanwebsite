@@ -154,12 +154,12 @@ body.admin-mode-on [data-edit]:hover::after {
 }
 
 /* Image spots that aren't <image-slot>s (e.g. the First Principles logo) */
-body.admin-mode-on .fp-mark[data-edit-image] {
+body.admin-mode-on .fp-logo-top[data-edit-image] {
   outline: 1px dashed rgba(47, 111, 143, 0.4);
   outline-offset: 4px;
   cursor: pointer;
 }
-body.admin-mode-on .fp-mark[data-edit-image]:hover { outline-color: #2f6f8f; }
+body.admin-mode-on .fp-logo-top[data-edit-image]:hover { outline-color: #2f6f8f; }
 
 /* Prevent link navigation while editing */
 body.admin-mode-on a[href] .admin-edit-no-nav {
