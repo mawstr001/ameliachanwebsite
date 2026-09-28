@@ -30,6 +30,7 @@
   }
 }) %>
 <link rel="stylesheet" href="/styles.css" />
+<% if (home.left.nameZh) { %><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500&display=swap&text=<%= encodeURIComponent(home.left.nameZh) %>" /><% } %>
 <% if (isAdmin) { %><link rel="stylesheet" href="/admin-bar.css" /><% } %>
 </head>
 <body data-screen-label="Home"<% if (isAdmin) { %> data-admin-mode<% } %>>
@@ -42,7 +43,7 @@
 <section class="wrap hero">
   <div>
     <div class="label" style="font-size:16px" data-edit="home.left.kicker"><%= home.left.kicker %></div>
-    <h1 class="hero-name" data-edit="home.left.name"><%= home.left.name %></h1>
+    <h1 class="hero-name"><span data-edit="home.left.name"><%= home.left.name %></span><% if (home.left.nameZh) { %> <span class="hero-name-zh" lang="zh-Hant" data-edit="home.left.nameZh"><%= home.left.nameZh %></span><% } %></h1>
     <p class="hero-role" style="font-size:23px;font-weight:600" data-edit="home.left.role"><%= home.left.role %></p>
     <p class="hero-lead" data-edit="home.left.blurb"><%= home.left.blurb %></p>
     <a class="btn hero-cta" href="/bio">Read Biography</a>
