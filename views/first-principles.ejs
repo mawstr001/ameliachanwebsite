@@ -26,49 +26,14 @@
 <main>
 
 <!-- ============================ THE METHOD ============================ -->
-<!-- Same layout as the Home hero: text and button on the left, image on the right -->
-<section class="wrap hero">
-  <div>
-    <div class="label" style="font-size:16px" data-edit="firstPrinciples.sectionNum"><%= fp.sectionNum %></div>
-    <h1 class="hero-name fp-title" data-edit="firstPrinciples.heading"><%= fp.heading %></h1>
-    <ol class="principles fp-principles">
-      <li>
-        <span class="n">1</span>
-        <div>
-          <h3 data-edit="firstPrinciples.method1Label"><%= fp.method1Label %></h3>
-          <p data-edit="firstPrinciples.method1Desc"><%= fp.method1Desc %></p>
-        </div>
-      </li>
-      <li>
-        <span class="n">2</span>
-        <div>
-          <h3 data-edit="firstPrinciples.method2Label"><%= fp.method2Label %></h3>
-          <p data-edit="firstPrinciples.method2Desc"><%= fp.method2Desc %></p>
-        </div>
-      </li>
-      <li>
-        <span class="n">3</span>
-        <div>
-          <h3 data-edit="firstPrinciples.method3Label"><%= fp.method3Label %></h3>
-          <p data-edit="firstPrinciples.method3Desc"><%= fp.method3Desc %></p>
-        </div>
-      </li>
-    </ol>
-    <a class="btn hero-cta" href="/writings"><span data-edit="firstPrinciples.ctaLabel"><%= fp.ctaLabel %></span></a>
+<!-- One column across the page: logo, one formatted text block, button -->
+<section class="wrap fp-page">
+  <div class="fp-logo-top" data-edit-image="firstPrinciples.logoImage">
+    <img src="<%= fp.logoImage || '/fp-logo-full.png' %>" alt="<%= fp.logoAlt %>" />
   </div>
-  <div class="photo-wrap">
-    <div class="fp-mark" data-edit-image="firstPrinciples.logoImage">
-      <% if (fp.logoImage) { %>
-      <img src="<%= fp.logoImage %>" alt="<%= fp.logoAlt %>" />
-      <% } else { %>
-      <div class="colorblocks" aria-hidden="true">
-        <div class="cb-ox"></div>
-        <div class="cb-gd"></div>
-        <div class="cb-nv"></div>
-      </div>
-      <% } %>
-    </div>
-  </div>
+  <h1 class="visually-hidden">The First Principles Violin System</h1>
+  <div class="fp-body" data-edit="firstPrinciples.body" data-edit-rich><%- rich(fp.body) %></div>
+  <a class="btn hero-cta" href="/writings"><span data-edit="firstPrinciples.ctaLabel"><%= fp.ctaLabel %></span></a>
 </section>
 
 </main>
@@ -77,6 +42,6 @@
 
 <script src="/image-slot.js"></script>
 <script src="/site.js"></script>
-<% if (isAdmin) { %><script src="/admin-bar.js"></script><% } %>
+<% if (isAdmin) { %><script src="/rich-editor.js"></script><script src="/admin-bar.js"></script><% } %>
 </body>
 </html>

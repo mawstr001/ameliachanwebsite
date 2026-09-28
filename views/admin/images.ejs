@@ -115,7 +115,7 @@ body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,
         <% if (content.firstPrinciples && content.firstPrinciples.logoImage) { %>
         <img src="<%= content.firstPrinciples.logoImage %>" alt="First Principles logo" id="preview-fp-logo" style="object-fit:contain" />
         <% } else { %>
-        <div class="img-placeholder" id="preview-fp-logo">Default colour blocks</div>
+        <img src="/fp-logo-full.png" alt="Default First Principles logo" id="preview-fp-logo" style="object-fit:contain;background:#efe8d8" />
         <% } %>
       </div>
       <div class="img-info">
@@ -126,7 +126,7 @@ body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,
         <span class="upload-status" id="status-fp-logo"></span>
         <% if (content.firstPrinciples && content.firstPrinciples.logoImage) { %>
         <button type="button" class="upload-label" style="margin-top:8px;background:none;border:1px solid rgba(255,255,255,.2);cursor:pointer"
-          onclick="if(confirm('Remove the uploaded logo and show the default colour blocks?')){fetch('/admin/api/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:'firstPrinciples.logoImage',value:''})}).then(function(){location.reload()})}">Use default colour blocks</button>
+          onclick="if(confirm('Remove the uploaded logo and use the default First Principles logo?')){fetch('/admin/api/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:'firstPrinciples.logoImage',value:''})}).then(function(){location.reload()})}">Use default logo</button>
         <% } %>
       </div>
     </div>

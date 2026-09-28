@@ -7,7 +7,8 @@
 const RICH_KEYS = new Set([
   'bio.introPara1',
   'bio.introPara2',
-  'bio.teacherPara1'
+  'bio.teacherPara1',
+  'firstPrinciples.body'
 ]);
 
 const INLINE = new Set(['b', 'strong', 'i', 'em', 'u']);
