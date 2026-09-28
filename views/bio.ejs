@@ -45,9 +45,12 @@
         <p data-edit="bio.introPara2" data-edit-rich><%- rich(bio.introPara2) %></p>
         <p data-edit="bio.teacherPara1" data-edit-rich><%- rich(bio.teacherPara1) %></p>
       </div>
-      <div class="figure portrait">
-        <image-slot id="bio-portrait" placeholder="Drop portrait — violinist"
-          src="<%= bio.portraitImage %>" data-edit-image="bio.portraitImage"></image-slot>
+      <div class="photo-wrap">
+        <div class="figure portrait">
+          <image-slot id="bio-portrait" placeholder="Drop portrait — violinist"
+            src="<%= bio.portraitImage %>" data-edit-image="bio.portraitImage"></image-slot>
+        </div>
+        <% if (bio.photoCredit) { %><p class="photo-credit" data-edit="bio.photoCredit"><%= bio.photoCredit %></p><% } %>
       </div>
     </div>
     <div class="scroll-cue" aria-hidden="true">

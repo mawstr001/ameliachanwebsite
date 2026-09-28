@@ -60,6 +60,8 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
     <div class="field"><label>Second Paragraph</label><textarea class="tall" name="bio.introPara2" data-rich><%= bio.introPara2 %></textarea></div>
     <div class="field"><label>Third Paragraph</label><textarea class="tall" name="bio.teacherPara1" data-rich><%= bio.teacherPara1 %></textarea></div>
 
+    <div class="field"><label>Photo Credit (under the portrait)</label><input type="text" name="bio.photoCredit" value="<%= bio.photoCredit %>"><div class="hint">Leave empty to hide it.</div></div>
+
     <div class="form-actions">
       <button class="btn-save" type="submit">Save Changes</button>
       <a class="btn-preview" href="/bio" target="_blank">Preview page →</a>

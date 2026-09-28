@@ -47,9 +47,12 @@
     <p class="hero-lead" data-edit="home.left.blurb"><%= home.left.blurb %></p>
     <a class="btn hero-cta" href="/bio">Read Biography</a>
   </div>
-  <div class="figure portrait">
-    <image-slot id="hero-portrait" placeholder="Drop portrait — violinist"
-      src="<%= home.left.heroImage %>" data-edit-image="home.left.heroImage"></image-slot>
+  <div class="photo-wrap">
+    <div class="figure portrait">
+      <image-slot id="hero-portrait" placeholder="Drop portrait — violinist"
+        src="<%= home.left.heroImage %>" data-edit-image="home.left.heroImage"></image-slot>
+    </div>
+    <% if (home.left.photoCredit) { %><p class="photo-credit" data-edit="home.left.photoCredit"><%= home.left.photoCredit %></p><% } %>
   </div>
 </section>
 
