@@ -190,8 +190,14 @@
       if (!file) { fileInput.remove(); return; }
       uploadImage(file, key, function (url) {
         if (url) {
-          // Update the image-slot src attribute
-          el.setAttribute('src', url);
+          if (el.tagName === 'IMAGE-SLOT' || el.tagName === 'IMG') {
+            el.setAttribute('src', url);
+          } else {
+            // A container (e.g. the First Principles logo spot): show the new image in it.
+            var img = el.querySelector('img');
+            if (!img) { el.innerHTML = ''; img = document.createElement('img'); img.alt = ''; el.appendChild(img); }
+            img.src = url;
+          }
         }
         fileInput.remove();
       });

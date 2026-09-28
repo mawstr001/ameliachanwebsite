@@ -56,10 +56,16 @@
           </li>
         </ol>
       </div>
-      <div class="colorblocks" aria-hidden="true">
-        <div class="cb-ox"></div>
-        <div class="cb-gd"></div>
-        <div class="cb-nv"></div>
+      <div class="fp-mark" data-edit-image="firstPrinciples.logoImage">
+        <% if (fp.logoImage) { %>
+        <img src="<%= fp.logoImage %>" alt="<%= fp.logoAlt %>" />
+        <% } else { %>
+        <div class="colorblocks" aria-hidden="true">
+          <div class="cb-ox"></div>
+          <div class="cb-gd"></div>
+          <div class="cb-nv"></div>
+        </div>
+        <% } %>
       </div>
     </div>
     <div class="scroll-cue" aria-hidden="true">
