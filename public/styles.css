@@ -211,11 +211,10 @@ body.menu-open .nav-overlay{ visibility:visible; opacity:1; transform:translateY
    WRITINGS LIST
    ============================================================ */
 .writings-list{ border-top:1px solid var(--rule); }
-.wr{ display:grid; grid-template-columns:72px 1fr auto; align-items:center; gap:24px;
+.wr{ display:grid; grid-template-columns:1fr auto; align-items:center; gap:24px;
   padding:28px 0; border-bottom:1px solid var(--rule); text-decoration:none; color:var(--ink);
   transition:padding-left .3s cubic-bezier(.2,.7,.2,1), background .3s; }
 .wr:hover{ padding-left:18px; background:var(--paper-2); }
-.wr .wn{ font-size:14px; letter-spacing:.18em; color:var(--gold-deep); }
 .wr .wt{ font-size:clamp(20px,2.4vw,28px); font-weight:500; line-height:1.15; }
 .wr .wm{ display:inline-flex; align-items:center; gap:10px; font-size:13px; letter-spacing:.14em;
   text-transform:uppercase; color:var(--muted); white-space:nowrap; }
@@ -223,8 +222,7 @@ body.menu-open .nav-overlay{ visibility:visible; opacity:1; transform:translateY
 .wr:hover .arrow{ transform:translateX(6px); }
 .wr:hover .wm{ color:var(--oxblood); }
 @media (max-width:680px){
-  .wr{ grid-template-columns:1fr; gap:8px; }
-  .wr .wm{ margin-top:4px; }
+  .wr{ gap:16px; }
 }
 
 /* ============================================================

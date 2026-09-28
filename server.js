@@ -37,9 +37,55 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 // ── Content helpers ───────────────────────────────────────────────────────────
+// Text that used to be hard-coded in the templates. Filled in underneath the
+// stored content so an existing content.json picks these up without losing
+// anything, and the first edit writes them into the file.
+const CONTENT_DEFAULTS = {
+  home: {
+    method: {
+      label: 'The Method',
+      heading: 'The First Principles Violin System',
+      cta: 'Explore the method →',
+      p1Title: 'Biomechanics',
+      p1Desc: 'Movement optimised for efficiency and power — reducing tension, preventing injury.',
+      p2Title: 'Acoustics',
+      p2Desc: 'The science of sound: how string, wood, and bow create true intonation and tone.',
+      p3Title: 'Cognition',
+      p3Desc: 'Score analysis and focus that make consistent, expressive performance possible.'
+    }
+  },
+  firstPrinciples: {
+    fundamentalsLabel: 'The Fundamentals',
+    method1Label: 'Biomechanics in Action',
+    method1Desc: 'Optimise every movement and posture for efficiency and power — reducing tension and preventing injury.',
+    method2Label: 'Fundamental Acoustics',
+    method2Desc: 'The science of sound production: how string, wood, and bow pressure create true intonation and tone.',
+    method3Label: 'Mental Cognition',
+    method3Desc: 'Score analysis, mental mapping, and focus that ensure consistent, expressive performance.'
+  },
+  pages: {
+    recordings: { label: 'Recordings', heading: 'Selected performances.', eyebrow: 'Hover to play' },
+    writings: { label: 'Writings', heading: 'Notes on the first principles.', eyebrow: 'Technique · Structure · Practice' }
+  }
+};
+
+function fillDefaults(target, defaults) {
+  Object.entries(defaults).forEach(([k, v]) => {
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      if (!target[k] || typeof target[k] !== 'object') target[k] = {};
+      fillDefaults(target[k], v);
+    } else if (target[k] === undefined) {
+      target[k] = v;
+    }
+  });
+  return target;
+}
+
 function readContent() {
-  try { return JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8')); }
-  catch (e) { return {}; }
+  let c;
+  try { c = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8')); }
+  catch (e) { c = {}; }
+  return fillDefaults(c, CONTENT_DEFAULTS);
 }
 function writeContent(data) {
   try {
@@ -132,7 +178,7 @@ app.get('/first-principles', (req, res) => {
 
 app.get('/writings', (req, res) => {
   const c = readContent();
-  res.render('writings', { site: c.site, writings: c.writings, page: 'writings' });
+  res.render('writings', { site: c.site, writings: c.writings, pageText: c.pages.writings, page: 'writings' });
 });
 
 // Individual essay pages
@@ -148,7 +194,7 @@ app.get('/writings/:slug', (req, res) => {
 
 app.get('/recordings', (req, res) => {
   const c = readContent();
-  res.render('recordings', { site: c.site, recordings: c.recordings, page: 'recordings' });
+  res.render('recordings', { site: c.site, recordings: c.recordings, pageText: c.pages.recordings, page: 'recordings' });
 });
 
 // ── Admin auth routes ─────────────────────────────────────────────────────────

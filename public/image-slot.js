@@ -115,6 +115,18 @@
       .then(() => { saving = false; if (saveDirty) { saveDirty = false; save(); } });
   }
 
+  // On the live site, a slot carrying data-edit-image is bound to a
+  // content.json key. When an admin is signed in (body[data-admin-mode]),
+  // drops go to the server instead of the in-memory sidecar, which has no
+  // writer outside the design tool and would be lost on the next page load.
+  function serverKey(el) {
+    if (!document.body || !document.body.hasAttribute('data-admin-mode')) return null;
+    return el.getAttribute('data-edit-image') || null;
+  }
+  function canIngest(el) {
+    return !!(window.omelette && window.omelette.writeFile) || !!serverKey(el);
+  }
+
   const S_MAX = 5;
   const clampS = (s) => Math.max(1, Math.min(S_MAX, s));
 
@@ -266,7 +278,7 @@
       this._subFn = () => this._render();
       // Shadow-DOM listeners live with the shadow DOM — bound once here so
       // disconnect/reconnect (e.g. React remount) doesn't stack handlers.
-      this._empty.addEventListener('click', () => this._input.click());
+      this._empty.addEventListener('click', () => { if (canIngest(this)) this._input.click(); });
       root.addEventListener('click', (e) => {
         const act = e.target && e.target.getAttribute && e.target.getAttribute('data-act');
         if (act === 'replace') { this._exitReframe(true); this._input.click(); }
@@ -444,6 +456,7 @@
     // handleEvent — one listener object for all four drag events keeps the
     // add/remove symmetric and the depth counter correct.
     handleEvent(e) {
+      if (!canIngest(this)) return;
       if (e.type === 'dragenter' || e.type === 'dragover') {
         // Without preventDefault the browser never fires 'drop'.
         e.preventDefault();
@@ -475,6 +488,8 @@
       // newer drop during that window would be clobbered when this await
       // resumes — bump + capture a generation so stale encodes bail.
       const gen = ++this._gen;
+      const key = serverKey(this);
+      if (key) return this._upload(file, key, gen);
       try {
         const w = this.clientWidth || this.offsetWidth || MAX_DIM;
         const url = await toDataUrl(file, w);
@@ -491,6 +506,24 @@
         if (gen !== this._gen) return;
         this._setError('Could not read that image.');
         console.warn('<image-slot> ingest failed:', err);
+      }
+    }
+
+    async _upload(file, key, gen) {
+      const fd = new FormData();
+      fd.append('image', file);
+      fd.append('key', key);
+      try {
+        const r = await fetch('/admin/api/upload', { method: 'POST', body: fd });
+        const d = r.ok ? await r.json() : null;
+        if (!d || !d.ok || !d.url) throw new Error('upload failed');
+        if (gen !== this._gen) return;
+        this._exitReframe(false);
+        this.setAttribute('src', d.url);
+      } catch (err) {
+        if (gen !== this._gen) return;
+        this._setError('Upload failed — image not saved.');
+        console.warn('<image-slot> upload failed:', err);
       }
     }
 
