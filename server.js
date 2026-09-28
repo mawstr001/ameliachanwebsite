@@ -67,7 +67,7 @@ const CONTENT_DEFAULTS = {
     method3Desc: 'Score analysis, mental mapping, and focus that ensure consistent, expressive performance.'
   },
   site: {
-    copyright: '© 2026 Amelia Chan · Violinist'
+    copyright: '© 2026 Amelia Chan. All Rights Reserved.'
   },
   pages: {
     recordings: { label: 'Recordings', heading: 'Recordings', eyebrow: 'Hover to play' },
@@ -100,6 +100,11 @@ const MIGRATIONS = [
   ['2026-09-recordings-heading', c => {
     const r = c.pages && c.pages.recordings;
     if (r && r.heading === 'Selected performances.') r.heading = 'Recordings';
+  }],
+  ['2026-09-copyright-all-rights-reserved', c => {
+    if (c.site && c.site.copyright === '© 2026 Amelia Chan · Violinist') {
+      c.site.copyright = '© 2026 Amelia Chan. All Rights Reserved.';
+    }
   }]
 ];
 
