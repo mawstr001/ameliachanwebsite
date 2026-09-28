@@ -91,6 +91,20 @@ body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,
 
 <main class="main">
   <h1 class="page-title">Dashboard</h1>
+  <% var gs = githubSync; %>
+  <% if (!gs.configured) { %>
+  <div style="margin:0 0 24px;padding:14px 18px;border:1px solid #b5563f;background:rgba(181,86,63,.12);border-radius:4px;font-size:13px;line-height:1.5">
+    <b>Edits are not being saved to GitHub.</b> GITHUB_TOKEN is not set, so changes made here are lost whenever the site restarts or redeploys.
+  </div>
+  <% } else if (gs.lastError) { %>
+  <div style="margin:0 0 24px;padding:14px 18px;border:1px solid #b5563f;background:rgba(181,86,63,.12);border-radius:4px;font-size:13px;line-height:1.5">
+    <b>GitHub save problem:</b> <%= gs.lastError %>
+  </div>
+  <% } else { %>
+  <div style="margin:0 0 24px;padding:14px 18px;border:1px solid rgba(47,143,80,.5);background:rgba(47,143,80,.1);border-radius:4px;font-size:13px;line-height:1.5">
+    Edits are saved to GitHub automatically.<% if (gs.lastSaved) { %> Last saved <%= gs.lastSaved.toLocaleString('en-GB', { timeZone: 'Asia/Hong_Kong' }) %> (HK time).<% } %>
+  </div>
+  <% } %>
   <p class="page-sub">// Content Management System</p>
 
   <div class="cards">
