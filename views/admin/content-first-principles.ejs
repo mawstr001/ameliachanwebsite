@@ -51,10 +51,7 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
     <div class="field"><label>Label (above heading)</label><input type="text" name="firstPrinciples.sectionNum" value="<%= fp.sectionNum %>"></div>
     <div class="field"><label>Heading</label><input type="text" name="firstPrinciples.heading" value="<%= fp.heading %>"><div class="hint">Use \n for line breaks</div></div>
 
-    <div class="section-title">The Fundamentals</div>
-    <div class="field"><label>Opening Paragraph (larger text)</label><textarea class="tall" name="firstPrinciples.fundamentalsP1"><%= fp.fundamentalsP1 || '' %></textarea></div>
-    <div class="field"><label>Second Paragraph</label><textarea class="tall" name="firstPrinciples.fundamentalsP2"><%= fp.fundamentalsP2 || '' %></textarea></div>
-    <div class="field"><label>Closing Paragraph (leads into the three components)</label><textarea name="firstPrinciples.fundamentalsP3"><%= fp.fundamentalsP3 || '' %></textarea></div>
+    <div class="field"><label>Button Text (links to the Archive page)</label><input type="text" name="firstPrinciples.ctaLabel" value="<%= fp.ctaLabel %>"></div>
 
     <div class="section-title">Three Interconnected Components</div>
     <div class="note">These appear as a numbered list beside the colour-block graphic.</div>

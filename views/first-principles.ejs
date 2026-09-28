@@ -26,67 +26,47 @@
 <main>
 
 <!-- ============================ THE METHOD ============================ -->
-<section class="band">
-  <div class="wrap">
-    <div class="method reveal">
-      <div>
-        <div class="label" data-edit="firstPrinciples.sectionNum"><%= fp.sectionNum %></div>
-        <h2 class="h-section" style="margin-top:14px" data-edit="firstPrinciples.heading"><%= fp.heading %></h2>
-        <ol class="principles" style="margin-top:44px">
-          <li>
-            <span class="n">1</span>
-            <div>
-              <h3 data-edit="firstPrinciples.method1Label"><%= fp.method1Label %></h3>
-              <p data-edit="firstPrinciples.method1Desc"><%= fp.method1Desc %></p>
-            </div>
-          </li>
-          <li>
-            <span class="n">2</span>
-            <div>
-              <h3 data-edit="firstPrinciples.method2Label"><%= fp.method2Label %></h3>
-              <p data-edit="firstPrinciples.method2Desc"><%= fp.method2Desc %></p>
-            </div>
-          </li>
-          <li>
-            <span class="n">3</span>
-            <div>
-              <h3 data-edit="firstPrinciples.method3Label"><%= fp.method3Label %></h3>
-              <p data-edit="firstPrinciples.method3Desc"><%= fp.method3Desc %></p>
-            </div>
-          </li>
-        </ol>
-      </div>
-      <div class="fp-mark" data-edit-image="firstPrinciples.logoImage">
-        <% if (fp.logoImage) { %>
-        <img src="<%= fp.logoImage %>" alt="<%= fp.logoAlt %>" />
-        <% } else { %>
-        <div class="colorblocks" aria-hidden="true">
-          <div class="cb-ox"></div>
-          <div class="cb-gd"></div>
-          <div class="cb-nv"></div>
+<!-- Same layout as the Home hero: text and button on the left, image on the right -->
+<section class="wrap hero">
+  <div>
+    <div class="label" style="font-size:16px" data-edit="firstPrinciples.sectionNum"><%= fp.sectionNum %></div>
+    <h1 class="hero-name fp-title" data-edit="firstPrinciples.heading"><%= fp.heading %></h1>
+    <ol class="principles fp-principles">
+      <li>
+        <span class="n">1</span>
+        <div>
+          <h3 data-edit="firstPrinciples.method1Label"><%= fp.method1Label %></h3>
+          <p data-edit="firstPrinciples.method1Desc"><%= fp.method1Desc %></p>
         </div>
-        <% } %>
-      </div>
-    </div>
-    <div class="scroll-cue" aria-hidden="true">
-      <span>Scroll</span>
-      <span class="scroll-cue-arrow">&darr;</span>
-    </div>
+      </li>
+      <li>
+        <span class="n">2</span>
+        <div>
+          <h3 data-edit="firstPrinciples.method2Label"><%= fp.method2Label %></h3>
+          <p data-edit="firstPrinciples.method2Desc"><%= fp.method2Desc %></p>
+        </div>
+      </li>
+      <li>
+        <span class="n">3</span>
+        <div>
+          <h3 data-edit="firstPrinciples.method3Label"><%= fp.method3Label %></h3>
+          <p data-edit="firstPrinciples.method3Desc"><%= fp.method3Desc %></p>
+        </div>
+      </li>
+    </ol>
+    <a class="btn hero-cta" href="/writings"><span data-edit="firstPrinciples.ctaLabel"><%= fp.ctaLabel %></span></a>
   </div>
-</section>
-
-<!-- ============================ THE FUNDAMENTALS ============================ -->
-<section class="band alt">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div class="sec-title-wrap">
-        <div class="label" data-edit="firstPrinciples.fundamentalsLabel"><%= fp.fundamentalsLabel %></div>
+  <div class="photo-wrap">
+    <div class="fp-mark" data-edit-image="firstPrinciples.logoImage">
+      <% if (fp.logoImage) { %>
+      <img src="<%= fp.logoImage %>" alt="<%= fp.logoAlt %>" />
+      <% } else { %>
+      <div class="colorblocks" aria-hidden="true">
+        <div class="cb-ox"></div>
+        <div class="cb-gd"></div>
+        <div class="cb-nv"></div>
       </div>
-    </div>
-    <div class="fundamentals-body reveal" style="max-width:780px">
-      <p style="font-size:21px;line-height:1.6;color:var(--ink);margin:0 0 1.4em" data-edit="firstPrinciples.fundamentalsP1"><%= fp.fundamentalsP1 %></p>
-      <p style="font-size:19px;line-height:1.65;color:var(--ink-soft);margin:0 0 1.4em" data-edit="firstPrinciples.fundamentalsP2"><%= fp.fundamentalsP2 %></p>
-      <p style="font-size:19px;line-height:1.65;color:var(--ink-soft);margin:0" data-edit="firstPrinciples.fundamentalsP3"><%= fp.fundamentalsP3 %></p>
+      <% } %>
     </div>
   </div>
 </section>
