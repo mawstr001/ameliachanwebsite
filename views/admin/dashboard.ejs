@@ -94,7 +94,9 @@ body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,
   <% var gs = githubSync; %>
   <% if (!gs.configured) { %>
   <div style="margin:0 0 24px;padding:14px 18px;border:1px solid #b5563f;background:rgba(181,86,63,.12);border-radius:4px;font-size:13px;line-height:1.5">
-    <b>Edits are not being saved to GitHub.</b> GITHUB_TOKEN is not set, so changes made here are lost whenever the site restarts or redeploys.
+    <b>Edits are not being saved to GitHub.</b> The running site has no usable GITHUB_TOKEN setting, so changes made here are lost whenever the site restarts or redeploys.
+    <% if (gs.tokenSetButBlank) { %><br>A GITHUB_TOKEN setting exists but its value is empty — paste the token into the value box in Render.<% } %>
+    <% if (gs.similarNames.length) { %><br>Similar setting names the site can see: <b><%= gs.similarNames.join(', ') %></b> — the name must be exactly <b>GITHUB_TOKEN</b>.<% } %>
   </div>
   <% } else if (gs.lastError) { %>
   <div style="margin:0 0 24px;padding:14px 18px;border:1px solid #b5563f;background:rgba(181,86,63,.12);border-radius:4px;font-size:13px;line-height:1.5">

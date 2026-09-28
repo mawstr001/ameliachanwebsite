@@ -57,27 +57,6 @@
   </div>
 </section>
 
-<!-- ============================ PRESS ============================ -->
-<section class="band alt">
-  <div class="wrap">
-    <%
-      var allPress = press.slice(0, 3);
-      function highlightQuote(q) {
-        if (!q.highlight) return q.quote;
-        return q.quote.replace(q.highlight, '<mark>' + q.highlight + '</mark>');
-      }
-    %>
-    <div class="press-row">
-      <% allPress.forEach(function(q) { %>
-      <figure class="press-quote reveal">
-        <blockquote><%- highlightQuote(q) %></blockquote>
-        <figcaption><%= q.source %></figcaption>
-      </figure>
-      <% }); %>
-    </div>
-  </div>
-</section>
-
 </main>
 
 <%- include('partials/footer', { site }) %>
