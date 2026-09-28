@@ -21,7 +21,9 @@ const SESSIONS_DIR = path.join(DATA_DIR, 'sessions');
 
 [BACKUPS_DIR, UPLOADS_DIR, SESSIONS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
 
-// Seed content.json onto a fresh disk from the bundled default
+// Seed content.json onto a fresh disk from the bundled default. This is the
+// only time the bundled data/content.json is used: once the live file exists,
+// code updates never overwrite it.
 if (!fs.existsSync(CONTENT_FILE)) {
   fs.copyFileSync(path.join(__dirname, 'data', 'content.json'), CONTENT_FILE);
 }
@@ -63,6 +65,9 @@ const CONTENT_DEFAULTS = {
     method3Label: 'Mental Cognition',
     method3Desc: 'Score analysis, mental mapping, and focus that ensure consistent, expressive performance.'
   },
+  site: {
+    copyright: '© 2026 Amelia Chan · Violinist'
+  },
   pages: {
     recordings: { label: 'Recordings', heading: 'Recordings', eyebrow: 'Hover to play' },
     writings: { label: 'Archive', heading: 'The Archive', eyebrow: 'Technique · Structure · Practice' }
@@ -81,23 +86,28 @@ function fillDefaults(target, defaults) {
   return target;
 }
 
-// One-time page text renames (Writings → Archive, Recordings heading).
-// Only replaces the untouched old defaults, so text the admin has
-// customised is kept.
-function migrateContent(c) {
-  const w = c.pages && c.pages.writings;
-  if (w && w.label === 'Writings') w.label = 'Archive';
-  if (w && w.heading === 'Notes on the first principles.') w.heading = 'The Archive';
-  const r = c.pages && c.pages.recordings;
-  if (r && r.heading === 'Selected performances.') r.heading = 'Recordings';
-  return c;
-}
+// One-time text changes shipped with a code update. Each runs once, at
+// startup, and is recorded in content.json's _migrations list so it never
+// runs again — after that the saved text is only ever changed by an admin.
+// Each one only replaces untouched old defaults, so customised text is kept.
+const MIGRATIONS = [
+  ['2026-09-rename-writings-to-archive', c => {
+    const w = c.pages && c.pages.writings;
+    if (w && w.label === 'Writings') w.label = 'Archive';
+    if (w && w.heading === 'Notes on the first principles.') w.heading = 'The Archive';
+  }],
+  ['2026-09-recordings-heading', c => {
+    const r = c.pages && c.pages.recordings;
+    if (r && r.heading === 'Selected performances.') r.heading = 'Recordings';
+  }]
+];
 
 function readContent() {
   let c;
   try { c = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8')); }
   catch (e) { c = {}; }
-  return fillDefaults(migrateContent(c), CONTENT_DEFAULTS);
+  // Only fills keys that are missing; never replaces saved text.
+  return fillDefaults(c, CONTENT_DEFAULTS);
 }
 function writeContent(data) {
   try {
@@ -108,6 +118,34 @@ function writeContent(data) {
   } catch (_) {}
   fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), 'utf8');
 }
+
+// Write every piece of editable text into content.json so the file holds
+// all of it, and apply any one-time migrations that haven't run yet.
+// Existing saved text is never replaced.
+(function prepareContentFile() {
+  let stored;
+  try { stored = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8')); }
+  catch (e) {
+    console.error('content.json could not be read — leaving it untouched:', e.message);
+    return;
+  }
+  const before = JSON.stringify(stored);
+  fillDefaults(stored, CONTENT_DEFAULTS);
+  const done = Array.isArray(stored._migrations) ? stored._migrations : [];
+  MIGRATIONS.forEach(([id, run]) => {
+    if (done.includes(id)) return;
+    run(stored);
+    done.push(id);
+  });
+  stored._migrations = done;
+  if (JSON.stringify(stored) !== before) writeContent(stored);
+})();
+
+if (!process.env.DATA_DIR && process.env.NODE_ENV === 'production') {
+  console.warn('WARNING: DATA_DIR is not set, so site content is stored inside the app folder (' +
+    CONTENT_FILE + ') and a redeploy or git pull could replace it. Set DATA_DIR to a folder outside the app.');
+}
+
 function deepSet(obj, keyPath, value) {
   const keys = keyPath.split('.');
   let cur = obj;
