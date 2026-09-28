@@ -40,7 +40,11 @@
         <div class="rec-plate">
           <image-slot id="rec-<%= i+1 %>" placeholder="Drop cover art"
             src="<%= rec.image %>" data-edit-image="recordings[<%= i %>].image"></image-slot>
-          <% if (rec.link && rec.link !== '#') { %>
+          <% if (rec.videoFile) { %>
+          <button type="button" class="play" data-video="<%= rec.videoFile %>" data-poster="<%= rec.image %>" aria-label="Play video: <%= rec.title %>">
+            <span class="disc"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 1 L12 7 L2 13 Z"/></svg></span>
+          </button>
+          <% } else if (rec.link && rec.link !== '#') { %>
           <a class="play" href="<%= rec.link %>" target="_blank" rel="noopener" aria-label="Watch on YouTube">
             <span class="disc"><svg width="15" height="15" viewBox="0 0 14 14"><path d="M2 1 L12 7 L2 13 Z"/></svg></span>
           </a>
@@ -66,6 +70,43 @@
 
 <script src="/image-slot.js"></script>
 <script src="/site.js"></script>
+<script>
+// Uploaded recordings play in a full-screen player on the page.
+(function () {
+  var box = null, opener = null;
+  function open(btn) {
+    opener = btn;
+    box = document.createElement('div');
+    box.className = 'video-lightbox';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-label', btn.getAttribute('aria-label'));
+    box.innerHTML = '<button type="button" class="vl-close" aria-label="Close video">&times;</button><video controls autoplay playsinline preload="metadata"></video>';
+    var v = box.querySelector('video');
+    v.src = btn.getAttribute('data-video');
+    if (btn.getAttribute('data-poster')) v.poster = btn.getAttribute('data-poster');
+    document.body.appendChild(box);
+    document.body.style.overflow = 'hidden';
+    box.addEventListener('click', function (e) { if (e.target === box || e.target.closest('.vl-close')) close(); });
+    box.querySelector('.vl-close').focus();
+  }
+  function close() {
+    if (!box) return;
+    box.querySelector('video').pause();
+    box.remove();
+    box = null;
+    document.body.style.overflow = '';
+    if (opener) opener.focus();
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-video]');
+    if (!btn || document.body.classList.contains('admin-mode-on')) return;
+    e.preventDefault();
+    open(btn);
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
+</script>
 <% if (isAdmin) { %><script src="/admin-bar.js"></script><% } %>
 </body>
 </html>
