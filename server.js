@@ -65,7 +65,7 @@ const CONTENT_DEFAULTS = {
   },
   pages: {
     recordings: { label: 'Recordings', heading: 'Selected performances.', eyebrow: 'Hover to play' },
-    writings: { label: 'Archive', heading: 'Notes on the first principles.', eyebrow: 'Technique · Structure · Practice' }
+    writings: { label: 'Archive', heading: 'The Archive', eyebrow: 'Technique · Structure · Practice' }
   }
 };
 
@@ -81,11 +81,12 @@ function fillDefaults(target, defaults) {
   return target;
 }
 
-// One-time rename of the Writings page label to Archive. Only replaces the
-// untouched old default, so a label the admin has customised is kept.
+// One-time rename of the Writings page to Archive. Only replaces the
+// untouched old defaults, so text the admin has customised is kept.
 function migrateContent(c) {
   const w = c.pages && c.pages.writings;
   if (w && w.label === 'Writings') w.label = 'Archive';
+  if (w && w.heading === 'Notes on the first principles.') w.heading = 'The Archive';
   return c;
 }
 
