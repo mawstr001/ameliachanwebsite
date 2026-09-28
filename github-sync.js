@@ -13,7 +13,7 @@
 
 const fs = require('fs');
 
-const TOKEN = process.env.GITHUB_TOKEN || '';
+const TOKEN = (process.env.GITHUB_TOKEN || '').trim();
 const REPO = process.env.GITHUB_REPO || 'mawstr001/ameliachanwebsite';
 const BRANCH = process.env.GITHUB_BRANCH || 'main';
 const CONTENT_PATH = 'data/content.json';
@@ -25,7 +25,11 @@ const status = {
   configured: !!TOKEN,
   ready: false,        // true once startup pull succeeded; pushes wait for it
   lastSaved: null,
-  lastError: null
+  lastError: null,
+  // Names only (never values) of env vars that look like a misspelt token
+  // setting, shown on the dashboard to help spot a typo in Render.
+  similarNames: Object.keys(process.env).filter(k => k !== 'GITHUB_TOKEN' && /github|token/i.test(k)),
+  tokenSetButBlank: process.env.GITHUB_TOKEN !== undefined && !TOKEN
 };
 
 function api(path, opts = {}) {
