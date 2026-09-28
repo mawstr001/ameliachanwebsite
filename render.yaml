@@ -6,16 +6,19 @@ services:
     startCommand: npm start
     disk:
       name: amelia-data
-      mountPath: /opt/data
+      mountPath: /data
       sizeGB: 1
     envVars:
       - key: ADMIN_PASSWORD
         generateValue: false
       - key: NODE_ENV
         value: production
+      # Where content, photos and history are saved (the disk above). The
+      # server also finds a disk at /data or /opt/data on its own.
       - key: DATA_DIR
-        value: /opt/data
-      # Admin edits and uploads are committed to the repo (see github-sync.js).
+        value: /data
+      # Optional backup: admin edits and uploads are also committed to the
+      # repo (see github-sync.js).
       # Fine-grained token: this repo only, "Contents: Read and write".
       - key: GITHUB_TOKEN
         sync: false

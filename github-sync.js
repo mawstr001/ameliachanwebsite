@@ -99,8 +99,14 @@ function enqueue(fn) {
 // Startup: pull the latest content from GitHub into the local content file.
 // Retries a few times; if GitHub can't be reached, pushes stay off so stale
 // local content can never overwrite newer content in the repo.
-async function pullContent(contentFile) {
+async function pullContent(contentFile, { keepLocal = false } = {}) {
   if (!status.configured) return;
+  if (keepLocal) {
+    // Content on a persistent disk is the master copy; GitHub is a backup.
+    status.ready = true;
+    console.log('GitHub sync: using saved content on the persistent disk; GitHub is a backup copy');
+    return;
+  }
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const f = await getFile(CONTENT_PATH);
