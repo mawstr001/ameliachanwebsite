@@ -4,6 +4,7 @@ const FileStore = require('session-file-store')(session);
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const githubSync = require('./github-sync');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -117,12 +118,13 @@ function writeContent(data) {
     if (backups.length > 30) backups.slice(0, backups.length - 30).forEach(f => fs.unlinkSync(path.join(BACKUPS_DIR, f)));
   } catch (_) {}
   fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), 'utf8');
+  githubSync.queueContent(CONTENT_FILE);
 }
 
 // Write every piece of editable text into content.json so the file holds
 // all of it, and apply any one-time migrations that haven't run yet.
 // Existing saved text is never replaced.
-(function prepareContentFile() {
+function prepareContentFile() {
   let stored;
   try { stored = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8')); }
   catch (e) {
@@ -139,7 +141,7 @@ function writeContent(data) {
   });
   stored._migrations = done;
   if (JSON.stringify(stored) !== before) writeContent(stored);
-})();
+}
 
 if (!process.env.DATA_DIR && process.env.NODE_ENV === 'production') {
   console.warn('WARNING: DATA_DIR is not set, so site content is stored inside the app folder (' +
@@ -180,6 +182,17 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('trust proxy', 1); // needed for secure cookies behind Render/Nginx proxy
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(UPLOADS_DIR));
+// An upload missing from this server's disk (wiped by a restart) is fetched
+// back from the GitHub repo, saved locally, then served.
+app.get('/uploads/:name', async (req, res, next) => {
+  const name = path.basename(req.params.name);
+  if (!/^[\w.-]+$/.test(name)) return next();
+  try {
+    const dest = path.join(UPLOADS_DIR, name);
+    if (await githubSync.fetchUpload(name, dest)) return res.sendFile(dest);
+  } catch (e) { console.error('GitHub sync:', e.message); }
+  next();
+});
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({
@@ -196,6 +209,7 @@ const SITE_URL = (process.env.SITE_URL || 'https://ameliachanviolin.com').replac
 app.use((req, res, next) => {
   res.locals.isAdmin = !!req.session.isAdmin;
   res.locals.siteUrl = SITE_URL;
+  res.locals.githubSync = githubSync.status;
   next();
 });
 
@@ -432,6 +446,7 @@ app.post('/admin/history/restore/:filename', requireAdmin, (req, res) => {
     fs.writeFileSync(path.join(BACKUPS_DIR, `content-${ts}.json`), fs.readFileSync(CONTENT_FILE));
   } catch (_) {}
   fs.copyFileSync(src, CONTENT_FILE);
+  githubSync.queueContent(CONTENT_FILE, 'restore from history');
   res.redirect('/admin/history?restored=1');
 });
 
@@ -459,6 +474,7 @@ app.post('/admin/api/update', requireAdmin, (req, res) => {
 app.post('/admin/api/upload', requireAdmin, upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   const url = '/uploads/' + req.file.filename;
+  githubSync.commitUpload(req.file.path, req.file.filename);
   if (req.body.key) {
     try {
       const c = readContent();
@@ -532,7 +548,15 @@ app.get('/robots.txt', (req, res) => {
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`Amelia Chan — server running at http://localhost:${PORT}`);
-  console.log(`Admin: http://localhost:${PORT}/admin`);
-});
+(async function start() {
+  // Load the latest saved content from GitHub before serving anything.
+  await githubSync.pullContent(CONTENT_FILE);
+  prepareContentFile();
+  app.listen(PORT, () => {
+    console.log(`Amelia Chan — server running at http://localhost:${PORT}`);
+    console.log(`Admin: http://localhost:${PORT}/admin`);
+    if (!githubSync.status.configured) {
+      console.warn('GitHub sync is OFF (GITHUB_TOKEN not set): admin edits are only stored on this server.');
+    }
+  });
+})();

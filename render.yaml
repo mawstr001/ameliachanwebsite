@@ -15,3 +15,7 @@ services:
         value: production
       - key: DATA_DIR
         value: /opt/data
+      # Admin edits and uploads are committed to the repo (see github-sync.js).
+      # Fine-grained token: this repo only, "Contents: Read and write".
+      - key: GITHUB_TOKEN
+        sync: false
