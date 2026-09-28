@@ -67,6 +67,8 @@ const CONTENT_DEFAULTS = {
     method3Desc: 'Score analysis, mental mapping, and focus that ensure consistent, expressive performance.'
   },
   site: {
+    threads: '',
+    x: '',
     copyright: '© 2026 Amelia Chan. All Rights Reserved.'
   },
   pages: {

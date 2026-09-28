@@ -294,30 +294,15 @@ body.menu-open .nav-overlay{ visibility:visible; opacity:1; transform:translateY
 }
 
 /* ============================================================
-   FOOTER — subscribe
+   FOOTER — social icons + copyright
    ============================================================ */
 .footer{ background:var(--dark); color:var(--paper); text-align:center; padding:0; margin-top:0; }
-.foot-inner{ max-width:620px; margin:0 auto; padding:clamp(58px,8vw,88px) 32px 46px;
+.foot-inner{ max-width:620px; margin:0 auto; padding:clamp(40px,6vw,56px) 32px 36px;
   display:flex; flex-direction:column; align-items:center; }
-.foot-mark{ font-size:30px; font-weight:500; }
-.foot-mark span{ display:block; font-size:13px; letter-spacing:.24em; text-transform:uppercase;
-  color:var(--gold); margin-top:10px; }
-.foot-h{ font-size:clamp(38px,5vw,58px); font-weight:500; line-height:1.02; margin:44px 0 0; }
-.foot-p{ font-size:18px; line-height:1.55; color:#cbc3b1; margin:18px 0 30px; max-width:44ch; }
-.subscribe{ display:flex; width:100%; max-width:480px; }
-.subscribe input{ flex:1; min-width:0; background:rgba(255,255,255,.05);
-  border:1px solid rgba(243,233,217,.26); border-right:none; color:var(--paper);
-  padding:15px 18px; font-family:var(--serif); font-size:17px; }
-.subscribe input::placeholder{ color:#9b9486; }
-.subscribe input:focus{ outline:none; border-color:var(--gold); }
-.subscribe button{ background:var(--gold); color:var(--ink); border:none; cursor:pointer;
-  padding:0 26px; font-family:var(--serif); font-size:15px; letter-spacing:.14em;
-  text-transform:uppercase; font-weight:600; transition:background .2s; white-space:nowrap; }
-.subscribe button:hover{ background:#d8c089; }
-.foot-social{ display:flex; gap:26px; flex-wrap:wrap; justify-content:center; margin-top:40px; }
-.foot-social a{ font-size:14px; letter-spacing:.12em; text-transform:uppercase; color:#bcb4a1; text-decoration:none; transition:color .2s; }
-.foot-social a:hover{ color:var(--gold); }
-.foot-fine{ margin-top:34px; display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
+.foot-social{ display:flex; gap:28px; flex-wrap:wrap; justify-content:center; }
+.foot-social a{ display:inline-flex; color:#bcb4a1; text-decoration:none; transition:color .2s; }
+.foot-social a:hover, .foot-social a:focus-visible{ color:var(--gold); }
+.foot-fine{ margin-top:28px; display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
 .foot-fine span{ font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:#8a8270; }
 
 ::selection{ background:var(--oxblood); color:var(--paper); }
