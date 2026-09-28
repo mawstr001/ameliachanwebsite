@@ -46,6 +46,7 @@ const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 // anything, and the first edit writes them into the file.
 const CONTENT_DEFAULTS = {
   home: {
+    left: { photoCredit: 'Photo credit: ABC' },
     method: {
       label: 'The Method',
       heading: 'The First Principles Violin System',
@@ -58,6 +59,7 @@ const CONTENT_DEFAULTS = {
       p3Desc: 'Score analysis and focus that make consistent, expressive performance possible.'
     }
   },
+  bio: { photoCredit: 'Photo credit: ABC' },
   firstPrinciples: {
     logoImage: '',
     logoAlt: 'First Principles Violin System logo',

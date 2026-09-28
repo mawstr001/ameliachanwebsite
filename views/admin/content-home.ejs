@@ -48,6 +48,7 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
   <form method="POST" action="/admin/content/home">
 
     <div class="section-title">Hero</div>
+    <div class="field"><label>Photo Credit (under the portrait)</label><input type="text" name="home.left.photoCredit" value="<%= home.left.photoCredit %>"><div class="hint">Leave empty to hide it.</div></div>
     <div class="note">The artist name "Amelia Chan" and the "Read Biography" button are fixed. Portrait image is managed under Images.</div>
     <div class="row-2">
       <div class="field"><label>Label (above name)</label><input type="text" name="home.left.kicker" value="<%= home.left.kicker %>"></div>
