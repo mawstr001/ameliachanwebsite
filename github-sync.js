@@ -145,4 +145,49 @@ async function fetchUpload(filename, destPath) {
   return true;
 }
 
-module.exports = { status, pullContent, queueContent, commitUpload, fetchUpload, REPO, BRANCH };
+// Step-by-step connection check for the admin dashboard. Reads only; never
+// commits. Returns { ok, steps: [{ ok, text }] } in plain language.
+async function check() {
+  const steps = [];
+  const add = (ok, text) => { steps.push({ ok, text }); return ok; };
+  const done = () => ({ ok: steps.every(s => s.ok), steps });
+
+  if (typeof fetch !== 'function') {
+    add(false, `The server is running Node ${process.version}, which is too old. Node 20 or newer is needed — redeploy so Render picks up the version set in package.json.`);
+    return done();
+  }
+  add(true, `Node ${process.version}`);
+  if (!add(!!TOKEN, TOKEN ? 'GITHUB_TOKEN is set' : 'GITHUB_TOKEN is not set on this server (Render → Environment), or the site was not redeployed after adding it.')) return done();
+
+  let r;
+  try {
+    r = await fetch(`${API}/repos/${REPO}`, {
+      signal: AbortSignal.timeout(10000),
+      headers: { Authorization: `Bearer ${TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'amelia-chan-site' }
+    });
+  } catch (e) {
+    add(false, 'Could not reach GitHub from the server: ' + e.message);
+    return done();
+  }
+  if (r.status === 401) { add(false, 'GitHub rejected the token (401). It may be mistyped, expired or revoked — create a new one and paste it into Render.'); return done(); }
+  if (r.status === 404 || r.status === 403) { add(false, `The token can't see ${REPO} (${r.status}). When creating the token, choose "Only select repositories" and pick ${REPO.split('/')[1]}. If the repo belongs to an organisation, the organisation may need to approve the token.`); return done(); }
+  if (!r.ok) { add(false, `GitHub answered ${r.status} when looking up ${REPO}.`); return done(); }
+  add(true, `Token can see ${REPO}`);
+  const repo = await r.json();
+  if (repo.permissions && !repo.permissions.push) {
+    add(false, 'The token can read the repo but not write to it. Edit the token on GitHub: Repository permissions → Contents → "Read and write".');
+    return done();
+  }
+  add(true, 'Token has write access');
+
+  try {
+    const f = await getFile(CONTENT_PATH);
+    add(!!f, f ? `Found ${CONTENT_PATH} on branch ${BRANCH}` : `${CONTENT_PATH} not found on branch ${BRANCH}`);
+  } catch (e) { add(false, e.message); }
+  add(status.ready, status.ready ? 'Content was loaded from GitHub at startup, so saves are switched on'
+    : 'Content was not loaded from GitHub at startup, so saves are switched off to protect newer content. Restart the service in Render once the steps above pass.');
+  if (status.lastError) add(false, 'Last save error: ' + status.lastError);
+  return done();
+}
+
+module.exports = { status, check, pullContent, queueContent, commitUpload, fetchUpload, REPO, BRANCH };

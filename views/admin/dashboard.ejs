@@ -107,6 +107,25 @@ body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,
     Edits are saved to GitHub automatically.<% if (gs.lastSaved) { %> Last saved <%= gs.lastSaved.toLocaleString('en-GB', { timeZone: 'Asia/Hong_Kong' }) %> (HK time).<% } %>
   </div>
   <% } %>
+  <div style="margin:-12px 0 24px">
+    <button type="button" id="gh-check" style="background:rgba(47,111,143,.3);color:#eef1f5;border:1px solid rgba(47,111,143,.5);border-radius:3px;padding:8px 14px;font:inherit;font-size:12px;cursor:pointer">Test GitHub connection</button>
+    <ul id="gh-check-out" style="list-style:none;margin:12px 0 0;padding:0;font-size:13px;line-height:1.7"></ul>
+  </div>
+  <script>
+  document.getElementById('gh-check').addEventListener('click', function () {
+    var out = document.getElementById('gh-check-out');
+    out.textContent = 'Checking…';
+    fetch('/admin/api/github-check').then(function (r) { return r.json(); }).then(function (d) {
+      out.innerHTML = '';
+      d.steps.forEach(function (s) {
+        var li = document.createElement('li');
+        li.textContent = (s.ok ? '✓ ' : '✗ ') + s.text;
+        li.style.color = s.ok ? '#7fcf9a' : '#e89a86';
+        out.appendChild(li);
+      });
+    }).catch(function () { out.textContent = 'Check failed — are you still logged in?'; });
+  });
+  </script>
   <p class="page-sub">// Content Management System</p>
 
   <div class="cards">

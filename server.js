@@ -463,6 +463,10 @@ app.get('/admin/images', requireAdmin, (req, res) => {
   res.render('admin/images', { content: c, saved: req.query.saved });
 });
 
+app.get('/admin/api/github-check', requireAdmin, async (req, res) => {
+  res.json(await githubSync.check());
+});
+
 // ── Admin API: update content key ─────────────────────────────────────────────
 app.post('/admin/api/update', requireAdmin, (req, res) => {
   const { key, value } = req.body;
