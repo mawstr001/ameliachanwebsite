@@ -65,7 +65,7 @@ const CONTENT_DEFAULTS = {
   },
   pages: {
     recordings: { label: 'Recordings', heading: 'Selected performances.', eyebrow: 'Hover to play' },
-    writings: { label: 'Writings', heading: 'Notes on the first principles.', eyebrow: 'Technique · Structure · Practice' }
+    writings: { label: 'Archive', heading: 'Notes on the first principles.', eyebrow: 'Technique · Structure · Practice' }
   }
 };
 
@@ -81,11 +81,19 @@ function fillDefaults(target, defaults) {
   return target;
 }
 
+// One-time rename of the Writings page label to Archive. Only replaces the
+// untouched old default, so a label the admin has customised is kept.
+function migrateContent(c) {
+  const w = c.pages && c.pages.writings;
+  if (w && w.label === 'Writings') w.label = 'Archive';
+  return c;
+}
+
 function readContent() {
   let c;
   try { c = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8')); }
   catch (e) { c = {}; }
-  return fillDefaults(c, CONTENT_DEFAULTS);
+  return fillDefaults(migrateContent(c), CONTENT_DEFAULTS);
 }
 function writeContent(data) {
   try {
