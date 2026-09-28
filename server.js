@@ -457,10 +457,64 @@ app.post('/admin/history/restore/:filename', requireAdmin, (req, res) => {
   res.redirect('/admin/history?restored=1');
 });
 
+// ── Admin: Backup (download / restore everything) ────────────────────────────
+// A backup is one JSON file: all content plus every uploaded photo (base64),
+// so the whole site can be kept offline or moved to a new host.
+const BACKUP_FORMAT = 'amelia-chan-site-backup';
+const restoreUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 500 * 1024 * 1024 } });
+
+function listUploads() {
+  try { return fs.readdirSync(UPLOADS_DIR).filter(f => !f.startsWith('.') && fs.statSync(path.join(UPLOADS_DIR, f)).isFile()); }
+  catch (e) { return []; }
+}
+
+app.get('/admin/backup', requireAdmin, (req, res) => {
+  res.render('admin/backup', { uploadCount: listUploads().length, restored: req.query.restored, error: req.query.error });
+});
+
+app.get('/admin/backup/download', requireAdmin, (req, res) => {
+  const uploads = {};
+  listUploads().forEach(f => { uploads[f] = fs.readFileSync(path.join(UPLOADS_DIR, f)).toString('base64'); });
+  const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+  res.set('Content-Disposition', `attachment; filename="amelia-chan-backup-${stamp}.json"`);
+  res.json({ format: BACKUP_FORMAT, version: 1, createdAt: new Date().toISOString(), content: readContent(), uploads });
+});
+
+app.post('/admin/backup/restore', requireAdmin, restoreUpload.single('backup'), async (req, res) => {
+  const fail = msg => res.redirect('/admin/backup?error=' + encodeURIComponent(msg));
+  if (!req.file) return fail('No file chosen.');
+  let data;
+  try { data = JSON.parse(req.file.buffer.toString('utf8')); }
+  catch (e) { return fail('That file is not a valid backup (it is not JSON).'); }
+
+  let content, uploads = {};
+  if (data && data.format === BACKUP_FORMAT) { content = data.content; uploads = data.uploads || {}; }
+  else { content = data; } // a plain content.json
+  if (!content || typeof content !== 'object' || Array.isArray(content) || !content.site) {
+    return fail("That file doesn't look like a site backup or content.json.");
+  }
+
+  let photos = 0;
+  for (const [name, b64] of Object.entries(uploads)) {
+    const safe = path.basename(name);
+    if (!/^[\w.-]+$/.test(safe) || typeof b64 !== 'string') continue;
+    const dest = path.join(UPLOADS_DIR, safe);
+    fs.writeFileSync(dest, Buffer.from(b64, 'base64'));
+    githubSync.commitUpload(dest, safe);
+    photos++;
+  }
+  writeContent(content); // saves the current version to History first, then syncs to GitHub
+  res.redirect('/admin/backup?restored=' + encodeURIComponent(`all text${photos ? ` and ${photos} photo${photos === 1 ? '' : 's'}` : ''}`));
+});
+
 // ── Admin: Images ─────────────────────────────────────────────────────────────
 app.get('/admin/images', requireAdmin, (req, res) => {
   const c = readContent();
   res.render('admin/images', { content: c, saved: req.query.saved });
+});
+
+app.get('/admin/api/github-check', requireAdmin, async (req, res) => {
+  res.json(await githubSync.check());
 });
 
 // ── Admin API: update content key ─────────────────────────────────────────────
