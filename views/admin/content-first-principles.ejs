@@ -47,15 +47,12 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
 
   <form method="POST" action="/admin/content/first-principles">
 
-    <div class="section-title">Page Header</div>
-    <div class="field"><label>Label (above heading)</label><input type="text" name="firstPrinciples.sectionNum" value="<%= fp.sectionNum %>"></div>
-    <div class="field"><label>Heading</label><input type="text" name="firstPrinciples.heading" value="<%= fp.heading %>"><div class="hint">Use \n for line breaks</div></div>
-
-    <div class="field"><label>Button Text (links to the Archive page)</label><input type="text" name="firstPrinciples.ctaLabel" value="<%= fp.ctaLabel %>"></div>
-
     <div class="section-title">Main Text</div>
     <div class="note">Select text, then use the bar for <b>bold</b>, <i>italic</i>, <u>underline</u> or size. Press Enter for a new line. The logo above it is managed under Images.</div>
     <div class="field"><textarea class="tall" name="firstPrinciples.body" data-rich><%= fp.body %></textarea></div>
+
+    <div class="section-title">Button</div>
+    <div class="field"><label>Button Text (links to the Archive page)</label><input type="text" name="firstPrinciples.ctaLabel" value="<%= fp.ctaLabel %>"></div>
 
     <div class="form-actions">
       <button class="btn-save" type="submit">Save Changes</button>

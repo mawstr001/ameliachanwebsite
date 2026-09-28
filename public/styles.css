@@ -182,8 +182,8 @@ body.menu-open .nav-overlay{ visibility:visible; opacity:1; transform:translateY
 .fp-page{ padding-block:clamp(48px,7vw,88px); }
 .fp-logo-top{ margin:0 0 clamp(32px,5vw,52px); }
 .fp-logo-top img{ display:block; width:100%; max-width:520px; height:auto; }
-.fp-body{ margin-top:32px; font-size:19px; line-height:1.6; color:var(--ink-soft); white-space:pre-line; overflow-wrap:anywhere; }
-.fp-title{ font-size:clamp(40px,4.6vw,64px); line-height:1.02; white-space:pre-line; }
+.fp-body{ margin-top:0; font-size:19px; line-height:1.6; color:var(--ink-soft); white-space:pre-line; overflow-wrap:anywhere; }
+.visually-hidden{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
 
 /* Logo spot beside the method heading: an uploaded logo, or the colour blocks */
 .fp-mark{ width:100%; }
