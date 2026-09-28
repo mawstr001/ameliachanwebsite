@@ -11,17 +11,35 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
-// When DATA_DIR is set (Render persistent disk), all mutable files live there.
-// Locally, fall back to the in-repo data/ folder and public/uploads/.
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
+// Where saved content, photos, history and sessions live. A persistent disk
+// keeps them across deploys and restarts: DATA_DIR if set, otherwise a disk
+// mounted at /data or /opt/data if one exists. Without one (local
+// development), fall back to the in-repo data/ folder and public/uploads/.
+function findPersistentDir() {
+  if (process.env.DATA_DIR) return process.env.DATA_DIR;
+  for (const d of ['/data', '/opt/data']) {
+    try {
+      fs.accessSync(d, fs.constants.W_OK);
+      if (fs.statSync(d).isDirectory()) return d;
+    } catch (e) { /* not there */ }
+  }
+  return null;
+}
+const PERSISTENT_DIR = findPersistentDir();
+const DATA_DIR = PERSISTENT_DIR || path.join(__dirname, 'data');
 const CONTENT_FILE = path.join(DATA_DIR, 'content.json');
 const BACKUPS_DIR = path.join(DATA_DIR, 'backups');
-const UPLOADS_DIR = process.env.DATA_DIR
+const UPLOADS_DIR = PERSISTENT_DIR
   ? path.join(DATA_DIR, 'uploads')
   : path.join(__dirname, 'public', 'uploads');
 const SESSIONS_DIR = path.join(DATA_DIR, 'sessions');
 
 [BACKUPS_DIR, UPLOADS_DIR, SESSIONS_DIR].forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }); });
+
+// On a persistent disk that already holds saved content, that content is the
+// master copy: GitHub is only a backup and is never loaded over it.
+const DISK_HAS_CONTENT = !!PERSISTENT_DIR && fs.existsSync(CONTENT_FILE);
+const storageStatus = { persistent: !!PERSISTENT_DIR, dir: DATA_DIR };
 
 // Seed content.json onto a fresh disk from the bundled default. This is the
 // only time the bundled data/content.json is used: once the live file exists,
@@ -155,9 +173,11 @@ function prepareContentFile() {
   if (JSON.stringify(stored) !== before) writeContent(stored);
 }
 
-if (!process.env.DATA_DIR && process.env.NODE_ENV === 'production') {
-  console.warn('WARNING: DATA_DIR is not set, so site content is stored inside the app folder (' +
-    CONTENT_FILE + ') and a redeploy or git pull could replace it. Set DATA_DIR to a folder outside the app.');
+if (PERSISTENT_DIR) {
+  console.log('Saving content, photos and history on the persistent disk at ' + PERSISTENT_DIR);
+} else if (process.env.NODE_ENV === 'production') {
+  console.warn('WARNING: no persistent disk found (DATA_DIR unset, no /data or /opt/data), so site content is stored ' +
+    'inside the app folder (' + CONTENT_FILE + ') and a redeploy or restart can erase it.');
 }
 
 function deepSet(obj, keyPath, value) {
@@ -223,6 +243,7 @@ app.use((req, res, next) => {
   res.locals.isAdmin = !!req.session.isAdmin;
   res.locals.siteUrl = SITE_URL;
   res.locals.githubSync = githubSync.status;
+  res.locals.storage = storageStatus;
   next();
 });
 
@@ -617,8 +638,9 @@ app.get('/robots.txt', (req, res) => {
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 (async function start() {
-  // Load the latest saved content from GitHub before serving anything.
-  await githubSync.pullContent(CONTENT_FILE);
+  // Load the latest saved content from GitHub before serving anything —
+  // unless the persistent disk already holds saved content, which wins.
+  await githubSync.pullContent(CONTENT_FILE, { keepLocal: DISK_HAS_CONTENT });
   prepareContentFile();
   app.listen(PORT, () => {
     console.log(`Amelia Chan — server running at http://localhost:${PORT}`);

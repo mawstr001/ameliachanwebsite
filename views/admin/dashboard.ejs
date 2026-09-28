@@ -92,7 +92,14 @@ body{ background:#0d1820; color:#eef1f5; font-family:"Hanken Grotesk",system-ui,
 <main class="main">
   <h1 class="page-title">Dashboard</h1>
   <% var gs = githubSync; %>
-  <% if (!gs.configured) { %>
+  <% if (storage.persistent) { %>
+  <div style="margin:0 0 24px;padding:14px 18px;border:1px solid rgba(47,143,80,.5);background:rgba(47,143,80,.1);border-radius:4px;font-size:13px;line-height:1.5">
+    <b>Edits are saved on the permanent disk</b> (<%= storage.dir %>), so they survive deploys and restarts.
+    <% if (!gs.configured) { %><br>GitHub backup copy: off (optional).
+    <% } else if (gs.lastError) { %><br>GitHub backup copy: problem — <%= gs.lastError %>
+    <% } else { %><br>GitHub backup copy: on.<% if (gs.lastSaved) { %> Last copied <%= gs.lastSaved.toLocaleString('en-GB', { timeZone: 'Asia/Hong_Kong' }) %> (HK time).<% } %><% } %>
+  </div>
+  <% } else if (!gs.configured) { %>
   <div style="margin:0 0 24px;padding:14px 18px;border:1px solid #b5563f;background:rgba(181,86,63,.12);border-radius:4px;font-size:13px;line-height:1.5">
     <b>Edits are not being saved to GitHub.</b> The running site has no usable GITHUB_TOKEN setting, so changes made here are lost whenever the site restarts or redeploys.
     <% if (gs.tokenSetButBlank) { %><br>A GITHUB_TOKEN setting exists but its value is empty — paste the token into the value box in Render.<% } %>
