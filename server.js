@@ -64,8 +64,8 @@ const CONTENT_DEFAULTS = {
     method3Desc: 'Score analysis, mental mapping, and focus that ensure consistent, expressive performance.'
   },
   pages: {
-    recordings: { label: 'Recordings', heading: 'Selected performances.', eyebrow: 'Hover to play' },
-    writings: { label: 'Archive', heading: 'Notes on the first principles.', eyebrow: 'Technique · Structure · Practice' }
+    recordings: { label: 'Recordings', heading: 'Recordings', eyebrow: 'Hover to play' },
+    writings: { label: 'Archive', heading: 'The Archive', eyebrow: 'Technique · Structure · Practice' }
   }
 };
 
@@ -81,11 +81,15 @@ function fillDefaults(target, defaults) {
   return target;
 }
 
-// One-time rename of the Writings page label to Archive. Only replaces the
-// untouched old default, so a label the admin has customised is kept.
+// One-time page text renames (Writings → Archive, Recordings heading).
+// Only replaces the untouched old defaults, so text the admin has
+// customised is kept.
 function migrateContent(c) {
   const w = c.pages && c.pages.writings;
   if (w && w.label === 'Writings') w.label = 'Archive';
+  if (w && w.heading === 'Notes on the first principles.') w.heading = 'The Archive';
+  const r = c.pages && c.pages.recordings;
+  if (r && r.heading === 'Selected performances.') r.heading = 'Recordings';
   return c;
 }
 
@@ -240,7 +244,8 @@ app.post('/admin/writings', requireAdmin, (req, res) => {
   const c = readContent();
   const { title, category, link, date } = req.body;
   const num = String(c.writings.length + 1).padStart(2, '0');
-  c.writings.push({
+  // Newest first — the list is kept in reverse-chronological order
+  c.writings.unshift({
     id: 'writing-' + Date.now(),
     number: num,
     title: title || 'Untitled',

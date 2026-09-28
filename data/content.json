@@ -516,12 +516,12 @@
   "pages": {
     "recordings": {
       "label": "Recordings",
-      "heading": "Selected performances.",
+      "heading": "Recordings",
       "eyebrow": "Hover to play"
     },
     "writings": {
       "label": "Archive",
-      "heading": "Notes on the first principles.",
+      "heading": "The Archive",
       "eyebrow": "Technique · Structure · Practice"
     }
   }
