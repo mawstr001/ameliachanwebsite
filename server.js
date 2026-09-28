@@ -59,6 +59,8 @@ const CONTENT_DEFAULTS = {
     }
   },
   firstPrinciples: {
+    logoImage: '',
+    logoAlt: 'First Principles Violin System logo',
     fundamentalsLabel: 'The Fundamentals',
     method1Label: 'Biomechanics in Action',
     method1Desc: 'Optimise every movement and posture for efficiency and power — reducing tension and preventing injury.',
