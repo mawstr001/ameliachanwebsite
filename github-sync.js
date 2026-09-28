@@ -34,6 +34,8 @@ const status = {
 
 function api(path, opts = {}) {
   return fetch(`${API}/repos/${REPO}/contents/${path}`, {
+    // Never let a slow GitHub hold up startup or a save indefinitely.
+    signal: AbortSignal.timeout(10000),
     ...opts,
     headers: {
       Authorization: `Bearer ${TOKEN}`,
