@@ -64,7 +64,7 @@ const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 // anything, and the first edit writes them into the file.
 const CONTENT_DEFAULTS = {
   home: {
-    left: { photoCredit: 'Photo credit: ABC' },
+    left: { name: 'Amelia Chan', photoCredit: 'Photo credit: ABC' },
     method: {
       label: 'The Method',
       heading: 'The First Principles Violin System',
