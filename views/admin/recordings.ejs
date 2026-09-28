@@ -76,6 +76,7 @@ input:focus{ border-color:#2f6f8f; }
   </div>
 
   <p class="section-title">// All Recordings (<%= recordings.length %>)</p>
+  <p class="vid-note">Each recording can have a YouTube URL, an uploaded video file (MP4, WebM or MOV, up to 500&nbsp;MB), or both. When a video file is uploaded, it plays on your site instead of opening YouTube.</p>
   <table class="rec-table">
     <thead>
       <tr>
@@ -84,10 +85,11 @@ input:focus{ border-color:#2f6f8f; }
         <th>Ensemble</th>
         <th>YouTube URL</th>
         <th>Actions</th>
+        <th>Video File</th>
       </tr>
     </thead>
     <tbody>
-      <% recordings.forEach(function(rec) { %>
+      <% recordings.forEach(function(rec, i) { %>
       <tr class="rec-row">
         <td>
           <% if (rec.image) { %>
@@ -111,11 +113,61 @@ input:focus{ border-color:#2f6f8f; }
             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
           </form>
         </td>
+        <td class="vid-cell">
+          <% if (rec.videoFile) { %><div class="vid-name" title="<%= rec.videoFile %>">&#127916; <%= rec.videoFile.split('/').pop() %></div><% } %>
+          <label class="btn btn-sm vid-upload"><%= rec.videoFile ? 'Replace video' : 'Upload video' %>
+            <input type="file" accept="video/mp4,video/webm,video/quicktime" data-video-key="recordings[<%= i %>].videoFile" hidden />
+          </label>
+          <% if (rec.videoFile) { %><button type="button" class="btn btn-sm btn-danger" data-remove-video="recordings[<%= i %>].videoFile">Remove</button><% } %>
+          <div class="vid-status"></div>
+        </td>
       </tr>
       <% }); %>
     </tbody>
   </table>
 </main>
 
+<style>
+.vid-note{ font-size:13px; color:#7b8794; margin:-6px 0 18px; max-width:760px; line-height:1.5; }
+.vid-cell{ min-width:190px; }
+.vid-name{ font-size:12px; color:#83b4cb; margin-bottom:6px; max-width:210px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.vid-upload{ display:inline-block; cursor:pointer; }
+.vid-status{ font-size:11px; color:#83b4cb; margin-top:6px; min-height:14px; }
+.vid-status.err{ color:#e08080; }
+</style>
+<script>
+document.querySelectorAll('[data-video-key]').forEach(function (input) {
+  input.addEventListener('change', function () {
+    var file = input.files[0];
+    if (!file) return;
+    var status = input.closest('td').querySelector('.vid-status');
+    if (file.size > 500 * 1024 * 1024) { status.className = 'vid-status err'; status.textContent = 'That video is larger than 500 MB.'; return; }
+    var fd = new FormData();
+    fd.append('key', input.getAttribute('data-video-key'));
+    fd.append('video', file);
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/admin/api/upload-video');
+    xhr.upload.onprogress = function (e) {
+      if (e.lengthComputable) status.textContent = 'Uploading… ' + Math.round(e.loaded / e.total * 100) + '%';
+    };
+    xhr.onload = function () {
+      var d = {}; try { d = JSON.parse(xhr.responseText); } catch (e) {}
+      if (xhr.status === 200 && d.ok) { status.textContent = 'Uploaded ✓'; location.reload(); }
+      else { status.className = 'vid-status err'; status.textContent = d.error || 'Upload failed.'; }
+    };
+    xhr.onerror = function () { status.className = 'vid-status err'; status.textContent = 'Upload failed — check your connection.'; };
+    status.className = 'vid-status'; status.textContent = 'Uploading… 0%';
+    xhr.send(fd);
+  });
+});
+document.querySelectorAll('[data-remove-video]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    if (!confirm('Remove this video? The recording will use its YouTube link (if any) instead.')) return;
+    fetch('/admin/api/update', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: btn.getAttribute('data-remove-video'), value: '' }) })
+      .then(function () { location.reload(); });
+  });
+});
+</script>
 </body>
 </html>

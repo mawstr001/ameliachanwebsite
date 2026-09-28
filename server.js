@@ -58,6 +58,18 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
+// Recordings can have an uploaded video file (played on the site) as well as
+// or instead of a YouTube link. Videos stay on the server's disk only: they're
+// too large for the GitHub backup copy and the downloadable backup file.
+const VIDEO_TYPES = /^video\/(mp4|webm|quicktime|ogg)$/;
+const VIDEO_EXT = /\.(mp4|m4v|webm|mov|ogv)$/i;
+const MAX_VIDEO_MB = 500;
+const uploadVideo = multer({
+  storage,
+  limits: { fileSize: MAX_VIDEO_MB * 1024 * 1024 },
+  fileFilter: (req, file, cb) => cb(null, VIDEO_TYPES.test(file.mimetype))
+});
+
 // ── Content helpers ───────────────────────────────────────────────────────────
 // Text that used to be hard-coded in the templates. Filled in underneath the
 // stored content so an existing content.json picks these up without losing
@@ -393,13 +405,16 @@ app.get('/admin/recordings', requireAdmin, (req, res) => {
 
 app.post('/admin/recordings', requireAdmin, (req, res) => {
   const c = readContent();
-  const { title, ensemble, link } = req.body;
+  const { title, ensemble, youtubeUrl } = req.body;
+  const yt = (youtubeUrl || '').trim();
   c.recordings.push({
     id: 'rec-' + Date.now(),
     title: title || 'Untitled',
     ensemble: ensemble || '',
-    link: link || '#',
-    image: ''
+    youtubeUrl: yt,
+    link: yt || '#',
+    image: '',
+    videoFile: ''
   });
   writeContent(c);
   res.redirect('/admin/recordings?saved=1');
@@ -410,6 +425,10 @@ app.post('/admin/recordings/:id/update', requireAdmin, (req, res) => {
   const idx = c.recordings.findIndex(r => r.id === req.params.id);
   if (idx !== -1) {
     c.recordings[idx] = { ...c.recordings[idx], ...req.body };
+    // The play button follows the YouTube URL typed in the admin.
+    if (typeof req.body.youtubeUrl === 'string') {
+      c.recordings[idx].link = req.body.youtubeUrl.trim() || '#';
+    }
     writeContent(c);
   }
   res.redirect('/admin/recordings?saved=1');
@@ -513,7 +532,7 @@ app.get('/admin/backup', requireAdmin, (req, res) => {
 
 app.get('/admin/backup/download', requireAdmin, (req, res) => {
   const uploads = {};
-  listUploads().forEach(f => { uploads[f] = fs.readFileSync(path.join(UPLOADS_DIR, f)).toString('base64'); });
+  listUploads().filter(f => !VIDEO_EXT.test(f)).forEach(f => { uploads[f] = fs.readFileSync(path.join(UPLOADS_DIR, f)).toString('base64'); });
   const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
   res.set('Content-Disposition', `attachment; filename="amelia-chan-backup-${stamp}.json"`);
   res.json({ format: BACKUP_FORMAT, version: 1, createdAt: new Date().toISOString(), content: readContent(), uploads });
@@ -569,6 +588,24 @@ app.post('/admin/api/update', requireAdmin, (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
+});
+
+// ── Admin API: upload video ───────────────────────────────────────────────────
+app.post('/admin/api/upload-video', requireAdmin, (req, res) => {
+  uploadVideo.single('video')(req, res, err => {
+    if (err) {
+      const msg = err.code === 'LIMIT_FILE_SIZE' ? `That video is larger than ${MAX_VIDEO_MB} MB.` : err.message;
+      return res.status(400).json({ error: msg });
+    }
+    if (!req.file) return res.status(400).json({ error: 'Please choose an MP4, WebM or MOV video file.' });
+    const url = '/uploads/' + req.file.filename;
+    if (req.body.key) {
+      const c = readContent();
+      deepSet(c, req.body.key, url);
+      writeContent(c);
+    }
+    res.json({ ok: true, url });
+  });
 });
 
 // ── Admin API: upload image ───────────────────────────────────────────────────
