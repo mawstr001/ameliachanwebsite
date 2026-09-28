@@ -79,11 +79,12 @@
     var popover = document.createElement('div');
     popover.className = 'admin-edit-popover';
 
+    var rich = el.hasAttribute('data-edit-rich') && window.RichEditor;
     var currentVal = el.innerText.trim();
 
     popover.innerHTML =
       '<div class="admin-edit-popover-label">' + escHtml(key) + '</div>' +
-      '<textarea rows="3">' + escHtml(currentVal) + '</textarea>' +
+      (rich ? '' : '<textarea rows="3">' + escHtml(currentVal) + '</textarea>') +
       '<div class="admin-edit-popover-actions">' +
         '<button class="admin-popover-cancel" type="button">Cancel</button>' +
         '<button class="admin-popover-save" type="button">Save</button>' +
@@ -92,19 +93,28 @@
     document.body.appendChild(popover);
     activePopover = popover;
 
+    var editor = null;
     var textarea = popover.querySelector('textarea');
-    textarea.focus();
-    textarea.select();
+    if (rich) {
+      // Formatting toolbar for fields that allow bold / italic / size.
+      editor = window.RichEditor.create(el.innerHTML.trim());
+      popover.insertBefore(editor.el, popover.querySelector('.admin-edit-popover-actions'));
+      popover.style.maxWidth = '560px';
+      editor.area.focus();
+    } else {
+      textarea.focus();
+      textarea.select();
+    }
 
     // Position near element
     positionPopover(popover, el);
 
     // Save
     popover.querySelector('.admin-popover-save').addEventListener('click', function () {
-      var val = textarea.value;
-      saveKey(key, val, function (ok) {
+      var val = editor ? editor.getHTML() : textarea.value;
+      saveKey(key, val, function (ok, saved) {
         if (ok) {
-          el.innerText = val;
+          if (editor) el.innerHTML = saved; else el.innerText = val;
           closePopover();
           showSavedToast();
         }
@@ -112,7 +122,7 @@
     });
 
     // Save on Ctrl+Enter / Cmd+Enter
-    textarea.addEventListener('keydown', function (e) {
+    (editor ? editor.area : textarea).addEventListener('keydown', function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         popover.querySelector('.admin-popover-save').click();
@@ -132,8 +142,8 @@
 
   function positionPopover(popover, el) {
     var rect = el.getBoundingClientRect();
-    var pw = 420;
-    var ph = 160;
+    var pw = popover.offsetWidth || 420;
+    var ph = popover.offsetHeight || 160;
     var margin = 12;
     var vw = window.innerWidth;
     var vh = window.innerHeight - 54; // account for admin bar
@@ -198,7 +208,7 @@
       body: JSON.stringify({ key: key, value: value })
     })
       .then(function (r) { return r.json(); })
-      .then(function (d) { cb(d.ok); })
+      .then(function (d) { cb(d.ok, d.value); })
       .catch(function () { cb(false); });
   }
 

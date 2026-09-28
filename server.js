@@ -5,6 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const githubSync = require('./github-sync');
+const { RICH_KEYS, sanitizeRich } = require('./rich-text');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -185,6 +186,7 @@ function deepSet(obj, keyPath, value) {
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.set('view engine', 'ejs');
+app.locals.rich = sanitizeRich; // templates: <%- rich(text) %>
 app.set('views', path.join(__dirname, 'views'));
 app.set('trust proxy', 1); // needed for secure cookies behind Render/Nginx proxy
 app.use(express.static(path.join(__dirname, 'public')));
@@ -523,9 +525,10 @@ app.post('/admin/api/update', requireAdmin, (req, res) => {
   if (!key) return res.status(400).json({ error: 'key required' });
   try {
     const c = readContent();
-    deepSet(c, key, value);
+    const clean = RICH_KEYS.has(key) ? sanitizeRich(value) : value;
+    deepSet(c, key, clean);
     writeContent(c);
-    res.json({ ok: true });
+    res.json({ ok: true, value: clean });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
@@ -562,7 +565,7 @@ app.post('/admin/content/:page', requireAdmin, (req, res) => {
   if (!CONTENT_PAGES.includes(req.params.page)) return res.redirect('/admin');
   const c = readContent();
   Object.entries(req.body).forEach(([key, val]) => {
-    if (key) deepSet(c, key, String(val));
+    if (key) deepSet(c, key, RICH_KEYS.has(key) ? sanitizeRich(val) : String(val));
   });
   writeContent(c);
   res.redirect('/admin/content/' + req.params.page + '?saved=1');

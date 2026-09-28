@@ -55,10 +55,10 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
     <div class="field"><label>Heading</label><input type="text" name="bio.heading" value="<%= bio.heading %>"><div class="hint">Use \n for line breaks</div></div>
 
     <div class="section-title">Biography</div>
-    <div class="note">Portrait image is managed under Images. Press quotes are managed under Press Quotes.</div>
-    <div class="field"><label>First Paragraph (larger, displayed first)</label><textarea class="tall" name="bio.introPara1"><%= bio.introPara1 %></textarea></div>
-    <div class="field"><label>Second Paragraph</label><textarea class="tall" name="bio.introPara2"><%= bio.introPara2 %></textarea></div>
-    <div class="field"><label>Third Paragraph</label><textarea class="tall" name="bio.teacherPara1"><%= bio.teacherPara1 %></textarea></div>
+    <div class="note">Select text, then use the bar above each paragraph for <b>bold</b>, <i>italic</i>, <u>underline</u> or size. Press Enter for a new line. Portrait image is managed under Images.</div>
+    <div class="field"><label>First Paragraph (larger, displayed first)</label><textarea class="tall" name="bio.introPara1" data-rich><%= bio.introPara1 %></textarea></div>
+    <div class="field"><label>Second Paragraph</label><textarea class="tall" name="bio.introPara2" data-rich><%= bio.introPara2 %></textarea></div>
+    <div class="field"><label>Third Paragraph</label><textarea class="tall" name="bio.teacherPara1" data-rich><%= bio.teacherPara1 %></textarea></div>
 
     <div class="form-actions">
       <button class="btn-save" type="submit">Save Changes</button>
@@ -66,5 +66,6 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
     </div>
   </form>
 </main>
+<script src="/rich-editor.js"></script>
 </body>
 </html>
