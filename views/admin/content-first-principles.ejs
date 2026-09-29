@@ -48,8 +48,8 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
   <form method="POST" action="/admin/content/first-principles">
 
     <div class="section-title">Main Text</div>
-    <div class="note">Select text, then use the bar for <b>bold</b>, <i>italic</i>, <u>underline</u> or size. Press Enter for a new line. The logo above it is managed under Images.</div>
-    <div class="field"><textarea class="tall" name="firstPrinciples.body" data-rich><%= fp.body %></textarea></div>
+    <div class="note">Select text, then use the bar for <b>bold</b>, <i>italic</i>, <u>underline</u>, size, or left / centre / right alignment. Press Enter for a new line. Use <b>&lt;/&gt; HTML</b> to edit the code directly. The logo above it is managed under Images.</div>
+    <div class="field"><textarea class="tall" name="firstPrinciples.body" data-rich="blocks"><%= fp.body %></textarea></div>
 
     <div class="section-title">Button</div>
     <div class="field"><label>Button Text (links to the Archive page)</label><input type="text" name="firstPrinciples.ctaLabel" value="<%= fp.ctaLabel %>"></div>
