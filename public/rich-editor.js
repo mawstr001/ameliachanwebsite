@@ -199,6 +199,8 @@
         sourceMode = !sourceMode;
         if (sourceMode) {
           normalise(area);
+          // Typed / pasted line breaks become <br> so the HTML view keeps them.
+          if (!opts.blocks && /\n/.test(area.innerHTML)) area.innerHTML = area.innerHTML.replace(/\r?\n/g, '<br>');
           src.value = prettify(area.innerHTML);
           area.style.display = 'none';
           src.style.display = note.style.display = '';

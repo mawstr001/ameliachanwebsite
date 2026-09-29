@@ -12,9 +12,9 @@
 // size: links (web, email and on-site only) and, for fields shown in a <div>,
 // block structure and alignment.
 const RICH_FIELDS = {
-  'bio.introPara1': {},
-  'bio.introPara2': {},
-  'bio.teacherPara1': {},
+  'bio.introPara1': { links: true },
+  'bio.introPara2': { links: true },
+  'bio.teacherPara1': { links: true },
   'home.left.blurb': { links: true },
   'firstPrinciples.body': { blocks: true, links: true }
 };
