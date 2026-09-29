@@ -32,7 +32,7 @@
     <img src="<%= fp.logoImage || '/fp-logo-full.png' %>" alt="<%= fp.logoAlt %>" />
   </div>
   <h1 class="visually-hidden">The First Principles Violin System</h1>
-  <div class="fp-body" data-edit="firstPrinciples.body" data-edit-rich="blocks"><%- rich(fp.body, { blocks: true }) %></div>
+  <div class="fp-body" data-edit="firstPrinciples.body" data-edit-rich="blocks"><%- rich(fp.body, { blocks: true, links: true }) %></div>
   <a class="btn hero-cta" href="/writings"><span data-edit="firstPrinciples.ctaLabel"><%= fp.ctaLabel %></span></a>
 </section>
 

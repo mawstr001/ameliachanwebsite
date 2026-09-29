@@ -144,6 +144,7 @@ body.menu-open .nav-overlay{ visibility:visible; opacity:1; transform:translateY
   font-size:.66em; letter-spacing:.06em; white-space:nowrap; }
 .hero-role{ font-size:17px; letter-spacing:.04em; color:var(--ink-soft); margin:20px 0 0; }
 .hero-lead{ font-size:21px; line-height:1.5; color:var(--ink-soft); margin:26px 0 0; max-width:40ch; }
+.hero-lead a{ color:var(--oxblood); }
 .hero-cta{ margin-top:30px; }
 .figure{ width:100%; overflow:hidden; box-shadow:0 30px 70px -42px rgba(42,37,30,.65); }
 .figure image-slot{ display:block; width:100%; height:100%; }

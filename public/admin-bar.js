@@ -97,7 +97,7 @@
     var textarea = popover.querySelector('textarea');
     if (rich) {
       // Formatting toolbar for fields that allow bold / italic / size.
-      editor = window.RichEditor.create(el.innerHTML.trim(), null, { blocks: el.getAttribute('data-edit-rich') === 'blocks' });
+      editor = window.RichEditor.create(el.innerHTML.trim(), null, window.RichEditor.optionsFor(el.getAttribute('data-edit-rich')));
       popover.insertBefore(editor.el, popover.querySelector('.admin-edit-popover-actions'));
       popover.style.maxWidth = '560px';
       editor.area.focus();

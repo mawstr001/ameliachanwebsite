@@ -8,15 +8,17 @@
 // alignment and a small set of structural tags that can be typed in the HTML
 // view: paragraphs, headings, lists, quotes, rules and links.
 
-const RICH_KEYS = new Set([
-  'bio.introPara1',
-  'bio.introPara2',
-  'bio.teacherPara1',
-  'firstPrinciples.body'
-]);
-const BLOCK_KEYS = new Set([
-  'firstPrinciples.body'
-]);
+// Formatted fields and what each allows beyond bold / italic / underline /
+// size: links (web, email and on-site only) and, for fields shown in a <div>,
+// block structure and alignment.
+const RICH_FIELDS = {
+  'bio.introPara1': {},
+  'bio.introPara2': {},
+  'bio.teacherPara1': {},
+  'home.left.blurb': { links: true },
+  'firstPrinciples.body': { blocks: true, links: true }
+};
+const RICH_KEYS = new Set(Object.keys(RICH_FIELDS));
 
 const INLINE = new Set(['b', 'strong', 'i', 'em', 'u']);
 const BLOCK = new Set(['div', 'p', 'h2', 'h3', 'h4', 'blockquote', 'ul', 'ol', 'li']);
@@ -41,6 +43,7 @@ function safeHref(attrs) {
 
 function sanitizeRich(input, opts = {}) {
   const blocks = !!opts.blocks;
+  const links = blocks || !!opts.links;
   // Code and style blocks are removed together with their contents.
   const s = String(input == null ? '' : input)
     .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '')
@@ -69,7 +72,7 @@ function sanitizeRich(input, opts = {}) {
       out += align ? `<${tag} style="text-align:${align[1].toLowerCase()}">` : `<${tag}>`;
     } else if (blocks && tag === 'hr') {
       if (!closing) out += '<hr>';
-    } else if (blocks && tag === 'a') {
+    } else if (links && tag === 'a') {
       if (closing) { out += '</a>'; continue; }
       const href = safeHref(attrs);
       if (!href) { out += '<a>'; continue; }
@@ -90,7 +93,7 @@ function sanitizeRich(input, opts = {}) {
 // Clean a value for a content key: rich keys are sanitised, others untouched.
 function cleanForKey(key, value) {
   if (!RICH_KEYS.has(key)) return value;
-  return sanitizeRich(value, { blocks: BLOCK_KEYS.has(key) });
+  return sanitizeRich(value, RICH_FIELDS[key]);
 }
 
-module.exports = { RICH_KEYS, BLOCK_KEYS, sanitizeRich, cleanForKey };
+module.exports = { RICH_KEYS, RICH_FIELDS, sanitizeRich, cleanForKey };
