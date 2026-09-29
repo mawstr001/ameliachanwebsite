@@ -1,6 +1,8 @@
 /* ============================================================
    RICH EDITOR — bold / italic / underline / font size toolbar
    Used by the admin Bio form and by Edit Mode on the live page.
+   Block fields (data-rich="blocks", e.g. the First Principles text)
+   also get left / centre / right alignment and an HTML source view.
    The server cleans the result (rich-text.js) before saving.
    ============================================================ */
 (function () {
@@ -21,7 +23,13 @@
     '.rte-bar .sep{width:1px;background:rgba(255,255,255,.12);margin:0 4px}' +
     '.rte-area{min-height:140px;padding:11px 14px;color:#e8e0d0;font:17px/1.55 "EB Garamond",Georgia,serif;' +
       'white-space:pre-wrap;outline:none;overflow-wrap:anywhere}' +
-    '.rte-area:focus{box-shadow:inset 0 0 0 1px #9a7b33}';
+    '.rte-area:focus{box-shadow:inset 0 0 0 1px #9a7b33}' +
+    '.rte.blocks .rte-area{white-space:normal}' +
+    '.rte-src{display:block;width:100%;min-height:220px;box-sizing:border-box;padding:11px 14px;border:0;outline:none;resize:vertical;' +
+      'background:#1e1a15;color:#e8e0d0;font:13px/1.55 "JetBrains Mono",ui-monospace,monospace;white-space:pre-wrap}' +
+    '.rte-bar button:disabled,.rte-bar select:disabled{opacity:.35;cursor:default}' +
+    '.rte-bar .push{margin-left:auto}' +
+    '.rte-note{font:11px/1.4 system-ui,sans-serif;color:#9d9280;padding:6px 10px;border-top:1px solid rgba(154,123,51,.2)}';
   var style = document.createElement('style');
   style.textContent = css;
   document.head.appendChild(style);
@@ -54,9 +62,24 @@
     });
   }
 
-  function create(initialHTML, onChange) {
+  // Put each block / line break on its own line so the HTML view is readable.
+  function prettify(html) {
+    return html
+      .replace(/(<br>)(?!\n)/g, '$1\n')
+      .replace(/(<\/(div|p|h2|h3|h4|li|ul|ol|blockquote)>)(?!\n)/g, '$1\n')
+      .replace(/(<(ul|ol)>)(?!\n)/g, '$1\n')
+      .replace(/\n+$/, '');
+  }
+  // Undo prettify: in block fields raw newlines are only layout in the source.
+  // Next to a tag they vanish; between words they become a space.
+  function unprettify(html) {
+    return html.replace(/>[ \t]*\n\s*/g, '>').replace(/\s*\n[ \t]*</g, '<').replace(/\s*\n\s*/g, ' ');
+  }
+
+  function create(initialHTML, onChange, opts) {
+    opts = opts || {};
     var wrap = document.createElement('div');
-    wrap.className = 'rte';
+    wrap.className = 'rte' + (opts.blocks ? ' blocks' : '');
     var bar = document.createElement('div');
     bar.className = 'rte-bar';
     var area = document.createElement('div');
@@ -76,16 +99,71 @@
     sep.className = 'sep';
     var clear = btn('Clear', 'Remove formatting from the selected text', 'Clear');
 
-    [bold, italic, under, sep, size, clear].forEach(function (el) { bar.appendChild(el); });
+    var tools = [bold, italic, under, sep, size, clear];
+    var alignBtns = [];
+    if (opts.blocks) {
+      var sep2 = document.createElement('span');
+      sep2.className = 'sep';
+      tools.push(sep2);
+      [['justifyLeft', 'Align left', '&#8676;'], ['justifyCenter', 'Centre', '&#8596;'], ['justifyRight', 'Align right', '&#8677;']]
+        .forEach(function (a) {
+          var b = btn(a[1], a[1] + ' (the line or selected lines)', a[2]);
+          b.addEventListener('click', function () { exec(a[0]); });
+          alignBtns.push([b, a[0]]);
+          tools.push(b);
+        });
+    }
+    var srcBtn = null, src = null, note = null, sourceMode = false;
+    if (opts.blocks) {
+      srcBtn = btn('HTML', 'Edit the HTML code', '&lt;/&gt; HTML');
+      srcBtn.classList.add('push');
+      tools.push(srcBtn);
+      src = document.createElement('textarea');
+      src.className = 'rte-src';
+      src.spellcheck = false;
+      src.style.display = 'none';
+      note = document.createElement('div');
+      note.className = 'rte-note';
+      note.style.display = 'none';
+      note.textContent = 'Allowed: b, i, u, strong, em, br, p, div, h2, h3, h4, ul, ol, li, blockquote, hr, ' +
+        'links (a href), font-size and text-align styles. Anything else is removed when you save.';
+    }
+
+    tools.forEach(function (el) { bar.appendChild(el); });
     wrap.appendChild(bar);
     wrap.appendChild(area);
+    if (src) { wrap.appendChild(src); wrap.appendChild(note); }
 
     function changed() { normalise(area); if (onChange) onChange(area.innerHTML); refresh(); }
     function exec(cmd, val) { area.focus(); document.execCommand(cmd, false, val); changed(); }
     function refresh() {
+      if (sourceMode) return;
       bold.classList.toggle('on', document.queryCommandState('bold'));
       italic.classList.toggle('on', document.queryCommandState('italic'));
       under.classList.toggle('on', document.queryCommandState('underline'));
+      alignBtns.forEach(function (a) { a[0].classList.toggle('on', document.queryCommandState(a[1])); });
+    }
+
+    if (srcBtn) {
+      srcBtn.addEventListener('click', function () {
+        sourceMode = !sourceMode;
+        if (sourceMode) {
+          normalise(area);
+          src.value = prettify(area.innerHTML);
+          area.style.display = 'none';
+          src.style.display = note.style.display = '';
+          src.focus();
+        } else {
+          area.innerHTML = unprettify(src.value);
+          src.style.display = note.style.display = 'none';
+          area.style.display = '';
+          changed();
+        }
+        srcBtn.classList.toggle('on', sourceMode);
+        srcBtn.innerHTML = sourceMode ? '&#10003; Done editing HTML' : '&lt;/&gt; HTML';
+        tools.forEach(function (el) { if (el !== srcBtn && el.tagName !== 'SPAN') el.disabled = sourceMode; });
+      });
+      src.addEventListener('input', function () { if (onChange) onChange(unprettify(src.value)); });
     }
 
     // Keep the text selection when clicking toolbar buttons.
@@ -139,13 +217,22 @@
     area.addEventListener('keyup', refresh);
     area.addEventListener('mouseup', refresh);
 
-    return { el: wrap, area: area, getHTML: function () { normalise(area); return area.innerHTML; } };
+    return {
+      el: wrap,
+      area: area,
+      getHTML: function () {
+        if (sourceMode) return unprettify(src.value);
+        normalise(area);
+        return area.innerHTML;
+      }
+    };
   }
 
   // Swap a <textarea data-rich> for the editor, keeping the textarea in sync
   // so the form submits as before.
   function enhance(textarea) {
-    var ed = create(textarea.value, function (html) { textarea.value = html; });
+    var ed = create(textarea.value, function (html) { textarea.value = html; },
+      { blocks: textarea.getAttribute('data-rich') === 'blocks' });
     textarea.style.display = 'none';
     textarea.parentNode.insertBefore(ed.el, textarea.nextSibling);
     return ed;
