@@ -1,8 +1,9 @@
 /* ============================================================
    RICH EDITOR — bold / italic / underline / font size toolbar
    Used by the admin Bio form and by Edit Mode on the live page.
-   Block fields (data-rich="blocks", e.g. the First Principles text)
-   also get left / centre / right alignment and an HTML source view.
+   data-rich="links" adds a Link button and an HTML source view (e.g. the
+   Home lead paragraph); data-rich="blocks" adds those plus left / centre /
+   right alignment (e.g. the First Principles text).
    The server cleans the result (rich-text.js) before saving.
    ============================================================ */
 (function () {
@@ -25,6 +26,7 @@
       'white-space:pre-wrap;outline:none;overflow-wrap:anywhere}' +
     '.rte-area:focus{box-shadow:inset 0 0 0 1px #9a7b33}' +
     '.rte.blocks .rte-area{white-space:normal}' +
+    '.rte-area a{color:#d8b872}' +
     '.rte-src{display:block;width:100%;min-height:220px;box-sizing:border-box;padding:11px 14px;border:0;outline:none;resize:vertical;' +
       'background:#1e1a15;color:#e8e0d0;font:13px/1.55 "JetBrains Mono",ui-monospace,monospace;white-space:pre-wrap}' +
     '.rte-bar button:disabled,.rte-bar select:disabled{opacity:.35;cursor:default}' +
@@ -76,6 +78,13 @@
     return html.replace(/>[ \t]*\n\s*/g, '>').replace(/\s*\n[ \t]*</g, '<').replace(/\s*\n\s*/g, ' ');
   }
 
+  // Editor features for a data-rich / data-edit-rich attribute value.
+  function optionsFor(kind) {
+    if (kind === 'blocks') return { blocks: true, align: true, links: true, source: true };
+    if (kind === 'links') return { links: true, source: true };
+    return {};
+  }
+
   function create(initialHTML, onChange, opts) {
     opts = opts || {};
     var wrap = document.createElement('div');
@@ -100,8 +109,13 @@
     var clear = btn('Clear', 'Remove formatting from the selected text', 'Clear');
 
     var tools = [bold, italic, under, sep, size, clear];
+    var linkBtn = null;
+    if (opts.links) {
+      linkBtn = btn('Link', 'Add a link to the selected text, or remove the link the cursor is in', '&#128279; Link');
+      tools.push(linkBtn);
+    }
     var alignBtns = [];
-    if (opts.blocks) {
+    if (opts.align) {
       var sep2 = document.createElement('span');
       sep2.className = 'sep';
       tools.push(sep2);
@@ -114,7 +128,7 @@
         });
     }
     var srcBtn = null, src = null, note = null, sourceMode = false;
-    if (opts.blocks) {
+    if (opts.source) {
       srcBtn = btn('HTML', 'Edit the HTML code', '&lt;/&gt; HTML');
       srcBtn.classList.add('push');
       tools.push(srcBtn);
@@ -125,8 +139,11 @@
       note = document.createElement('div');
       note.className = 'rte-note';
       note.style.display = 'none';
-      note.textContent = 'Allowed: b, i, u, strong, em, br, p, div, h2, h3, h4, ul, ol, li, blockquote, hr, ' +
-        'links (a href), font-size and text-align styles. Anything else is removed when you save.';
+      note.textContent = opts.blocks
+        ? 'Allowed: b, i, u, strong, em, br, p, div, h2, h3, h4, ul, ol, li, blockquote, hr, ' +
+          'links (a href), font-size and text-align styles. Anything else is removed when you save.'
+        : 'Allowed: b, i, u, strong, em, br, links (a href) and font-size styles. ' +
+          'Anything else is removed when you save (this text sits inside one paragraph).';
     }
 
     tools.forEach(function (el) { bar.appendChild(el); });
@@ -142,6 +159,39 @@
       italic.classList.toggle('on', document.queryCommandState('italic'));
       under.classList.toggle('on', document.queryCommandState('underline'));
       alignBtns.forEach(function (a) { a[0].classList.toggle('on', document.queryCommandState(a[1])); });
+    }
+
+    if (linkBtn) {
+      linkBtn.addEventListener('click', function () {
+        var sel = window.getSelection();
+        if (!sel.rangeCount || !area.contains(sel.anchorNode)) { alert('Click in the text or select the words to link first.'); return; }
+        var node = sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentNode;
+        var inLink = node.closest && node.closest('a');
+        if (inLink && area.contains(inLink) && sel.isCollapsed) {
+          if (!confirm('Remove this link (' + inLink.getAttribute('href') + ')? The words stay.')) return;
+          while (inLink.firstChild) inLink.parentNode.insertBefore(inLink.firstChild, inLink);
+          inLink.parentNode.removeChild(inLink);
+          changed();
+          return;
+        }
+        if (sel.isCollapsed) { alert('Select the words you want to turn into a link.'); return; }
+        var range = sel.getRangeAt(0).cloneRange();
+        var url = prompt('Link address (https://…, mailto:…, or a page on this site such as /bio):', 'https://');
+        if (!url) return;
+        url = url.trim();
+        if (!/^(https?:\/\/\S+|mailto:\S+|\/(?!\/)\S*|#\S*)$/i.test(url)) { alert('Please use a web address starting with https://, an email starting with mailto:, or a site page starting with /.'); return; }
+        var newTab = /^https?:/i.test(url) && confirm('Open this link in a new tab?');
+        sel.removeAllRanges();
+        sel.addRange(range);
+        area.focus();
+        var marker = 'rte-link-' + Date.now();
+        document.execCommand('createLink', false, marker);
+        Array.prototype.forEach.call(area.querySelectorAll('a[href="' + marker + '"]'), function (a) {
+          a.setAttribute('href', url);
+          if (newTab) { a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener'); }
+        });
+        changed();
+      });
     }
 
     if (srcBtn) {
@@ -232,13 +282,13 @@
   // so the form submits as before.
   function enhance(textarea) {
     var ed = create(textarea.value, function (html) { textarea.value = html; },
-      { blocks: textarea.getAttribute('data-rich') === 'blocks' });
+      optionsFor(textarea.getAttribute('data-rich')));
     textarea.style.display = 'none';
     textarea.parentNode.insertBefore(ed.el, textarea.nextSibling);
     return ed;
   }
 
-  window.RichEditor = { create: create, enhance: enhance };
+  window.RichEditor = { create: create, enhance: enhance, optionsFor: optionsFor };
 
   document.addEventListener('DOMContentLoaded', function () {
     Array.prototype.forEach.call(document.querySelectorAll('textarea[data-rich]'), enhance);

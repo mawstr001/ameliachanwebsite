@@ -45,7 +45,7 @@
     <div class="label" style="font-size:16px" data-edit="home.left.kicker"><%= home.left.kicker %></div>
     <h1 class="hero-name"><span data-edit="home.left.name"><%= home.left.name %></span><% if (home.left.nameZh) { %> <span class="hero-name-zh" lang="zh-Hant" data-edit="home.left.nameZh"><%= home.left.nameZh %></span><% } %></h1>
     <p class="hero-role" style="font-size:23px;font-weight:600" data-edit="home.left.role"><%= home.left.role %></p>
-    <p class="hero-lead" data-edit="home.left.blurb"><%= home.left.blurb %></p>
+    <p class="hero-lead" data-edit="home.left.blurb" data-edit-rich="links"><%- rich(home.left.blurb, { links: true }) %></p>
     <a class="btn hero-cta" href="/bio">Read Biography</a>
   </div>
   <div class="photo-wrap">
@@ -63,6 +63,6 @@
 
 <script src="/image-slot.js"></script>
 <script src="/site.js"></script>
-<% if (isAdmin) { %><script src="/admin-bar.js"></script><% } %>
+<% if (isAdmin) { %><script src="/rich-editor.js"></script><script src="/admin-bar.js"></script><% } %>
 </body>
 </html>

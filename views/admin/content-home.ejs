@@ -58,7 +58,7 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
       <div class="field"><label>Chinese Name (next to the name)</label><input type="text" name="home.left.nameZh" value="<%= home.left.nameZh %>"><div class="hint">Leave empty to hide it.</div></div>
     </div>
     <div class="field"><label>Role Line</label><input type="text" name="home.left.role" value="<%= home.left.role %>"></div>
-    <div class="field"><label>Lead Paragraph</label><textarea class="tall" name="home.left.blurb"><%= home.left.blurb %></textarea></div>
+    <div class="field"><label>Lead Paragraph</label><div class="hint" style="margin:0 0 6px">Select words, then use the bar for bold, italic, underline, size or a link. Use &lt;/&gt; HTML to edit the code directly.</div><textarea class="tall" name="home.left.blurb" data-rich="links"><%= home.left.blurb %></textarea></div>
 
     <div class="section-title">The First Principles System Teaser</div>
     <div class="note">The three method items (Biomechanics, Acoustics, Cognition) and the logo are fixed. To edit the full method section, go to the First Principles page editor.</div>
@@ -69,5 +69,6 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
     </div>
   </form>
 </main>
+<script src="/rich-editor.js"></script>
 </body>
 </html>
