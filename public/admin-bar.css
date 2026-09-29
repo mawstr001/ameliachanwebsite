@@ -169,6 +169,8 @@ body.admin-mode-on a[href] .admin-edit-no-nav {
 /* ── Edit Popover ── */
 .admin-edit-popover {
   position: fixed;
+  max-height: calc(100vh - 80px);
+  overflow: auto;
   z-index: 1000;
   background: #112230;
   border: 1px solid #2f6f8f;

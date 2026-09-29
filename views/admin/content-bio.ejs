@@ -55,10 +55,10 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
     <div class="field"><label>Heading</label><input type="text" name="bio.heading" value="<%= bio.heading %>"><div class="hint">Use \n for line breaks</div></div>
 
     <div class="section-title">Biography</div>
-    <div class="note">Select text, then use the bar above each paragraph for <b>bold</b>, <i>italic</i>, <u>underline</u> or size. Press Enter for a new line. Portrait image is managed under Images.</div>
-    <div class="field"><label>First Paragraph (larger, displayed first)</label><textarea class="tall" name="bio.introPara1" data-rich><%= bio.introPara1 %></textarea></div>
-    <div class="field"><label>Second Paragraph</label><textarea class="tall" name="bio.introPara2" data-rich><%= bio.introPara2 %></textarea></div>
-    <div class="field"><label>Third Paragraph</label><textarea class="tall" name="bio.teacherPara1" data-rich><%= bio.teacherPara1 %></textarea></div>
+    <div class="note">Each paragraph uses the same editor as Writings: WYSIWYG, HTML and Preview tabs. Portrait image is managed under Images.</div>
+    <div class="field"><label>First Paragraph (larger, displayed first)</label><textarea class="tall" name="bio.introPara1" data-quill><%= bio.introPara1 %></textarea></div>
+    <div class="field"><label>Second Paragraph</label><textarea class="tall" name="bio.introPara2" data-quill><%= bio.introPara2 %></textarea></div>
+    <div class="field"><label>Third Paragraph</label><textarea class="tall" name="bio.teacherPara1" data-quill><%= bio.teacherPara1 %></textarea></div>
 
     <div class="field"><label>Photo Credit (under the portrait)</label><input type="text" name="bio.photoCredit" value="<%= bio.photoCredit %>"><div class="hint">Leave empty to hide it.</div></div>
 
@@ -68,6 +68,8 @@ body{ background:#1a1612; color:#e8e0d0; font-family:"EB Garamond",Georgia,serif
     </div>
   </form>
 </main>
-<script src="/rich-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.quilljs.com/2.0.2/quill.snow.css" />
+<script src="https://cdn.quilljs.com/2.0.2/quill.js"></script>
+<script src="/quill-field.js"></script>
 </body>
 </html>

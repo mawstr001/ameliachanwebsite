@@ -32,7 +32,7 @@
     <img src="<%= fp.logoImage || '/fp-logo-full.png' %>" alt="<%= fp.logoAlt %>" />
   </div>
   <h1 class="visually-hidden">The First Principles Violin System</h1>
-  <div class="fp-body" data-edit="firstPrinciples.body" data-edit-rich="blocks"><%- rich(fp.body, { blocks: true, links: true }) %></div>
+  <div class="fp-body rich" data-edit="firstPrinciples.body" data-edit-rich><%- rich(fp.body) %></div>
   <a class="btn hero-cta" href="/writings"><span data-edit="firstPrinciples.ctaLabel"><%= fp.ctaLabel %></span></a>
 </section>
 
@@ -42,6 +42,6 @@
 
 <script src="/image-slot.js"></script>
 <script src="/site.js"></script>
-<% if (isAdmin) { %><script src="/rich-editor.js"></script><script src="/admin-bar.js"></script><% } %>
+<% if (isAdmin) { %><link rel="stylesheet" href="https://cdn.quilljs.com/2.0.2/quill.snow.css" /><script src="https://cdn.quilljs.com/2.0.2/quill.js"></script><script src="/quill-field.js"></script><script src="/admin-bar.js"></script><% } %>
 </body>
 </html>
