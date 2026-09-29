@@ -79,8 +79,11 @@
     var popover = document.createElement('div');
     popover.className = 'admin-edit-popover';
 
-    var rich = el.hasAttribute('data-edit-rich') && window.RichEditor;
-    var currentVal = el.innerText.trim();
+    var rich = el.hasAttribute('data-edit-rich') && window.QuillField && window.Quill;
+    // Formatted text without the editor available: edit its HTML directly,
+    // so saving never strips the formatting.
+    var rawHtml = el.hasAttribute('data-edit-rich') && !rich;
+    var currentVal = rawHtml ? el.innerHTML.trim() : el.innerText.trim();
 
     popover.innerHTML =
       '<div class="admin-edit-popover-label">' + escHtml(key) + '</div>' +
@@ -97,10 +100,11 @@
     var textarea = popover.querySelector('textarea');
     if (rich) {
       // Formatting toolbar for fields that allow bold / italic / size.
-      editor = window.RichEditor.create(el.innerHTML.trim(), null, window.RichEditor.optionsFor(el.getAttribute('data-edit-rich')));
+      editor = window.QuillField.create(el.innerHTML.trim());
       popover.insertBefore(editor.el, popover.querySelector('.admin-edit-popover-actions'));
-      popover.style.maxWidth = '560px';
-      editor.area.focus();
+      popover.style.maxWidth = '640px';
+      popover.style.width = 'min(640px, calc(100vw - 24px))';
+      editor.quill.focus();
     } else {
       textarea.focus();
       textarea.select();
@@ -114,7 +118,7 @@
       var val = editor ? editor.getHTML() : textarea.value;
       saveKey(key, val, function (ok, saved) {
         if (ok) {
-          if (editor) el.innerHTML = saved; else el.innerText = val;
+          if (editor || rawHtml) el.innerHTML = saved; else el.innerText = val;
           closePopover();
           showSavedToast();
         }
@@ -122,7 +126,7 @@
     });
 
     // Save on Ctrl+Enter / Cmd+Enter
-    (editor ? editor.area : textarea).addEventListener('keydown', function (e) {
+    (editor ? editor.el : textarea).addEventListener('keydown', function (e) {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         popover.querySelector('.admin-popover-save').click();
